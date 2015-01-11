@@ -1,0 +1,15 @@
+{
+    "applications": {
+        "_default": {
+            "link": "inturn.io"
+        }, 
+        "inturn.io": {
+            "applicationId": "vZmOZXJcisMII15gQS09rteukfzJD9sRf2oEPLG5", 
+            "masterKey": "CaoDIlRFW2XrbWiv9hIYMZ38TcKg8rshsLlhGEux",
+            "javascriptKey": "RnjrmKHIaCxjVSIdAhVTOWAl3WT5DzfnCmgKGHCf"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.3.2"
+    }
+}
