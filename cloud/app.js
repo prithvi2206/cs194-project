@@ -1,12 +1,18 @@
 
 // Initialize Express in Cloud Code.
+require('parse-express-cookie-session')
+var parseExpressHttpsRedirect = require('parse-express-https-redirect');
+var parseExpressCookieSession = require('parse-express-cookie-session');
 var express = require('express');
 var app = express();
 
 // Global app configuration section
 app.set('views', 'cloud/views');  // Specify the folder to find templates
 app.set('view engine', 'ejs');    // Set the template engine
-app.use(express.bodyParser());    // Middleware for reading request body
+app.use(parseExpressHttpsRedirect());  // Require user to be on HTTPS.
+app.use(express.bodyParser()); // Middleware for reading request body
+app.use(express.cookieParser('YOUR_SIGNING_SECRET'));
+app.use(parseExpressCookieSession({ cookie: { maxAge: 3600000 } }));
 
 app.get('/', function(req, res) {
 
@@ -223,6 +229,7 @@ app.post('/login_post', function(req, res) {
 
 		Parse.User.logIn(username, password, {
 		  success: function(user) {
+
 		  	res.render('pages/dashboard', {
 		  		message: "Welcome back, " + username,
 		  		currentUser: Parse.User.current().getUsername(),
