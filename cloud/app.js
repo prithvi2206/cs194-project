@@ -12,11 +12,13 @@ app.set('view engine', 'ejs');    // Set the template engine
 app.use(parseExpressHttpsRedirect());  // Require user to be on HTTPS.
 app.use(express.bodyParser()); // Middleware for reading request body
 app.use(express.cookieParser('YOUR_SIGNING_SECRET'));
-app.use(parseExpressCookieSession({ cookie: { maxAge: 3600000 } }));
+app.use(parseExpressCookieSession({ cookie: { maxAge: 3600000 }, fetchUser: true }));
 
 app.get('/', function(req, res) {
 
 	if (Parse.User.current()) {
+
+		Parse.User.current().fetch()
 
 		res.render('pages/dashboard', {
 			message: null, 
@@ -38,6 +40,8 @@ app.get('/dashboard', function(req, res) {
 
 	if (Parse.User.current()) {
 
+		Parse.User.current().fetch()
+
 		res.render('pages/dashboard', {
 			currentUser: Parse.User.current().getUsername(),
 			title: "Dashboard | inturn"
@@ -57,6 +61,8 @@ app.get('/jobs', function(req, res) {
 
 	if (Parse.User.current()) {
 
+		Parse.User.current().fetch()
+
 		res.render('pages/jobs', { 
 			currentUser: Parse.User.current().getUsername() ,
 			title: "Job Applications | inturn"
@@ -74,6 +80,8 @@ app.get('/jobs', function(req, res) {
 app.get('/events', function(req, res) {
 
 	if (Parse.User.current()) {
+
+		Parse.User.current().fetch()
 
 		res.render('pages/events', { 
 			currentUser: Parse.User.current().getUsername(),
@@ -93,6 +101,8 @@ app.get('/messages', function(req, res) {
 
 	if (Parse.User.current()) {
 
+		Parse.User.current().fetch()
+
 		res.render('pages/messages',{ 
 			currentUser: Parse.User.current().getUsername(),
 			title: "Messages | inturn"
@@ -110,6 +120,8 @@ app.get('/messages', function(req, res) {
 app.get('/documents', function(req, res) {
 
 	if (Parse.User.current()) {
+
+		Parse.User.current().fetch()
 
 		res.render('pages/documents',{ 
 			currentUser: Parse.User.current().getUsername(),
@@ -129,6 +141,8 @@ app.get('/contacts', function(req, res) {
 
 	if (Parse.User.current()) {
 
+		Parse.User.current().fetch()
+
 		res.render('pages/contacts', { 
 			currentUser: Parse.User.current().getUsername(),
 			title: "Contacts | inturn" 
@@ -146,6 +160,8 @@ app.get('/contacts', function(req, res) {
 app.get('/start', function(req, res) {
 
   if (Parse.User.current()) {
+
+  	Parse.User.current().fetch()
 
     res.render('pages/dashboard', {
     	message: null, 
@@ -166,6 +182,8 @@ app.get('/start', function(req, res) {
 app.get('/login_post', function(req, res) {
 
 	if (Parse.User.current()) {
+
+		Parse.User.current().fetch()
 
     res.render('pages/dashboard', {
     	message: null, 
