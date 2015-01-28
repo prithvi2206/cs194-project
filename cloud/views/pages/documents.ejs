@@ -24,14 +24,19 @@
               <h1 class="page-header">
                 Documents <small>Application Materials</small>
               </h1>
-              <ol class="breadcrumb">
-                <li class="active">
-                  <i class="fa fa-dashboard"></i> Documents
-                </li>
-              </ol>
             </div>
           </div>
 
+            <div class="row">
+                <div class="col-md-6">
+                   <form id="fileSubmitForm" role="form" method="post" action="/documents/upload" enctype="multipart/form-data">
+                    <span class="btn btn-default btn-file">
+                        Browse&hellip; <input id="docFileToUpload" type="file" class="file-upload" name="file" >
+                    </span>
+                    <input id="fileSubmitButton" type="submit" class="btn btn-custom">
+                  </form> 
+                </div>
+            </div>
         </div>
         <!-- /.container-fluid -->
       </div>
