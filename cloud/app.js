@@ -5,14 +5,21 @@ var parseExpressHttpsRedirect = require('parse-express-https-redirect');
 var parseExpressCookieSession = require('parse-express-cookie-session');
 var express = require('express');
 var app = express();
+var $ = require('jquery');
+var fs = require('fs');
+var multer = require('multer');
+var Buffer = require('buffer').Buffer;
 
 // Global app configuration section
 app.set('views', 'cloud/views');  // Specify the folder to find templates
 app.set('view engine', 'ejs');    // Set the template engine
 app.use(parseExpressHttpsRedirect());  // Require user to be on HTTPS.
-app.use(express.bodyParser()); // Middleware for reading request body
+//app.use(express.bodyParser()); // Middleware for reading request body
+app.use(express.json());
+app.use(express.urlencoded());
 app.use(express.cookieParser('YOUR_SIGNING_SECRET'));
 app.use(parseExpressCookieSession({ cookie: { maxAge: 3600000 }, fetchUser: true }));
+app.use(multer({inMemory: true}));
 
 app.get('/', function(req, res) {
 
@@ -135,6 +142,37 @@ app.get('/documents', function(req, res) {
 		});
 	}
 
+});
+
+app.post('/documents/upload', function(req, res) {
+    if (Parse.User.current()) {
+		Parse.User.current().fetch();
+   
+        var file = req.files.file;
+  
+       if(file.name !== "") {
+            var buffer = new Buffer(file.buffer, 'base64');
+            var parseFile = new Parse.File(file.originalname, {base64: buffer.toString("base64")});
+            parseFile.save().then(function() {
+                var docObject = new Parse.Object("Document");
+                docObject.set("name", file.originalname);
+                docObject.set("file", parseFile);
+                docObject.save().then(function() { 
+                    console.log("save successful");
+                    res.redirect('/documents');
+                }, function(error) {
+                    console.log("file did not save properly");
+                });
+            }, function(error) {
+                console.log("file did not save properly");
+            });
+       }
+	} else {
+		res.render('pages/start', {
+			message: null,
+			title: "Welcome | inturn"
+		});
+	}
 });
 
 app.get('/contacts', function(req, res) {
