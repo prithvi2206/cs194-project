@@ -7,8 +7,7 @@ var express = require('express');
 var app = express();
 var $ = require('jquery');
 var fs = require('fs');
-var multer = require('multer');
-var Buffer = require('buffer').Buffer;
+var multer = require('multer'); // For parsing multipart data
 
 // Global app configuration section
 app.set('views', 'cloud/views');  // Specify the folder to find templates
@@ -19,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.cookieParser('YOUR_SIGNING_SECRET'));
 app.use(parseExpressCookieSession({ cookie: { maxAge: 3600000 }, fetchUser: true }));
-app.use(multer({inMemory: true}));
+app.use(multer({inMemory: true})); // inMemory creates a temporary buffer for file
 
 app.get('/', function(req, res) {
 
