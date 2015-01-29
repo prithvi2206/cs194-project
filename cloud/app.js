@@ -107,35 +107,37 @@ app.get('/events', function(req, res) {
 });
 
 function handleClientLoad() {
-  gapi.client.setApiKey(apiKey);
-  window.setTimeout(checkAuth,1);
-  checkAuth();
+	console.log("here!");
+	gapi.client.setApiKey(apiKey);
+	window.setTimeout(checkAuth,1);
+	checkAuth();
 }
 
 function checkAuth() {
-  gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true},
-      handleAuthResult);
+ 	gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true},
+		handleAuthResult);
 }
 
 function handleAuthResult(authResult) {
-  var authorizeButton = document.getElementById('authorize-button');
-  if (authResult) {
-    authorizeButton.style.visibility = 'hidden';
-    makeApiCall();
-  } else {
-    authorizeButton.style.visibility = '';
-    authorizeButton.onclick = handleAuthClick;
-   }
+	var authorizeButton = document.getElementById('authorize-button');
+	if (authResult) {
+		authorizeButton.style.visibility = 'hidden';
+		makeApiCall();
+	} else {
+		authorizeButton.style.visibility = '';
+		authorizeButton.onclick = handleAuthClick;
+	}
 }
 
 function handleAuthClick(event) {
-  gapi.auth.authorize(
-      {client_id: clientId, scope: scopes, immediate: false},
-      handleAuthResult);
-  return false;
+	gapi.auth.authorize(
+		{client_id: clientId, scope: scopes, immediate: false},
+		handleAuthResult);
+	return false;
 }
 
 app.get('/messages', function(req, res) {
+	// handleClientLoad();
 	console.log("here");
 	if (Parse.User.current()) {
 
