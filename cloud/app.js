@@ -5,6 +5,9 @@ var parseExpressHttpsRedirect = require('parse-express-https-redirect');
 var parseExpressCookieSession = require('parse-express-cookie-session');
 var express = require('express');
 var app = express();
+var googleClientId = '1073490943584-jihl83sesm1qcm10lik7mu86t5ioh5g5.apps.googleusercontent.com';
+var googleApiKey = 'AIzaSyCSjzoMA90F_jr-Mr0fb1vRDgS-wiTX8Ks';
+var scopes = 'https://www.googleapis.com/auth/calendar';
 // var $ = require('jquery');
 // var fs = require('fs');
 // var multer = require('multer'); // For parsing multipart data
@@ -102,6 +105,35 @@ app.get('/events', function(req, res) {
 	}
 
 });
+
+function handleClientLoad() {
+  gapi.client.setApiKey(apiKey);
+  window.setTimeout(checkAuth,1);
+  checkAuth();
+}
+
+function checkAuth() {
+  gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true},
+      handleAuthResult);
+}
+
+function handleAuthResult(authResult) {
+  var authorizeButton = document.getElementById('authorize-button');
+  if (authResult) {
+    authorizeButton.style.visibility = 'hidden';
+    makeApiCall();
+  } else {
+    authorizeButton.style.visibility = '';
+    authorizeButton.onclick = handleAuthClick;
+   }
+}
+
+function handleAuthClick(event) {
+  gapi.auth.authorize(
+      {client_id: clientId, scope: scopes, immediate: false},
+      handleAuthResult);
+  return false;
+}
 
 app.get('/messages', function(req, res) {
 	console.log("here");
