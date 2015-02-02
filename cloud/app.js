@@ -245,6 +245,50 @@ app.get('/contacts', function(req, res) {
 
 });
 
+app.get('/contact_add', function(req ,res) {
+
+	if (Parse.User.current()) {
+
+		Parse.User.current().fetch();
+
+		res.render('pages/contacts_add', { 
+			currentUser: Parse.User.current().getUsername() ,
+			title: "Add New Contact | inturn"
+		});
+
+	} else {
+		res.render('pages/start', {
+			message:null,
+			title: "Welcome | inturn"
+		});
+	}
+
+});
+
+app.post('/contact_add', function(req, res) {
+
+	if (Parse.User.current()) {
+
+		Parse.User.current().fetch();
+
+		name = req.body.contact_name;
+		title = req.body.contact_title;
+		company = req.body.company;
+		email = req.body.email;
+		phone = req.body.phone;
+		notes = req.body.notes;
+
+		console.log("Going to add contact " + name + ", " + title + ", at " + company);
+
+	} else {
+		res.render('pages/start', {
+			message:null,
+			title: "Welcome | inturn"
+		});
+	}
+});
+
+
 app.get('/start', function(req, res) {
 
   if (Parse.User.current()) {
