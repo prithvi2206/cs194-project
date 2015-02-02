@@ -118,12 +118,25 @@ app.post('/jobs/:op?', function(req, res) {
 			console.log("Going to add " + company + ", " + position);
 
 			/* Find matching company entry */
+			var company_entry;
 			var CompanyObj = Parse.Object.extend("Company");
 			var company_query = new Parse.Query(CompanyObj);
 			company_query.equalTo("name", company);
 			company_query.find({
 				success: function(results) {
-					console.log(results);
+					if (results.length > 0) {
+						console.log("found company");
+						company_entry = results[0];
+					}
+					/* create new company */
+					else {
+						company_entry = new CompanyObj;
+						company_entry.set("name", company);
+						company_entry.save().then(function() { 
+						}, function(error) {
+								console.log("company did not save properly");
+						});
+					}
 				},
 				error: function(error) {
 					console.log("failed");
@@ -131,6 +144,31 @@ app.post('/jobs/:op?', function(req, res) {
 			});
 
 			/* Find matching position entry */
+			var pos_entry;
+			var PositionObj = Parse.Object.extend("Position");
+			var pos_query = new Parse.Query(PositionObj);
+			pos_query.equalTo("companyId", company_entry);
+			pos_query.find({
+				success: function(results) {
+					if (results.length > 0) {
+						pos_entry = results[0];
+						console.log("found position");
+					}
+					/* create new position */
+					else {
+						pos_entry = new PositionObj;
+						pos_entry.set("title", position);
+						pos_entry.save().then(function() {
+						},
+							function(error) {
+								console.log("Could not save position");
+						});
+					}
+				}
+			});
+
+			console.log(company_entry.id);
+			console.log(pos_entry.id);
 
 			res.redirect('/jobs');
 
