@@ -26,15 +26,29 @@
               </h1>
             </div>
           </div>
-
+                
             <div class="row">
+                <div class="col-md-6 col-lg-6 text-center padding-5">
+                    <input id="deleteFileButton" class="btn btn-danger" value="Delete">
+                    <input id="addFileButton" class="btn btn-primary" value="Add" data-toggle="modal" data-target="#newDocumentModal">
+                </div>
                 <div class="col-md-6">
-                   <form id="fileSubmitForm" role="form" method="post" action="/documents/upload" enctype="multipart/form-data">
-                    <span class="btn btn-default btn-file">
-                        Browse&hellip; <input id="docFileToUpload" type="file" class="file-upload" name="file" >
-                    </span>
-                    <input id="fileSubmitButton" type="submit" class="btn btn-custom">
-                  </form> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-lg-6">
+                    <div class="list-group">
+                        <% for(var i = 0; i < documents.length; i++) { %>
+                            <% if(i===0) { %>
+                                <a href="#" id="doc-<%= documents[i].id %>" class="document-list-item list-group-item active">
+                            <% } else { %>
+                                <a href="#" id="doc-<%= documents[i].id %>" class="document-list-item list-group-item">
+                            <% } %>
+                                    <h4 class="list-group-item-heading"><%= documents[i].get("name") %></h4>
+                                    <p class="list-group-item-text"><strong>Last Modified: </strong><%= documents[i].updatedAt %></p>
+                                </a>
+                        <% } %>
+                    </div>
                 </div>
             </div>
         </div>
@@ -43,6 +57,49 @@
     </main>
 
   </div>
+
+  <div class="modal fade" id="newDocumentModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="fileSubmitForm" role="form" method="post" action="/documents/upload" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">New Document</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="inputFileName">File name</label>
+                        <input type="text" class="form-control" id="inputFileName" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="docFileToUpload">File</label>
+                        <span class="btn btn-default btn-file form-control">
+                            Browse&hellip; <input id="docFileToUpload" type="file" class="file-upload" name="file" >
+                        </span>
+                    </div>
+
+                    <!--
+                    <div class="form-group">
+                        <label for="docType">Document Type</label>
+                        <div class="btn-group">
+                            <button type="button" id="docType" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                Default<span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Resume</a></li>
+                                <li><a href="#">Cover Letter</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    -->
+                </div>
+                <div class="modal-footer">
+                    <input id="fileSubmitButton" type="submit" class="btn btn-custom">
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->  
 
   <footer>
     <% include ../partials/footer %>
