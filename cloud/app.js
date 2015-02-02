@@ -67,11 +67,11 @@ app.get('/jobs', function(req, res) {
 
 	if (Parse.User.current()) {
 
-		Parse.User.current().fetch()
+		Parse.User.current().fetch();
 
 		res.render('pages/jobs', { 
 			currentUser: Parse.User.current().getUsername() ,
-			title: "Job Applications | inturn"
+			title: "Job Applications | inturn",
 		});
 
 	} else {
@@ -81,6 +81,57 @@ app.get('/jobs', function(req, res) {
 		});
 	}
 
+});
+
+app.get('/job_add', function(req ,res) {
+
+	if (Parse.User.current()) {
+
+		Parse.User.current().fetch();
+
+		res.render('pages/jobs_add', { 
+			currentUser: Parse.User.current().getUsername() ,
+			title: "Add New Job | inturn"
+		});
+
+	} else {
+		res.render('pages/start', {
+			message:null,
+			title: "Welcome | inturn"
+		});
+	}
+
+});
+
+app.post('/job_add', function(req, res) {
+
+	if (Parse.User.current()) {
+
+		Parse.User.current().fetch();
+
+		company = req.body.company;
+		position = req.body.position;
+		notes = req.body.notes;
+
+		console.log("Going to add " + company + ", " + position);
+
+		res.redirect('/jobs');
+
+		// var newJob = new Parse.Object("Application");
+  //               docObject.set("
+  //               docObject.save().then(function() { 
+  //                   console.log("save successful");
+  //                   res.redirect('/documents');
+  //               }, function(error) {
+  //                   console.log("file did not save properly");
+  //       });
+
+	} else {
+		res.render('pages/start', {
+			message:null,
+			title: "Welcome | inturn"
+		});
+	}
 });
 
 app.get('/events', function(req, res) {
