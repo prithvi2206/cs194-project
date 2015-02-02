@@ -129,10 +129,23 @@ app.get('/documents', function(req, res) {
 
 		Parse.User.current().fetch()
 
-		res.render('pages/documents',{ 
-			currentUser: Parse.User.current().getUsername(),
-			title: "Documents | inturn"
-		});
+        var username = Parse.User.current().get("username");
+        var Document = Parse.Object.extend("Document");
+        var query = new Parse.Query(Document);
+        query.equalTo("userId", Parse.User.current());
+        query.find({
+            success: function(results) {
+                res.render('pages/documents',{ 
+                    currentUser: Parse.User.current().getUsername(),
+                    documents: results,
+                    title: "Documents | inturn"
+                });
+            },
+            error: function(error) {
+                console.log(error.message);
+            }
+        });
+
 
 	} else {
 		res.render('pages/start', {
@@ -154,8 +167,14 @@ app.post('/documents/upload', function(req, res) {
             var parseFile = new Parse.File(file.originalname, {base64: buffer.toString("base64")});
             parseFile.save().then(function() {
                 var docObject = new Parse.Object("Document");
-                docObject.set("name", file.originalname);
+                
+                if(req.body.name) {
+                    docObject.set("name", req.body.name);
+                } else {
+                    docObject.set("name", file.originalname);
+                }
                 docObject.set("file", parseFile);
+                docObject.set("userId", Parse.User.current());
                 docObject.save().then(function() { 
                     console.log("save successful");
                     res.redirect('/documents');
