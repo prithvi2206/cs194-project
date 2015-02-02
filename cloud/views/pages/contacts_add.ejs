@@ -1,0 +1,84 @@
+<!-- views/pages/contacts_add.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <% include ../partials/head %>
+</head>
+
+<body>
+  <div id="wrapper">
+
+    <header>
+      <% include ../partials/header %>
+    </header>
+
+    <main>
+      <div id="page-wrapper">
+
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="row">
+            <div class="col-lg-12">
+              <h1 class="page-header">
+                Contacts <small>Add New Contact</small>
+              </h1>
+              <ol class="breadcrumb">
+                <li>
+                  <i class="fa fa-user"></i><a href="/contacts"> Contacts</a>
+                </li>
+                <li class="active">
+                  <i class="fa"></i> Add New Contact
+                </li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <form method="post" role="form" action="/contact_add">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input name="contact_name" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Title</label>
+                                <input name="contact_title" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input name="email" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone number</label>
+                                <input name="phone" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Company Name</label>
+                                <input name="company" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Notes</label>
+                                <textarea name="notes" placeholder="Met at engineering career fair, etc." class="form-control" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-default">Submit Button</button>
+              </form> 
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+      </div>
+    </main>
+
+  </div>
+
+  <footer>
+    <% include ../partials/footer %>
+  </footer>
+
+</body>
+</html>
+
