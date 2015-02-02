@@ -265,36 +265,31 @@ app.post('/documents/upload', function(req, res) {
 	}
 });
 
-app.get('/contacts', function(req, res) {
-
+app.get('/contacts/:op?', function(req, res) {
 	if (Parse.User.current()) {
-
-		Parse.User.current().fetch()
-
-		res.render('pages/contacts', { 
-			currentUser: Parse.User.current().getUsername(),
-			title: "Contacts | inturn" 
-		});
-
-	} else {
-		res.render('pages/start', {
-			message:null,
-			title: "Contacts | inturn"
-		});
-	}
-
-});
-
-app.get('/contact_add', function(req ,res) {
-
-	if (Parse.User.current()) {
-
 		Parse.User.current().fetch();
 
-		res.render('pages/contacts_add', { 
-			currentUser: Parse.User.current().getUsername() ,
-			title: "Add New Contact | inturn"
-		});
+		/* Contacts home */
+		if(!req.params.op) {
+			res.render('pages/contacts', { 
+				currentUser: Parse.User.current().getUsername(),
+				title: "Contacts | inturn" 
+			});
+		}
+
+		/* Add contact form */
+		else if (req.params.op == "add") {
+			res.render('pages/contacts_add', { 
+				currentUser: Parse.User.current().getUsername() ,
+				title: "Add New Contact | inturn"
+			});
+		}
+		else {
+			res.render('pages/contacts', { 
+				currentUser: Parse.User.current().getUsername() ,
+				title: "Contacs | inturn",
+			});
+		}
 
 	} else {
 		res.render('pages/start', {
@@ -305,20 +300,49 @@ app.get('/contact_add', function(req ,res) {
 
 });
 
-app.post('/contact_add', function(req, res) {
+app.post('/contacts/:op?', function(req, res) {
 
 	if (Parse.User.current()) {
 
 		Parse.User.current().fetch();
 
-		name = req.body.contact_name;
-		title = req.body.contact_title;
-		company = req.body.company;
-		email = req.body.email;
-		phone = req.body.phone;
-		notes = req.body.notes;
+		if (!req.params.op) {
+			res.redirect('/contacts');
+		}
+		else if (req.params.op == "add") {
+			name = req.body.contact_name;
+			title = req.body.contact_title;
+			company = req.body.company;
+			email = req.body.email;
+			phone = req.body.phone;
+			notes = req.body.notes;
 
-		console.log("Going to add contact " + name + ", " + title + ", at " + company);
+			console.log("Going to add contact " + name + ", " + title + ", at " + company);
+
+
+			/* Find the company within the list of companies*/
+			var CompanyObj = Parse.Object.extend("Company");
+			var company_query = new Parse.Query(CompanyObj);
+			company_query.equalTo("name", company);
+			company_query.find({
+				success: function(results) {
+					console.log(results);
+				},
+				error: function(error) {
+					console.log("failed");
+				}
+			});
+
+			/* If the size of results is zero, we add the company to the 
+			 * databse of companies, and otherwise we just have a ref to 
+			 * that company
+			 */
+
+			res.redirect('/contacts');
+		}
+		else {
+			res.redirect('/contacts');
+		}
 
 	} else {
 		res.render('pages/start', {
