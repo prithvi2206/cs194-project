@@ -17,3 +17,6 @@
     cursor: inherit;
     display: block;
 }
+.padding-5 {
+    padding: 5px;
+}
