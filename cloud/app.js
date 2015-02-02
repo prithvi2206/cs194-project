@@ -19,6 +19,7 @@ app.use(express.urlencoded());
 app.use(express.cookieParser('YOUR_SIGNING_SECRET'));
 app.use(parseExpressCookieSession({ cookie: { maxAge: 3600000 }, fetchUser: true }));
 app.use(multer({inMemory: true})); // inMemory creates a temporary buffer for file
+app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res) {
 
@@ -63,16 +64,33 @@ app.get('/dashboard', function(req, res) {
 });
 
 /* JOB APPLICATIONS */
-app.get('/jobs', function(req, res) {
+app.get('/jobs/:op?', function(req, res) {
 
 	if (Parse.User.current()) {
 
 		Parse.User.current().fetch();
 
-		res.render('pages/jobs', { 
-			currentUser: Parse.User.current().getUsername() ,
-			title: "Job Applications | inturn",
-		});
+		/* Jobs home */
+		if(!req.params.op) {
+			res.render('pages/jobs', { 
+				currentUser: Parse.User.current().getUsername() ,
+				title: "Job Applications | inturn",
+			});
+		}
+
+		/* Add job form */
+		else if (req.params.op == "add") {
+			res.render('pages/jobs_add', { 
+				currentUser: Parse.User.current().getUsername() ,
+				title: "Add New Job | inturn"
+			});
+		}
+		else {
+			res.render('pages/jobs', { 
+				currentUser: Parse.User.current().getUsername() ,
+				title: "Job Applications | inturn",
+			});
+		}
 
 	} else {
 		res.render('pages/start', {
@@ -83,48 +101,51 @@ app.get('/jobs', function(req, res) {
 
 });
 
-app.get('/job_add', function(req ,res) {
+app.post('/jobs/:op?', function(req, res) {
 
 	if (Parse.User.current()) {
 
 		Parse.User.current().fetch();
 
-		res.render('pages/jobs_add', { 
-			currentUser: Parse.User.current().getUsername() ,
-			title: "Add New Job | inturn"
-		});
+		if (!req.params.op) {
+			res.redirect('/jobs');
+		}
+		else if (req.params.op == "add") {
+			company = req.body.company;
+			position = req.body.position;
+			notes = req.body.notes;
 
-	} else {
-		res.render('pages/start', {
-			message:null,
-			title: "Welcome | inturn"
-		});
-	}
+			console.log("Going to add " + company + ", " + position);
 
-});
+			/* Find matching company entry */
+			var CompanyObj = Parse.Object.extend("Company");
+			var company_query = new Parse.Query(CompanyObj);
+			company_query.equalTo("name", company);
+			company_query.find({
+				success: function(results) {
+					console.log(results);
+				},
+				error: function(error) {
+					console.log("failed");
+				}
+			});
 
-app.post('/job_add', function(req, res) {
+			/* Find matching position entry */
 
-	if (Parse.User.current()) {
+			res.redirect('/jobs');
 
-		Parse.User.current().fetch();
-
-		company = req.body.company;
-		position = req.body.position;
-		notes = req.body.notes;
-
-		console.log("Going to add " + company + ", " + position);
-
-		res.redirect('/jobs');
-
-		// var newJob = new Parse.Object("Application");
-  //               docObject.set("
-  //               docObject.save().then(function() { 
-  //                   console.log("save successful");
-  //                   res.redirect('/documents');
-  //               }, function(error) {
-  //                   console.log("file did not save properly");
-  //       });
+			// var newJob = new Parse.Object("Application");
+	  //               docObject.set("
+	  //               docObject.save().then(function() { 
+	  //                   console.log("save successful");
+	  //                   res.redirect('/documents');
+	  //               }, function(error) {
+	  //                   console.log("file did not save properly");
+	  //       });
+		}
+		else {
+			res.redirect('/jobs');
+		}
 
 	} else {
 		res.render('pages/start', {
