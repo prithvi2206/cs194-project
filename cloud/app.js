@@ -167,8 +167,8 @@ app.post('/jobs/:op?', function(req, res) {
 				}
 			});
 
-			console.log(company_entry.id);
-			console.log(pos_entry.id);
+			// console.log(company_entry.id);
+			// console.log(pos_entry.id);
 
 			res.redirect('/jobs');
 
@@ -325,9 +325,10 @@ app.get('/contacts/:op?', function(req, res) {
 		else {
 			res.render('pages/contacts', { 
 				currentUser: Parse.User.current().getUsername() ,
-				title: "Contacs | inturn",
+				title: "Contacts | inturn",
 			});
 		}
+
 
 	} else {
 		res.render('pages/start', {
@@ -357,25 +358,31 @@ app.post('/contacts/:op?', function(req, res) {
 
 			console.log("Going to add contact " + name + ", " + title + ", at " + company);
 
-
-			/* Find the company within the list of companies*/
+			/* Find matching company entry */
+			var company_entry;
 			var CompanyObj = Parse.Object.extend("Company");
 			var company_query = new Parse.Query(CompanyObj);
 			company_query.equalTo("name", company);
 			company_query.find({
 				success: function(results) {
-					console.log(results);
+					if (results.length > 0) {
+						console.log("found company");
+						company_entry = results[0];
+					}
+					/* create new company */
+					else {
+						company_entry = new CompanyObj;
+						company_entry.set("name", company);
+						company_entry.save().then(function() { 
+						}, function(error) {
+								console.log("company did not save properly");
+						});
+					}
 				},
 				error: function(error) {
 					console.log("failed");
 				}
-			});
-
-			/* If the size of results is zero, we add the company to the 
-			 * databse of companies, and otherwise we just have a ref to 
-			 * that company
-			 */
-
+			});		
 			res.redirect('/contacts');
 		}
 		else {
