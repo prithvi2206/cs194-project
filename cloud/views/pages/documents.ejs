@@ -42,7 +42,8 @@
                                 <a href="#" id="doc-<%= documents[i].id %>" class="document-list-item list-group-item">
                             <% } %>
                                     <h4 class="list-group-item-heading"><%= documents[i].get("name") %></h4>
-                                    <p class="list-group-item-text"><strong>Last Modified: </strong><%= documents[i].updatedAt %></p>
+                                    <p class="list-group-item-text text-left"><strong>Version: </strong><%= documents[i].get("version") %></p>
+                                    <p class="list-group-item-text text-left"><strong>Last Modified: </strong><%= documents[i].updatedAt %></p>
                                 </a>
                         <% } %>
                     </div>
