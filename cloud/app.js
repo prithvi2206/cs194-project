@@ -244,21 +244,32 @@ app.get('/documents', function(req, res) {
         var Document = Parse.Object.extend("Document");
         var query = new Parse.Query(Document);
         query.equalTo("userId", Parse.User.current());
-        query.find({
-            success: function(results) {
-                res.render('pages/documents',{ 
-                    currentUser: Parse.User.current().getUsername(),
-                    documents: results,
-                    active: results.length != 0 ? results[0].id : null,
-                    title: "Documents | inturn"
-                });
-            },
-            error: function(error) {
+        query.find().then(function(results) {
+                if(results.length > 0) {
+                    versionsQuery = new Parse.Query(Document);
+                    versionsQuery.equalTo("name", results[0].get("name"));
+                    versionsQuery.ascending("version");
+                    versionsQuery.find().then(function(versions) {
+                        res.render('pages/documents',{ 
+                            currentUser: Parse.User.current().getUsername(),
+                            documents: results,
+                            versions: versions,
+                            active: results[0].id,
+                            documentPreviewIFrameSRC: results[0].get("file").url(),
+                            title: "Documents | inturn"
+                        });
+                        console.log(versions);
+                    },
+                    function(error) {
+                        console.log(error.message);
+                    });
+                } else {
+
+                }
+            }, 
+            function(error) {
                 console.log(error.message);
-            }
-        });
-
-
+            });
 	} else {
 		res.render('pages/start', {
 			message: null,
@@ -322,7 +333,6 @@ app.post('/documents/upload', function(req, res) {
 
 app.post('/documents/preview', function(req, res) {
     var data = req.body;
-    console.log(data["document_id"]);
 
     var Document = Parse.Object.extend("Document");
     var query = new Parse.Query(Document);
