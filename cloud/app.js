@@ -8,6 +8,7 @@ var app = express();
 var $ = require('cloud/node_modules/jquery');
 var fs = require('fs');
 var multer = require('cloud/node_modules/multer'); // For parsing multipart data
+var moment = require('moment');
 
 // Global app configuration section
 app.set('views', 'cloud/views');  // Specify the folder to find templates
@@ -248,6 +249,7 @@ app.get('/documents', function(req, res) {
                 res.render('pages/documents',{ 
                     currentUser: Parse.User.current().getUsername(),
                     documents: results,
+                    active: results.length != 0 ? results[0].id : null,
                     title: "Documents | inturn"
                 });
             },
@@ -277,19 +279,34 @@ app.post('/documents/upload', function(req, res) {
             var parseFile = new Parse.File(file.originalname, {base64: buffer.toString("base64")});
             parseFile.save().then(function() {
                 var docObject = new Parse.Object("Document");
-                
+                var file_name;
+
                 if(req.body.name) {
-                    docObject.set("name", req.body.name);
+                    file_name = req.body.name;
                 } else {
-                    docObject.set("name", file.originalname);
+                    file_name = file.originalname;
                 }
+                docObject.set("name", file_name);
                 docObject.set("file", parseFile);
                 docObject.set("userId", Parse.User.current());
-                docObject.save().then(function() { 
-                    console.log("save successful");
-                    res.redirect('/documents');
-                }, function(error) {
-                    console.log("file did not save properly");
+                
+                var Document = Parse.Object.extend("Document");
+                var query = new Parse.Query(Document);
+                query.equalTo("name", file_name);
+                query.ascending("version");
+                query.find().done(function(results) {
+                    if(results.length > 0) {
+                        docObject.set("version", results[results.length-1].get("version") + 1);
+                    } else {
+                        docObject.set("version", 1);
+                    }
+                    
+                    docObject.save().then(function() { 
+                        console.log("save successful");
+                        res.redirect('/documents');
+                    }, function(error) {
+                        console.log("file did not save properly");
+                    });
                 });
             }, function(error) {
                 console.log("file did not save properly");
