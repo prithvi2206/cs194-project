@@ -303,6 +303,24 @@ app.post('/documents/upload', function(req, res) {
 	}
 });
 
+app.post('/documents/preview', function(req, res) {
+    var data = req.body;
+    console.log(data["document_id"]);
+
+    var Document = Parse.Object.extend("Document");
+    var query = new Parse.Query(Document);
+    query.equalTo("objectId", data["document_id"]);
+    query.find({
+        success: function(results) {
+            console.log(results[0].get("file").url());
+            res.send({src: results[0].get("file").url()});
+        },
+        error: function(error) {
+            console.log(error.message);
+        }
+    });
+});
+
 app.get('/contacts/:op?', function(req, res) {
 	if (Parse.User.current()) {
 		Parse.User.current().fetch();
