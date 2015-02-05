@@ -28,26 +28,38 @@
           </div>
                 
             <div class="row">
-                <div class="col-md-6 col-lg-6 text-center padding-5">
-                    <input id="deleteFileButton" class="btn btn-danger" value="Delete">
-                    <input id="addFileButton" class="btn btn-primary" value="Add" data-toggle="modal" data-target="#newDocumentModal">
-                </div>
-                <div class="col-md-6">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-lg-6">
+                <div class="col-md-6 col-lg-6 text-center">
+                    <div class="file-option-container padding-5">
+                        <input id="deleteFileButton" class="btn btn-danger" value="Delete">
+                        <input id="addFileButton" class="btn btn-primary" value="Add" data-toggle="modal" data-target="#newDocumentModal">
+                    </div>
+
                     <div class="list-group">
                         <% for(var i = 0; i < documents.length; i++) { %>
-                            <a href="#" id="doc-<%= documents[i].id %>" class="document-list-item list-group-item">
-                                <h4 class="list-group-item-heading"><%= documents[i].get("name") %></h4>
-                                <p class="list-group-item-text"><strong>Last Modified: </strong><%= documents[i].updatedAt %></p>
-                            </a>
+                            <% if(active == documents[i].id) { %> 
+                                <a href="#" id="doc-<%= documents[i].id %>" class="document-list-item list-group-item active">
+                            <% } else { %> 
+                                <a href="#" id="doc-<%= documents[i].id %>" class="document-list-item list-group-item">
+                            <% } %>
+                                    <h4 class="list-group-item-heading"><%= documents[i].get("name") %></h4>
+                                    <p class="list-group-item-text"><strong>Last Modified: </strong><%= documents[i].updatedAt %></p>
+                                </a>
                         <% } %>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-6">
-                    <iframe id="documentPreviewIFrame" width="100%" height="800px"></iframe>
+                    <div class="revision-history-animation-container text-center">
+                        <% for(var i = 0; i < versions.length; i++) { %> 
+                            <% if(versions[i].id == active) { %>
+                                <a id="rev-point-<%=versions[i].id%>" class="revision-point" href="#"><div class="circle active"></div></a>
+                            <% } else { %>
+                                <a id="rev-point-<%=versions[i].id%>" class="revision-point" href="#"><div class="circle"></div></a>
+                            <% } %>
+                        <% } %>
+                    </div>
+                    <div class="document-preview-container">
+                        <iframe id="documentPreviewIFrame" src="<%=documentPreviewIFrameSRC%>" width="100%" height="800px"></iframe>
+                    </div>
                 </div>
             </div>
         </div>
