@@ -264,7 +264,14 @@ app.get('/documents', function(req, res) {
                         console.log(error.message);
                     });
                 } else {
-
+                    res.render('pages/documents',{ 
+                        currentUser: Parse.User.current().getUsername(),
+                        documents: [],
+                        versions: [],
+                        active: null,
+                        documentPreviewIFrameSRC: "",
+                        title: "Documents | inturn"
+                    });
                 }
             }, 
             function(error) {
