@@ -8,6 +8,7 @@ var app = express();
 var $ = require('cloud/node_modules/jquery');
 var fs = require('fs');
 var multer = require('cloud/node_modules/multer'); // For parsing multipart data
+var moment = require('moment');
 
 // Global app configuration section
 app.set('views', 'cloud/views');  // Specify the folder to find templates
@@ -210,20 +211,39 @@ app.get('/documents', function(req, res) {
         var Document = Parse.Object.extend("Document");
         var query = new Parse.Query(Document);
         query.equalTo("userId", Parse.User.current());
-        query.find({
-            success: function(results) {
-                res.render('pages/documents',{ 
-                    currentUser: Parse.User.current().getUsername(),
-                    documents: results,
-                    title: "Documents | inturn"
-                });
-            },
-            error: function(error) {
+        query.find().then(function(results) {
+                if(results.length > 0) {
+                    versionsQuery = new Parse.Query(Document);
+                    versionsQuery.equalTo("name", results[0].get("name"));
+                    versionsQuery.ascending("version");
+                    versionsQuery.find().then(function(versions) {
+                        res.render('pages/documents',{ 
+                            currentUser: Parse.User.current().getUsername(),
+                            documents: results,
+                            versions: versions,
+                            active: results[0].id,
+                            documentPreviewIFrameSRC: results[0].get("file").url(),
+                            title: "Documents | inturn"
+                        });
+                        console.log(versions);
+                    },
+                    function(error) {
+                        console.log(error.message);
+                    });
+                } else {
+                    res.render('pages/documents',{ 
+                        currentUser: Parse.User.current().getUsername(),
+                        documents: [],
+                        versions: [],
+                        active: null,
+                        documentPreviewIFrameSRC: "",
+                        title: "Documents | inturn"
+                    });
+                }
+            }, 
+            function(error) {
                 console.log(error.message);
-            }
-        });
-
-
+            });
 	} else {
 		res.render('pages/start', {
 			message: null,
@@ -244,19 +264,34 @@ app.post('/documents/upload', function(req, res) {
             var parseFile = new Parse.File(file.originalname, {base64: buffer.toString("base64")});
             parseFile.save().then(function() {
                 var docObject = new Parse.Object("Document");
-                
+                var file_name;
+
                 if(req.body.name) {
-                    docObject.set("name", req.body.name);
+                    file_name = req.body.name;
                 } else {
-                    docObject.set("name", file.originalname);
+                    file_name = file.originalname;
                 }
+                docObject.set("name", file_name);
                 docObject.set("file", parseFile);
                 docObject.set("userId", Parse.User.current());
-                docObject.save().then(function() { 
-                    console.log("save successful");
-                    res.redirect('/documents');
-                }, function(error) {
-                    console.log("file did not save properly");
+                
+                var Document = Parse.Object.extend("Document");
+                var query = new Parse.Query(Document);
+                query.equalTo("name", file_name);
+                query.ascending("version");
+                query.find().done(function(results) {
+                    if(results.length > 0) {
+                        docObject.set("version", results[results.length-1].get("version") + 1);
+                    } else {
+                        docObject.set("version", 1);
+                    }
+                    
+                    docObject.save().then(function() { 
+                        console.log("save successful");
+                        res.redirect('/documents');
+                    }, function(error) {
+                        console.log("file did not save properly");
+                    });
                 });
             }, function(error) {
                 console.log("file did not save properly");
@@ -268,6 +303,23 @@ app.post('/documents/upload', function(req, res) {
 			title: "Welcome | inturn"
 		});
 	}
+});
+
+app.post('/documents/preview', function(req, res) {
+    var data = req.body;
+
+    var Document = Parse.Object.extend("Document");
+    var query = new Parse.Query(Document);
+    query.equalTo("objectId", data["document_id"]);
+    query.find({
+        success: function(results) {
+            console.log(results[0].get("file").url());
+            res.send({src: results[0].get("file").url()});
+        },
+        error: function(error) {
+            console.log(error.message);
+        }
+    });
 });
 
 app.get('/contacts/:op?', function(req, res) {
@@ -292,9 +344,10 @@ app.get('/contacts/:op?', function(req, res) {
 		else {
 			res.render('pages/contacts', { 
 				currentUser: Parse.User.current().getUsername() ,
-				title: "Contacs | inturn",
+				title: "Contacts | inturn",
 			});
 		}
+
 
 	} else {
 		res.render('pages/start', {
@@ -324,25 +377,31 @@ app.post('/contacts/:op?', function(req, res) {
 
 			console.log("Going to add contact " + name + ", " + title + ", at " + company);
 
-
-			/* Find the company within the list of companies*/
+			/* Find matching company entry */
+			var company_entry;
 			var CompanyObj = Parse.Object.extend("Company");
 			var company_query = new Parse.Query(CompanyObj);
 			company_query.equalTo("name", company);
 			company_query.find({
 				success: function(results) {
-					console.log(results);
+					if (results.length > 0) {
+						console.log("found company");
+						company_entry = results[0];
+					}
+					/* create new company */
+					else {
+						company_entry = new CompanyObj;
+						company_entry.set("name", company);
+						company_entry.save().then(function() { 
+						}, function(error) {
+								console.log("company did not save properly");
+						});
+					}
 				},
 				error: function(error) {
 					console.log("failed");
 				}
-			});
-
-			/* If the size of results is zero, we add the company to the 
-			 * databse of companies, and otherwise we just have a ref to 
-			 * that company
-			 */
-
+			});		
 			res.redirect('/contacts');
 		}
 		else {
