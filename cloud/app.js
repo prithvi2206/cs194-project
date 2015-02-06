@@ -352,6 +352,7 @@ app.get('/contacts/:op?', function(req, res) {
 					console.log(error.message);
 				}
 			});
+
 		}
 
 		/* Add contact form */
@@ -394,31 +395,47 @@ app.post('/contacts/:op?', function(req, res) {
 
 			console.log("Going to add contact " + name + ", " + title + ", at " + company);
 
-			/* Find matching company entry */
-			var company_entry;
-			var CompanyObj = Parse.Object.extend("Company");
-			var company_query = new Parse.Query(CompanyObj);
-			company_query.equalTo("name", company);
-			company_query.find({
-				success: function(results) {
-					if (results.length > 0) {
-						console.log("found company");
-						company_entry = results[0];
-					}
-					/* create new company */
-					else {
-						company_entry = new CompanyObj;
-						company_entry.set("name", company);
-						company_entry.save().then(function() { 
-						}, function(error) {
-								console.log("company did not save properly");
-						});
-					}
-				},
-				error: function(error) {
-					console.log("failed");
-				}
-			});		
+
+			var ContactObj = Parse.Object.extend("Contact");
+			var contact_entry = new ContactObj;
+			contact_entry.set("userId", Parse.User.current());
+			contact_entry.set("name", name);
+			contact_entry.set("title", title);
+			contact_entry.set("company", company);
+			contact_entry.set("email", email);
+			contact_entry.set("phone", email);
+			contact_entry.set("notes", notes);
+			contact_entry.save().then(function() { 
+					console.log("new contact saved succesfully");
+				}, function(error) {
+					console.log("new app did not save properly");
+			});
+
+			// /* Find matching company entry */
+			// var company_entry;
+			// var CompanyObj = Parse.Object.extend("Company");
+			// var company_query = new Parse.Query(CompanyObj);
+			// company_query.equalTo("name", company);
+			// company_query.find({
+			// 	success: function(results) {
+			// 		if (results.length > 0) {
+			// 			console.log("found company");
+			// 			company_entry = results[0];
+			// 		}
+			// 		/* create new company */
+			// 		else {
+			// 			company_entry = new CompanyObj;
+			// 			company_entry.set("name", company);
+			// 			company_entry.save().then(function() { 
+			// 			}, function(error) {
+			// 					console.log("company did not save properly");
+			// 			});
+			// 		}
+			// 	},
+			// 	error: function(error) {
+			// 		console.log("failed");
+			// 	}
+			// });		
 			res.redirect('/contacts');
 		}
 		else {
