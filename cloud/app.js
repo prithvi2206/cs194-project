@@ -72,10 +72,23 @@ app.get('/jobs/:op?', function(req, res) {
 
 		/* Jobs home */
 		if(!req.params.op) {
-			res.render('pages/jobs', { 
-				currentUser: Parse.User.current().getUsername() ,
-				title: "Job Applications | inturn",
+
+			var AppObj = Parse.Object.extend("Application");
+			var query = new Parse.Query(AppObj);
+			query.equalTo("userId", Parse.User.current());
+			query.find({
+				success: function(results) {
+					res.render('pages/jobs', { 
+						currentUser: Parse.User.current().getUsername(),
+						title: "Job Applications | inturn",
+						jobs: results
+					});
+				},
+				error: function(error) {
+					console.log(error.message);
+				}
 			});
+
 		}
 
 		/* Add job form */
@@ -107,79 +120,33 @@ app.post('/jobs/:op?', function(req, res) {
 
 		Parse.User.current().fetch();
 
+		/* Default jobs home */
 		if (!req.params.op) {
 			res.redirect('/jobs');
 		}
+
+		/* Add new job */
 		else if (req.params.op == "add") {
 			company = req.body.company;
 			position = req.body.position;
-			notes = req.body.notes;
+			description = req.body.desc;
 
 			console.log("Going to add " + company + ", " + position);
 
-			/* Find matching company entry */
-			var company_entry;
-			var CompanyObj = Parse.Object.extend("Company");
-			var company_query = new Parse.Query(CompanyObj);
-			company_query.equalTo("name", company);
-			company_query.find({
-				success: function(results) {
-					if (results.length > 0) {
-						console.log("found company");
-						company_entry = results[0];
-					}
-					/* create new company */
-					else {
-						company_entry = new CompanyObj;
-						company_entry.set("name", company);
-						company_entry.save().then(function() { 
-						}, function(error) {
-								console.log("company did not save properly");
-						});
-					}
-				},
-				error: function(error) {
-					console.log("failed");
-				}
+			/* Add new Application object */
+			var AppObj = Parse.Object.extend("Application");
+			var app_entry = new AppObj;
+			app_entry.set("userId", Parse.User.current());
+			app_entry.set("title", position);
+			app_entry.set("company", company);
+			app_entry.set("description", description);
+			app_entry.save().then(function() { 
+				}, function(error) {
+					console.log("new app did not save properly");
 			});
-
-			/* Find matching position entry */
-			var pos_entry;
-			var PositionObj = Parse.Object.extend("Position");
-			var pos_query = new Parse.Query(PositionObj);
-			pos_query.equalTo("companyId", company_entry);
-			pos_query.find({
-				success: function(results) {
-					if (results.length > 0) {
-						pos_entry = results[0];
-						console.log("found position");
-					}
-					/* create new position */
-					else {
-						pos_entry = new PositionObj;
-						pos_entry.set("title", position);
-						pos_entry.save().then(function() {
-						},
-							function(error) {
-								console.log("Could not save position");
-						});
-					}
-				}
-			});
-
-			console.log(company_entry.id);
-			console.log(pos_entry.id);
 
 			res.redirect('/jobs');
 
-			// var newJob = new Parse.Object("Application");
-	  //               docObject.set("
-	  //               docObject.save().then(function() { 
-	  //                   console.log("save successful");
-	  //                   res.redirect('/documents');
-	  //               }, function(error) {
-	  //                   console.log("file did not save properly");
-	  //       });
 		}
 		else {
 			res.redirect('/jobs');
