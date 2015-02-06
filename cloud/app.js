@@ -27,12 +27,12 @@ app.get('/', function(req, res) {
 	if (Parse.User.current()) {
 
 		Parse.User.current().fetch()
-
-		res.render('pages/dashboard', {
-			message: null, 
-			currentUser: Parse.User.current().getUsername(),
-			title: "Dashboard | inturn"
-		});
+		res.redirect('/dashboard');
+		// res.render('pages/dashboard', {
+		// 	message: null, 
+		// 	currentUser: Parse.User.current().getUsername(),
+		// 	title: "Dashboard | inturn"
+		// });
 
 	} else { 
 		// res.render('pages/index', {message: null, currentUser: null });
@@ -50,9 +50,21 @@ app.get('/dashboard', function(req, res) {
 
 		Parse.User.current().fetch()
 
-		res.render('pages/dashboard', {
-			currentUser: Parse.User.current().getUsername(),
-			title: "Dashboard | inturn"
+		var AppObj = Parse.Object.extend("Application");
+			var query = new Parse.Query(AppObj);
+			query.equalTo("userId", Parse.User.current());
+			query.find({
+				success: function(results) {
+					res.render('pages/dashboard', { 
+						currentUser: Parse.User.current().getUsername(),
+						title: "Dashboard | inturn",
+						jobs_count: results.length,
+						message: null
+					});
+				},
+				error: function(error) {
+					console.log(error.message);
+				}
 		});
 
 	} else { 
@@ -100,10 +112,7 @@ app.get('/jobs/:op?', function(req, res) {
 			});
 		}
 		else {
-			res.render('pages/jobs', { 
-				currentUser: Parse.User.current().getUsername() ,
-				title: "Job Applications | inturn",
-			});
+			res.redirect('/jobs');
 		}
 
 	} else {
@@ -328,9 +337,20 @@ app.get('/contacts/:op?', function(req, res) {
 
 		/* Contacts home */
 		if(!req.params.op) {
-			res.render('pages/contacts', { 
-				currentUser: Parse.User.current().getUsername(),
-				title: "Contacts | inturn" 
+			var ContactObj = Parse.Object.extend("Contact");
+			var query = new Parse.Query(ContactObj);
+			query.equalTo("userId", Parse.User.current());
+			query.find({
+				success: function(results) {
+					res.render('pages/contacts', { 
+						currentUser: Parse.User.current().getUsername(),
+						title: "Contacts | inturn",
+						contacts: results
+					});
+				},
+				error: function(error) {
+					console.log(error.message);
+				}
 			});
 		}
 
@@ -342,10 +362,7 @@ app.get('/contacts/:op?', function(req, res) {
 			});
 		}
 		else {
-			res.render('pages/contacts', { 
-				currentUser: Parse.User.current().getUsername() ,
-				title: "Contacts | inturn",
-			});
+			res.redirect('pages/contacts');
 		}
 
 
@@ -422,12 +439,13 @@ app.get('/start', function(req, res) {
   if (Parse.User.current()) {
 
   	Parse.User.current().fetch()
+  	res.redirect('/dashboard');
 
-    res.render('pages/dashboard', {
-    	message: null, 
-    	currentUser: Parse.User.current().getUsername(),
-    	title: "Welcome | inturn" 
-    });
+    // res.render('pages/dashboard', {
+    // 	message: null, 
+    // 	currentUser: Parse.User.current().getUsername(),
+    // 	title: "Welcome | inturn" 
+    // });
 
   } else { 
     // res.render('pages/index', {message: null, currentUser: null });
@@ -444,12 +462,13 @@ app.get('/login_post', function(req, res) {
 	if (Parse.User.current()) {
 
 		Parse.User.current().fetch()
+		res.redirect('/dashboard');
 
-    res.render('pages/dashboard', {
-    	message: null, 
-    	currentUser: Parse.User.current().getUsername(),
-    	title: "Welcome | inturn" 
-    });
+    // res.render('pages/dashboard', {
+    // 	message: null, 
+    // 	currentUser: Parse.User.current().getUsername(),
+    // 	title: "Welcome | inturn" 
+    // });
 
   } else { 
     // res.render('pages/index', {message: null, currentUser: null });
@@ -482,11 +501,12 @@ app.post('/login_post', function(req, res) {
 		  	Parse.User.logIn(username, password, {
 				  success: function(user) {
 
-				  	res.render('pages/dashboard', {
-				  		message: "User " + username + " succesfully created",
-				  		currentUser: Parse.User.current().getUsername(),
-				  		title: "Dashboard | inturn"
-				  	});
+				  	// res.render('pages/dashboard', {
+				  	// 	message: "User " + username + " succesfully created",
+				  	// 	currentUser: Parse.User.current().getUsername(),
+				  	// 	title: "Dashboard | inturn"
+				  	// });
+		  			res.redirect('/dashboard');
 
 				  },
 				  error: function(user, error) {
@@ -507,12 +527,12 @@ app.post('/login_post', function(req, res) {
 
 		Parse.User.logIn(username, password, {
 		  success: function(user) {
-
-		  	res.render('pages/dashboard', {
-		  		message: "Welcome back, " + username,
-		  		currentUser: Parse.User.current().getUsername(),
-		  		title: "Dashboard | inturn"
-		  	});
+		  	res.redirect('/dashboard');
+		  	// res.render('pages/dashboard', {
+		  	// 	message: "Welcome back, " + username,
+		  	// 	currentUser: Parse.User.current().getUsername(),
+		  	// 	title: "Dashboard | inturn"
+		  	// });
 		  },
 		  error: function(user, error) {
 		    res.render('pages/start', {
