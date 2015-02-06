@@ -92,35 +92,41 @@
 
   <!-- Sidebar Menu Items -->
   <div class="collapse navbar-collapse navbar-ex1-collapse">
-    <ul class="nav navbar-nav side-nav">
+    <ul id="navbar-side" class="nav navbar-nav side-nav">
 
       <!-- Dashboard -->
-      <% if (1)  { %><li class="active"><% } %>
+      <% if (page == "dashboard") { %><li class="active"><% } else { %>
+      <li><% } %>
         <a href="/"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
       </li>
 
       <!-- Job applications overview -->
-      <li>
+      <% if (page == "jobs") { %><li class="active"><% } else { %>
+      <li><% } %>
         <a href="/jobs"><i class="fa fa-fw fa-briefcase"></i> Job Applications</a>
       </li>
 
       <!-- Events calendar -->
-      <li>
+      <% if (page == "events") { %><li class="active"><% } else { %>
+      <li><% } %>
         <a href="/events"><i class="fa fa-fw fa-calendar"></i> Events</a>
       </li>
 
       <!-- Messages from recruiters / contacts -->
-      <li>
+      <% if (page == "messages") { %><li class="active"><% } else { %>
+      <li><% } %>
         <a href="/messages"><i class="fa fa-fw fa-envelope"></i> Messages</a>
       </li>
 
       <!-- Application materials and docs (resume / cover letter) -->
-      <li>
+      <% if (page == "documents") { %><li class="active"><% } else { %>
+      <li><% } %>
         <a href="/documents"><i class="fa fa-fw fa-file"></i> Documents</a>
       </li>
 
       <!-- Networking Contacts -->
-      <li>
+      <% if (page == "contacts") { %><li class="active"><% } else { %>
+      <li><% } %>
         <a href="/contacts"><i class="fa fa-fw fa-user"></i> Contacts</a>
       </li>
 
