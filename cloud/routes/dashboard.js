@@ -1,39 +1,8 @@
 'use strict';
 
-//var auth = require("../controllers/auth_controller.js");
+var dash = require("../controllers/dash_controller.js");
 
 module.exports = function(app) {
-	app.get('/dashboard', function(req, res) {
-
-		if (Parse.User.current()) {
-
-			Parse.User.current().fetch()
-
-			var AppObj = Parse.Object.extend("Application");
-				var query = new Parse.Query(AppObj);
-				query.equalTo("userId", Parse.User.current());
-				query.find({
-					success: function(results) {
-						res.render('pages/dashboard', { 
-							currentUser: Parse.User.current().getUsername(),
-							title: "Dashboard | inturn",
-							page: "dashboard",
-							jobs_count: results.length,
-							message: null
-						});
-					},
-					error: function(error) {
-						console.log(error.message);
-					}
-			});
-
-		} else { 
-			res.render('pages/start', {
-				message: null,
-				title: "Start | inturn"
-			});
-		}
-
-	});
+	app.get('/dashboard', dash.main);
 };
 
