@@ -1,6 +1,6 @@
 'use strict';
 
-export.main = function(req, res) {
+exports.main = function(req, res) {
 	if (Parse.User.current()) {
 
 		Parse.User.current().fetch()
