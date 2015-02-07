@@ -42,7 +42,7 @@
             </div>
           </div>
           <div class="row">&nbsp;</div>
-          <div class="row">
+          <div class="row" style="overflow: hidden;">
             <% for(var i=0; i<jobs.length; i++) {%>
 
             <!-- Information for a single application -->
@@ -50,10 +50,10 @@
               <div class="panel panel-default">
                 <div class="panel-heading">
                   <div class="row">
-                    <div class="col-xs-3">
-                      <i class="fa fa-briefcase fa-3x"></i>
+                    <div class="col-xs-2">
+                      <i class="fa fa-briefcase fa-2x"></i>
                     </div>
-                    <div class="col-xs-9 text-right">
+                    <div class="col-xs-10 text-right">
                       <div class="item-header"><%= jobs[i].get("company") %></div>
                       <div><%= jobs[i].get("title") %></div>
                     </div>
