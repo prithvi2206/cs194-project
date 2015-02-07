@@ -25,7 +25,6 @@ exports.main = function(req, res) {
 						active: results[0].id,
 						documentPreviewIFrameSRC: results[0].get("file").url(),
 					});
-					console.log(versions);
 				},
 				function(error) {
 					console.log(error.message);
@@ -72,8 +71,12 @@ exports.upload = function(req, res) {
 				} else {
 					file_name = file.originalname;
 				}
+
 				docObject.set("name", file_name);
 				docObject.set("file", parseFile);
+                docObject.set("extension", file.extension);
+                docObject.set("size", file.size/1000 + "KB");
+
 				docObject.set("userId", Parse.User.current());
 
 				var Document = Parse.Object.extend("Document");
@@ -114,7 +117,6 @@ exports.preview = function(req, res) {
 	query.equalTo("objectId", data["document_id"]);
 	query.find({
 		success: function(results) {
-			console.log(results[0].get("file").url());
 			res.send({src: results[0].get("file").url()});
 		},
 		error: function(error) {

@@ -28,26 +28,44 @@
           </div>
                 
             <div class="row">
-                <div class="col-md-6 col-lg-6 text-center">
+                <div class="col-md-6 col-lg-6 text-left">
                     <div class="file-option-container padding-5">
-                        <button id="deleteFileButton" class="btn btn-danger">Delete</button>
-                        <button id="addFileButton" class="btn btn-primary" data-toggle="modal" data-target="#newDocumentModal">Add</button>
-                    </div>
-
-                    <div class="list-group">
-                        <% for(var i = 0; i < documents.length; i++) { %>
-                            <% if(active == documents[i].id) { %> 
-                                <a href="#" id="doc-<%= documents[i].id %>" class="document-list-item list-group-item active">
-                            <% } else { %> 
-                                <a href="#" id="doc-<%= documents[i].id %>" class="document-list-item list-group-item">
-                            <% } %>
-                                    <h4 class="list-group-item-heading"><%= documents[i].get("name") %></h4>
-                                    <p class="list-group-item-text text-left"><strong>Version: </strong><%= documents[i].get("version") %></p>
-                                    <p class="list-group-item-text text-left"><strong>Last Modified: </strong><%= documents[i].updatedAt %></p>
-                                </a>
-                        <% } %>
+                        <button id="addFileButton" class="btn btn-primary" data-toggle="modal" data-target="#newDocumentModal">Add New Document</button>
+                        <button id="deleteFileButton" class="btn btn-danger">Delete File</button>
                     </div>
                 </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-lg-6 text-left">
+
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th>File Name</th>
+                            <th>Version</th>    
+                            <th>Last Modified</th>
+                            <th>Size</th>
+                            <th>Kind</th> 
+                        </tr>
+                    </thead>
+                    <tbody>
+                       <% for(var i = 0; i < documents.length; i++) { %>
+                            <% if(active == documents[i].id) { %>
+                                <tr class="document-entry selected" id="doc-<%= documents[i].id %>">
+                            <% } else { %> 
+                                <tr class="document-entry" id="doc-<%= documents[i].id %>">
+                            <% } %>
+                                <td><strong><%= documents[i].get("name") %></p></strong></td>
+                                <td><%= documents[i].get("version") %></p></td>
+                                <td><p class="list-group-item-text text-left"><%= documents[i].updatedAt %></p></td>
+                                <td><%=documents[i].get("size")%></td>
+                                <td><%=documents[i].get("extension")%></td>                                
+                                </span>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+                </div> 
                 <div class="col-md-6 col-lg-6">
                     <div class="revision-history-animation-container text-center">
                         <% for(var i = 0; i < versions.length; i++) { %> 

@@ -41,7 +41,26 @@
     background-color: #337ab7;
 }
 
+.doc-header {
+    display: table-header-group;
+    border-style: solid;
+    border-width: 1px;
+}
+
 .item-header {
     font-size: 20px;
     line-height: normal;
+}
+
+tr.selected {
+    color: #FFF;
+    background-color: #337ab7 !important;
+    border-color: #2e6da4;
+}
+
+tr.document-entry:hover {
+    cursor: pointer;
+    color: #FFF;
+    background-color: #337ab7 !important;
+    border-color: #2e6da4;
 }

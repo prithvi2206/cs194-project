@@ -1,7 +1,7 @@
 $(function() {
-    $('a.document-list-item').click(function() {
-        $('.list-group > a.active').removeClass('active');
-        $(this).addClass('active');
+    $('tr.document-entry').click(function() {
+        $('tr.selected').removeClass('selected');
+        $(this).addClass('selected');
 
         var data = {
             document_id: this.id.split("doc-")[1]
@@ -21,8 +21,8 @@ $(function() {
         $('.revision-history-animation-container div.active').removeClass('active');
         $(this).find(".circle").addClass('active');
 
-        $('.list-group > a.active').removeClass('active');
-        $('.list-group > a#doc-'+document_id).addClass('active');
+        $('tr.selected').removeClass('selected');
+        $('tr#doc-'+document_id).addClass('selected');
 
         $.post("/documents/preview", data, function(data) {
             $('#documentPreviewIFrame')[0].src = data.src
