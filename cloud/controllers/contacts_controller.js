@@ -2,10 +2,12 @@
 
 exports.main = function(req, res) {
 	if (Parse.User.current()) {
+
 		Parse.User.current().fetch();
 
 		/* Contacts home */
 		if(!req.params.op) {
+			
 			var ContactObj = Parse.Object.extend("Contact");
 			var query = new Parse.Query(ContactObj);
 			query.equalTo("userId", Parse.User.current());
