@@ -5,19 +5,48 @@ exports.main = function(req, res) {
 
 		Parse.User.current().fetch();
 
-		/* Jobs home */
-		if(!req.params.op) {
+		var AppObj = Parse.Object.extend("Application");
+		var query = new Parse.Query(AppObj);
+		query.equalTo("userId", Parse.User.current());
+		query.find({
+			success: function(results) {
+				res.render('pages/jobs', { 
+					currentUser: Parse.User.current().getUsername(),
+					title: "Job Applications | inturn",
+					page: "jobs",
+					jobs: results
+				});
+			},
+			error: function(error) {
+				console.log(error.message);
+			}
+		});
 
-			var AppObj = Parse.Object.extend("Application");
-			var query = new Parse.Query(AppObj);
-			query.equalTo("userId", Parse.User.current());
+	} else {
+		res.render('pages/start', {
+			message:null,
+			title: "Welcome | inturn"
+		});
+	}	
+}
+
+exports.view = function(req, res) {
+	if (Parse.User.current()) {
+
+		var jobId = req.params.id;
+
+		if (jobId) {
+
+			var JobObj = Parse.Object.extend("Application");
+			var query = new Parse.Query(JobObj);
+			query.equalTo("objectId", jobId);
 			query.find({
 				success: function(results) {
-					res.render('pages/jobs', { 
+					res.render('pages/jobs_view', { 
 						currentUser: Parse.User.current().getUsername(),
-						title: "Job Applications | inturn",
+						title: "View Job | inturn",
 						page: "jobs",
-						jobs: results
+						job: results[0]
 					});
 				},
 				error: function(error) {
@@ -25,17 +54,7 @@ exports.main = function(req, res) {
 				}
 			});
 
-		}
-
-		/* Add job form */
-		else if (req.params.op == "add") {
-			res.render('pages/jobs_add', { 
-				currentUser: Parse.User.current().getUsername() ,
-				title: "Add New Job | inturn",
-				page: "jobs"
-			});
-		}
-		else {
+		} else {
 			res.redirect('/jobs');
 		}
 
