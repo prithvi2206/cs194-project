@@ -13,7 +13,7 @@ exports.main = function(req, res) {
 			query.equalTo("userId", Parse.User.current());
 			query.find({
 				success: function(results) {
-					res.render('pages/contacts', { 
+					res.render('pages/contacts/main', { 
 						currentUser: Parse.User.current().getUsername(),
 						title: "Contacts | inturn",
 						contacts: results,
@@ -29,7 +29,7 @@ exports.main = function(req, res) {
 
 		/* Add contact form */
 		else if (req.params.op == "add") {
-			res.render('pages/contacts_add', { 
+			res.render('pages/contacts/add', { 
 				currentUser: Parse.User.current().getUsername() ,
 				title: "Add New Contact | inturn",
 				page: "contacts"

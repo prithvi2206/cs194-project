@@ -16,7 +16,7 @@ exports.main = function(req, res) {
 				versionsQuery.equalTo("name", results[0].get("name"));
 				versionsQuery.ascending("version");
 				versionsQuery.find().then(function(versions) {
-					res.render('pages/documents',{ 
+					res.render('pages/documents/main',{ 
 						currentUser: Parse.User.current().getUsername(),
 						title: "Documents | inturn",
 						page: "documents",
@@ -31,7 +31,7 @@ exports.main = function(req, res) {
 					console.log(error.message);
 				});
 			} else {
-				res.render('pages/documents',{ 
+				res.render('pages/documents/main',{ 
 					currentUser: Parse.User.current().getUsername(),
 					documents: [],
 					versions: [],

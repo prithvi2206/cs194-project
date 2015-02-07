@@ -10,7 +10,7 @@ exports.main = function(req, res) {
 		query.equalTo("userId", Parse.User.current());
 		query.find({
 			success: function(results) {
-				res.render('pages/jobs', { 
+				res.render('pages/jobs/main', { 
 					currentUser: Parse.User.current().getUsername(),
 					title: "Job Applications | inturn",
 					page: "jobs",
@@ -42,7 +42,12 @@ exports.view = function(req, res) {
 			query.equalTo("objectId", jobId);
 			query.find({
 				success: function(results) {
-					res.render('pages/jobs_view', { 
+
+					if (results.length == 0) {
+						res.redirect("/jobs/");
+					}
+
+					res.render('pages/jobs/view', { 
 						currentUser: Parse.User.current().getUsername(),
 						title: "View Job | inturn",
 						page: "jobs",

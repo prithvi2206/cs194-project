@@ -5,7 +5,7 @@ exports.main = function(req, res) {
 
 		Parse.User.current().fetch()
 
-		res.render('pages/events', { 
+		res.render('pages/events/main', { 
 			currentUser: Parse.User.current().getUsername(),
 			title: "Events | inturn",
 			page: "events"
