@@ -1,33 +1,59 @@
 'use strict';
 
-exports.main = function(req, res) {
-	if (Parse.User.current()) {
+/* get documents */
+var get_app_docs = function(data, res) {
 
-		Parse.User.current().fetch();
+	var DocObj = Parse.Object.extend("Document");
+	var query_doc = new Parse.Query(DocObj);
+	query_doc.equalTo("appId", data["app"]);
+	query_doc.find({
+		success: function(results) {
 
-		var AppObj = Parse.Object.extend("Application");
-		var query = new Parse.Query(AppObj);
-		query.equalTo("userId", Parse.User.current());
-		query.find({
-			success: function(results) {
-				res.render('pages/jobs/main', { 
-					currentUser: Parse.User.current().getUsername(),
-					title: "Job Applications | inturn",
-					page: "jobs",
-					jobs: results
-				});
-			},
-			error: function(error) {
-				console.log(error.message);
-			}
-		});
+			data["documents"] = results;
 
-	} else {
-		res.render('pages/start', {
-			message:null,
-			title: "Welcome | inturn"
-		});
-	}	
+			res.render('pages/jobs/view', { 
+				currentUser: Parse.User.current().getUsername(),
+				title: "View Job | inturn",
+				page: "jobs",
+				data: data
+			});
+
+		},
+		error: function(results) {
+			console.log(error.message);
+		}
+	});
+}
+
+/* get contacts */
+var get_app_contacts = function(data, res) {
+
+	var ContactObj = Parse.Object.extend("Contact");
+	var query_contact = new Parse.Query(ContactObj);
+	query_contact.equalTo("appId", data["app"]);
+	query_contact.find({
+		success: function(results) {
+			data["contacts"] = results;
+			get_app_docs(data, res);
+		},
+		error: function(results) {
+			console.log(error.message);
+		}
+	});
+}
+
+var render_job_view = function(appObj, res) {
+
+	/* Create and initialize results object */
+	var data = new Object();
+	data["app"] = appObj;
+	data["events"] = [];
+	data["messages"] = [];
+	data["contacts"] = [];
+	data["documents"] = [];
+
+	get_app_contacts(data, res);
+
 }
 
 exports.view = function(req, res) {
@@ -38,21 +64,17 @@ exports.view = function(req, res) {
 		if (jobId) {
 
 			var JobObj = Parse.Object.extend("Application");
-			var query = new Parse.Query(JobObj);
-			query.equalTo("objectId", jobId);
-			query.find({
+			var query_job = new Parse.Query(JobObj);
+			query_job.equalTo("objectId", jobId);
+			query_job.find({
 				success: function(results) {
 
 					if (results.length == 0) {
 						res.redirect("/jobs/");
 					}
 
-					res.render('pages/jobs/view', { 
-						currentUser: Parse.User.current().getUsername(),
-						title: "View Job | inturn",
-						page: "jobs",
-						job: results[0]
-					});
+					render_job_view(results[0], res);
+
 				},
 				error: function(error) {
 					console.log(error.message);
@@ -102,4 +124,34 @@ exports.add = function(req, res) {
 			title: "Welcome | inturn"
 		});
 	}
+}
+
+exports.main = function(req, res) {
+	if (Parse.User.current()) {
+
+		Parse.User.current().fetch();
+
+		var AppObj = Parse.Object.extend("Application");
+		var query = new Parse.Query(AppObj);
+		query.equalTo("userId", Parse.User.current());
+		query.find({
+			success: function(results) {
+				res.render('pages/jobs/main', { 
+					currentUser: Parse.User.current().getUsername(),
+					title: "Job Applications | inturn",
+					page: "jobs",
+					jobs: results
+				});
+			},
+			error: function(error) {
+				console.log(error.message);
+			}
+		});
+
+	} else {
+		res.render('pages/start', {
+			message:null,
+			title: "Welcome | inturn"
+		});
+	}	
 }
