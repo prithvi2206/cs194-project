@@ -1,4 +1,4 @@
-<!-- views/pages/jobs.ejs -->
+<!-- views/pages/views.ejs -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -85,6 +85,10 @@
             <div class="col-lg-6">
               <div class="panel panel-default">
                 <div class="panel-heading">
+                  <button type="button" class="btn btn-default btn-xs pull-right" data-toggle="modal" data-target="#newContactModal">
+                    <i class="fa fa-plus"></i> Add
+                  </button>
+
                   <h3 class="panel-title"><i class="fa fa-user fa-fw"></i> Contacts</h3>
                 </div>
                 <div class="panel-body">
@@ -132,6 +136,48 @@
 
   </div>
 
+<div class="modal fade" id="newContactModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="contactAddForm" role="form" method="post" action="/contacts/add" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Add Contact</h4>
+                </div>
+                <div class="modal-body">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input name="contact_name" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Title</label>
+                                <input name="contact_title" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input name="email" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone number</label>
+                                <input name="phone" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Company Name</label>
+                                <input name="company" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Notes</label>
+                                <textarea name="notes" placeholder="Met at engineering career fair, etc." class="form-control" rows="3"></textarea>
+                            </div>                    
+                </div>
+                <div class="modal-footer">
+                    <input id="contactAddButton" type="submit" class="btn btn-custom">
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->  
 
   <footer>
     <% include ../../partials/footer %>

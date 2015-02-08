@@ -132,7 +132,7 @@ exports.add = function(req, res) {
 exports.main = function(req, res) {
 
 	if (Parse.User.current()) {
-		console.log(req.session);
+
 		Parse.User.current().fetch();
 
 		var AppObj = Parse.Object.extend("Application");
