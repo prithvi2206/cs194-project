@@ -12,18 +12,30 @@ exports.main = function(req, res) {
 		query.equalTo("userId", Parse.User.current());
 		query.find().then(function(results) {
 			if(results.length > 0) {
+                var active;
+                if(req.params.id) {
+                    for(var i = 0; i < results.length; i++) {
+                        if(results[i].id == req.params.id) {
+                            active = results[i]
+                        }
+                    }
+                } else {
+                    active = results[0];
+                }
+
 				var versionsQuery = new Parse.Query(Document);
-				versionsQuery.equalTo("name", results[0].get("name"));
+				versionsQuery.equalTo("name", active.get("name"));
 				versionsQuery.ascending("version");
 				versionsQuery.find().then(function(versions) {
+                    console.log(active);
 					res.render('pages/documents/main',{ 
 						currentUser: Parse.User.current().getUsername(),
 						title: "Documents | inturn",
 						page: "documents",
 						documents: results,
 						versions: versions,
-						active: results[0].id,
-						documentPreviewIFrameSRC: results[0].get("file").url(),
+						active: active,
+						documentPreviewIFrameSRC: active.get("file").url(),
 					});
 				},
 				function(error) {
@@ -123,4 +135,29 @@ exports.preview = function(req, res) {
 			console.log(error.message);
 		}
 	});
+};
+
+exports.delete = function(req, res) {
+	if (Parse.User.current()) {
+		Parse.User.current().fetch();
+
+        console.log(req.params.id);
+        var Document = Parse.Object.extend("Document");
+        var query = new Parse.Query(Document);
+        query.equalTo("objectId", req.params.id);
+        query.find().then(function(result) {
+            result[0].destroy().then(function() {
+                res.redirect("/documents/");
+            }, function(error) {
+                console.log("file could not be deleted");
+            });
+        }, function(error) {
+            console.log("file could not be found");
+        });
+    } else {
+		res.render('pages/start', {
+			message: null,
+			title: "Welcome | inturn"
+		});
+    }
 };

@@ -18,14 +18,14 @@
 
         <div class="container-fluid">
 
-          <!-- Page Heading -->
-          <div class="row">
-            <div class="col-lg-12">
-              <h1 class="page-header">
-                Documents <small>Application Materials</small>
-              </h1>
+            <!-- Page Heading -->
+            <div class="row">
+                <div class="col-lg-12">
+                <h1 class="page-header">
+                    Documents <small>Application Materials</small>
+                </h1>
+                </div>
             </div>
-          </div>
                 
             <div class="row">
                 <div class="col-md-6 col-lg-6 text-left">
@@ -33,43 +33,38 @@
                         <button id="addFileButton" class="btn btn-primary" data-toggle="modal" data-target="#newDocumentModal">Add New Document</button>
                         <button id="deleteFileButton" class="btn btn-danger">Delete File</button>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-lg-6 text-left">
 
-                <table class="table table-hover table-bordered">
-                    <thead>
-                        <tr>
-                            <th>File Name</th>
-                            <th>Version</th>    
-                            <th>Last Modified</th>
-                            <th>Size</th>
-                            <th>Kind</th> 
-                        </tr>
-                    </thead>
-                    <tbody>
-                       <% for(var i = 0; i < documents.length; i++) { %>
-                            <% if(active == documents[i].id) { %>
-                                <tr class="document-entry selected" id="doc-<%= documents[i].id %>">
-                            <% } else { %> 
-                                <tr class="document-entry" id="doc-<%= documents[i].id %>">
-                            <% } %>
-                                <td><strong><%= documents[i].get("name") %></p></strong></td>
-                                <td><%= documents[i].get("version") %></p></td>
-                                <td><p class="list-group-item-text text-left"><%= documents[i].updatedAt %></p></td>
-                                <td><%=documents[i].get("size")%></td>
-                                <td><%=documents[i].get("extension")%></td>                                
-                                </span>
+                    <table class="table table-hover table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>File Name</th>
+                                <th>Version</th>    
+                                <th>Last Modified</th>
+                                <th>Size</th>
+                                <th>Kind</th> 
                             </tr>
-                        <% } %>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                           <% for(var i = 0; i < documents.length; i++) { %>
+                                <% if(active.id == documents[i].id) { %>
+                                    <tr class="document-entry selected" id="doc-<%= documents[i].id %>">
+                                <% } else { %> 
+                                    <tr class="document-entry" id="doc-<%= documents[i].id %>">
+                                <% } %>
+                                    <td><%= documents[i].get("name") %></td>
+                                    <td><%= documents[i].get("version") %></td>
+                                    <td><%= documents[i].updatedAt %></td>
+                                    <td><%=documents[i].get("size") %></td>
+                                    <td><%=documents[i].get("extension") %></td>                                
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
                 </div> 
                 <div class="col-md-6 col-lg-6">
                     <div class="revision-history-animation-container text-center">
                         <% for(var i = 0; i < versions.length; i++) { %> 
-                            <% if(versions[i].id == active) { %>
+                            <% if(versions[i].id == active.id) { %>
                                 <a id="rev-point-<%=versions[i].id%>" class="revision-point" href="#"><div class="circle active"></div></a>
                             <% } else { %>
                                 <a id="rev-point-<%=versions[i].id%>" class="revision-point" href="#"><div class="circle"></div></a>
