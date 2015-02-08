@@ -1,5 +1,7 @@
 'use strict';
 
+var alerts = require("../util/alerts.js");
+
 /* get documents */
 var get_app_docs = function(data, res) {
 
@@ -116,7 +118,8 @@ exports.add = function(req, res) {
 			console.log("new app did not save properly");
 		});
 
-		res.redirect('/jobs');
+		alerts.success("job added successfully");
+		res.redirect("/jobs");
 
 	} else {
 		res.render('pages/start', {
@@ -127,8 +130,9 @@ exports.add = function(req, res) {
 }
 
 exports.main = function(req, res) {
-	if (Parse.User.current()) {
 
+	if (Parse.User.current()) {
+		console.log(req.session);
 		Parse.User.current().fetch();
 
 		var AppObj = Parse.Object.extend("Application");
@@ -140,8 +144,11 @@ exports.main = function(req, res) {
 					currentUser: Parse.User.current().getUsername(),
 					title: "Job Applications | inturn",
 					page: "jobs",
-					jobs: results
+					jobs: results,
+					alerts: alerts.Alert
 				});
+
+				alerts.reset();
 			},
 			error: function(error) {
 				console.log(error.message);
