@@ -17,8 +17,11 @@ var get_app_docs = function(data, res) {
 				currentUser: Parse.User.current().getUsername(),
 				title: "View Job | inturn",
 				page: "jobs",
-				data: data
+				data: data,
+				alerts: alerts.Alert
 			});
+
+			alerts.reset();
 
 		},
 		error: function(results) {
@@ -95,6 +98,66 @@ exports.view = function(req, res) {
 	}	
 }
 
+exports.edit = function(req, res) {
+	if (Parse.User.current()) {
+
+		Parse.User.current().fetch();
+
+		var appid = req.body.appid; 
+		var company = req.body.company;
+		var position = req.body.position;
+		var description = req.body.desc;
+		var status = req.body.status;
+
+
+		/* retriev app object */
+		var AppObj = Parse.Object.extend("Application");
+
+		var query_job = new Parse.Query(AppObj);
+		query_job.equalTo("objectId", appid);
+		query_job.find({
+			success: function(results) {
+
+				if (results.length == 0) {
+					res.redirect("/jobs/");
+				}
+
+				var app_entry = results[0];
+
+				app_entry.set("title", position);
+				app_entry.set("company", company);
+				app_entry.set("status", status);
+				app_entry.set("description", description);
+
+				app_entry.save({
+					success: function(results) {
+						console.log('successfuly edited job');
+						alerts.success("application edited successfully");
+						res.redirect("/jobs/view/" + appid);
+					},
+					error: function(error) {
+						console.log(error.message);
+						alerts.error("failed to edit application");
+						res.redirect("/jobs/view/" + appid);
+					}
+				});
+
+			},
+			error: function(error) {
+				console.log(error.message);
+				alerts.error("failed to edit application");
+			}
+		});
+		
+
+	} else {
+		res.render('pages/start', {
+			message:null,
+			title: "Welcome | inturn"
+		});
+	}
+}
+
 exports.add = function(req, res) {
 	if (Parse.User.current()) {
 
@@ -103,6 +166,7 @@ exports.add = function(req, res) {
 		var company = req.body.company;
 		var position = req.body.position;
 		var description = req.body.desc;
+		var status = req.body.status;
 
 		console.log("Going to add " + company + ", " + position);
 
@@ -112,14 +176,22 @@ exports.add = function(req, res) {
 		app_entry.set("userId", Parse.User.current());
 		app_entry.set("title", position);
 		app_entry.set("company", company);
+		app_entry.set("status", status);
 		app_entry.set("description", description);
-		app_entry.save().then(function() { 
-		}, function(error) {
-			console.log("new app did not save properly");
-		});
 
-		alerts.success("job added successfully");
-		res.redirect("/jobs");
+		app_entry.save({
+			success: function(results) {
+				alerts.success("job added successfully");
+				res.redirect("/jobs");
+			},
+			error: function(error) {
+				console.log(error.message);
+				alerts.error("failed to add job");
+				res.redirect("/jobs");
+			}
+		});
+		
+		
 
 	} else {
 		res.render('pages/start', {
