@@ -1,43 +1,59 @@
 'use strict';
 
+var render_main_page = function(contacts_list, res) {
+	var AppObj = Parse.Object.extend("Application");
+	var query = new Parse.Query(AppObj);
+	query.equalTo("userId", Parse.User.current());
+	query.find({
+		success: function(results) {
+			res.render('pages/contacts/main', { 
+				currentUser: Parse.User.current().getUsername(),
+				title: "Contacts | inturn",
+				contacts: contacts_list,
+				apps: results,
+				page: "contacts"
+			});	
+		},
+		error: function(error) {
+			console.log(error.message);
+		}
+	});
+
+}
+
 exports.main = function(req, res) {
 	if (Parse.User.current()) {
 
 		Parse.User.current().fetch();
 
 		/* Contacts home */
-		if(!req.params.op) {
+		// if(!req.params.op) {
 			
-			var ContactObj = Parse.Object.extend("Contact");
-			var query = new Parse.Query(ContactObj);
-			query.equalTo("userId", Parse.User.current());
-			query.find({
-				success: function(results) {
-					res.render('pages/contacts/main', { 
-						currentUser: Parse.User.current().getUsername(),
-						title: "Contacts | inturn",
-						contacts: results,
-						page: "contacts"
-					});
-				},
-				error: function(error) {
-					console.log(error.message);
-				}
-			});
+		var ContactObj = Parse.Object.extend("Contact");
+		var query = new Parse.Query(ContactObj);
+		query.equalTo("userId", Parse.User.current());
+		query.find({
+			success: function(results) {
+				render_main_page(results, res);
+			},
+			error: function(error) {
+				console.log(error.message);
+			}
+		});
 
-		}
+		// }
 
 		/* Add contact form */
-		else if (req.params.op == "add") {
-			res.render('pages/contacts/add', { 
-				currentUser: Parse.User.current().getUsername() ,
-				title: "Add New Contact | inturn",
-				page: "contacts"
-			});
-		}
-		else {
-			res.redirect('pages/contacts');
-		}
+		// else if (req.params.op == "add") {
+		// 	res.render('pages/contacts/add', { 
+		// 		currentUser: Parse.User.current().getUsername() ,
+		// 		title: "Add New Contact | inturn",
+		// 		page: "contacts"
+		// 	});
+		// }
+		// else {
+		// 	res.redirect('pages/contacts');
+		// }
 
 
 	} else {
@@ -59,6 +75,8 @@ exports.add = function(req, res) {
 		var email = req.body.email;
 		var phone = req.body.phone;
 		var notes = req.body.notes;
+		var app = req.body.appselect;
+		console.log("app is" + app.id);
 
 		console.log("Going to add contact " + name + ", " + title + ", at " + company);
 
