@@ -4,13 +4,11 @@ var alerts = require("../util/alerts.js");
 
 /* get documents */
 var get_app_docs = function(data, res) {
-
 	var DocObj = Parse.Object.extend("Document");
 	var query_doc = new Parse.Query(DocObj);
-	query_doc.equalTo("appId", data["app"]);
+	query_doc.containedIn("objectId", data["app"].get("documentsId"));
 	query_doc.find({
 		success: function(results) {
-
 			data["documents"] = results;
 
 			res.render('pages/jobs/view', { 
@@ -98,6 +96,73 @@ exports.view = function(req, res) {
 	}	
 }
 
+exports.doc_upload = function(req, res) {
+	if (Parse.User.current()) {
+		Parse.User.current().fetch();
+
+		var file = req.files.file;
+
+		if(file.name !== "") {
+			var buffer = new Buffer(file.buffer, 'base64');
+			var parseFile = new Parse.File(file.originalname, {base64: buffer.toString("base64")});
+			parseFile.save().then(function() {
+				var docObject = new Parse.Object("Document");
+				var file_name;
+
+				if(req.body.name) {
+					file_name = req.body.name;
+				} else {
+					file_name = file.originalname;
+				}
+
+				docObject.set("name", file_name);
+				docObject.set("file", parseFile);
+                docObject.set("extension", file.extension);
+                docObject.set("size", file.size/1000 + "KB");
+                docObject.add("appId", req.body.application_id);
+
+				docObject.set("userId", Parse.User.current());
+
+				var Document = Parse.Object.extend("Document");
+				var doc_query = new Parse.Query(Document);
+				doc_query.equalTo("name", file_name);
+				doc_query.ascending("version");
+				doc_query.find().done(function(results) {
+					if(results.length > 0) {
+						docObject.set("version", results[results.length-1].get("version") + 1);
+					} else {
+						docObject.set("version", 1);
+					}
+
+					docObject.save().then(function() {
+						var JobObj = Parse.Object.extend("Application");
+						var job_query = new Parse.Query(JobObj);
+						job_query.equalTo("objectId", req.body.application_id);
+						job_query.find().done(function(results) {
+							results[0].add("documentsId", docObject.id);
+							results[0].save().then(function() {
+								console.log("save successful");
+							res.redirect('/jobs/view/'+req.body.application_id);
+							}, function(error) {
+								console.log("file did not save properly");
+							});
+						});
+					}, function(error) {
+						console.log("file did not save properly");
+					});
+				});
+			}, function(error) {
+				console.log("file did not save properly");
+			});
+		}
+	} else {
+		res.render('pages/start', {
+			message: null,
+			title: "Welcome | inturn"
+		});
+	}
+}
+
 exports.edit = function(req, res) {
 	if (Parse.User.current()) {
 
@@ -153,6 +218,40 @@ exports.edit = function(req, res) {
 	} else {
 		res.render('pages/start', {
 			message:null,
+			title: "Welcome | inturn"
+		});
+	}
+}
+
+exports.add_existing_document = function(req, res) {
+	if (Parse.User.current()) {
+		Parse.User.current().fetch();
+
+		var Document = Parse.Object.extend("Document");
+		var doc_query = new Parse.Query(Document);
+		doc_query.equalTo("objectId", req.body.document_id);
+		doc_query.find().done(function(documents) {
+			documents[0].add("appId", req.body.application_id)
+			documents[0].save().then(function() {
+				var Job = Parse.Object.extend("Application");
+				var job_query = new Parse.Query(Job);
+				job_query.equalTo("objectId", req.body.application_id);
+				job_query.find().done(function(jobs) {
+					jobs[0].add("documentsId", req.body.document_id);
+					jobs[0].save().then(function() {
+						console.log("save successful");
+						res.redirect('/jobs/view/'+req.body.application_id);
+					}, function(error) {
+						console.log("file did not save properly");
+					});
+				});
+			}, function(error) {
+				console.log("file did not save properly");
+			});
+		});
+	} else {
+		res.render('pages/start', {
+			message: null,
 			title: "Welcome | inturn"
 		});
 	}
