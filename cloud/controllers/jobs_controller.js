@@ -300,6 +300,66 @@ exports.add = function(req, res) {
 	}
 }
 
+var addAppAndSend = function(res, contact_entry, id) {
+	var AppObj = Parse.Object.extend("Application");
+	var query = new Parse.Query(AppObj);
+	query.equalTo("objectId", id);
+	query.find({
+		success: function(results) {
+			console.log("found contact");
+			console.log("app is " + results[0]);
+			contact_entry.set("appId", results[0]);
+			contact_entry.save().then(function() { 
+				console.log("new contact saved succesfully");
+				alerts.success("succesfully added contact");
+				res.redirect('/jobs/view/' + id);
+			}, function(error) {
+				console.log("new app did not save properly");
+				alerts.success("failed to add contact");
+				res.redirect('/jobs/view/' + id);
+			});
+
+		},
+		error: function(error) {
+			console.log(error.message);
+		}
+	});
+}
+
+exports.add_contact = function(req, res) {
+	if (Parse.User.current()) {
+
+		Parse.User.current().fetch();
+
+		var name = req.body.contact_name;
+		var title = req.body.contact_title;
+		var company = req.body.company;
+		var email = req.body.email;
+		var phone = req.body.phone;
+		var notes = req.body.notes;
+		var app = req.body.application_id;
+
+		console.log("Going to add contact " + name + ", " + title + ", at " + company);
+
+		var ContactObj = Parse.Object.extend("Contact");
+		var contact_entry = new ContactObj;
+		contact_entry.set("userId", Parse.User.current());
+		contact_entry.set("name", name);
+		contact_entry.set("title", title);
+		contact_entry.set("company", company);
+		contact_entry.set("email", email);
+		contact_entry.set("phone", phone);
+		contact_entry.set("notes", notes);
+		addAppAndSend(res, contact_entry, app);
+		
+	} else {
+		res.render('pages/start', {
+			message:null,
+			title: "Welcome | inturn"
+		});
+	}
+}
+
 exports.main = function(req, res) {
 
 	if (Parse.User.current()) {
