@@ -1,4 +1,32 @@
+function validate_add_contact() {
+
+    var validate = 0;
+
+    var name = document.forms["contactAddForm"]["contact_name"];
+    var title = document.forms["contactAddForm"]["contact_title"];
+    var app = document.forms["contactAddForm"]["appselect"];
+
+    if (name.value == null || name.value == "") {
+        name.parentNode.className += " " + "has-error";
+        validate++;
+    }
+
+    if (title.value == null || title.value == "") {
+        title.parentNode.className += " " + "has-error";
+        validate++;
+    }
+
+    if (app.value == null || app.value == "") {
+        app.parentNode.className += " " + "has-error";
+        validate++;
+    }
+
+    if (validate > 0) return false;
+    else return true;
+}
+
 $(function() {
+
     $('tr.document-entry').click(function() {
         $('tr.selected').removeClass('selected');
         $(this).addClass('selected');
@@ -97,17 +125,17 @@ $(function() {
                 $("#addDocumentModalContainer").html(html);
                 $("#addDocumentModal").modal();
             });
-        }
-    });
+}
+});
 
-    $('#addDocumentModalContainer').on("click", '#uploadNewDocumentButton', function(e) {
-        $('#addDocumentModal').modal('hide');
-        $('#uploadDocumentModal').modal();
-    });
+$('#addDocumentModalContainer').on("click", '#uploadNewDocumentButton', function(e) {
+    $('#addDocumentModal').modal('hide');
+    $('#uploadDocumentModal').modal();
+});
 
-    $('#documentUploadButton').click(function(e) {
-        $('#inputFileName')[0].files
+$('#documentUploadButton').click(function(e) {
+    $('#inputFileName')[0].files
 
 
-    });
+});
 });
