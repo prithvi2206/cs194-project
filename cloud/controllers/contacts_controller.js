@@ -1,11 +1,13 @@
 'use strict';
 
-var render_main_page = function(contacts_list, res) {
+var get_apps_and_render_main_page = function(contacts_list, res) {
+
 	var AppObj = Parse.Object.extend("Application");
 	var query = new Parse.Query(AppObj);
 	query.equalTo("userId", Parse.User.current());
 	query.find({
 		success: function(results) {
+			
 			res.render('pages/contacts/main', { 
 				currentUser: Parse.User.current().getUsername(),
 				title: "Contacts | inturn",
@@ -25,13 +27,13 @@ exports.main = function(req, res) {
 	if (Parse.User.current()) {
 
 		Parse.User.current().fetch();
-			
+
 		var ContactObj = Parse.Object.extend("Contact");
 		var query = new Parse.Query(ContactObj);
 		query.equalTo("userId", Parse.User.current());
 		query.find({
 			success: function(results) {
-				render_main_page(results, res);
+				get_apps_and_render_main_page(results, res);
 			},
 			error: function(error) {
 				console.log(error.message);
@@ -93,7 +95,8 @@ exports.add = function(req, res) {
 		contact_entry.set("phone", phone);
 		contact_entry.set("notes", notes);
 		console.log("calling function");
-		var appObject = addAppAndSend(res, contact_entry, app);
+		addAppAndSend(res, contact_entry, app);
+		
 	} else {
 		res.render('pages/start', {
 			message:null,
