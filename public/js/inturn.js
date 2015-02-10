@@ -25,6 +25,15 @@ function validate_add_contact() {
     else return true;
 }
 
+function appSelectListener() {
+    var company = document.forms["contactAddForm"]["company"];
+    var appSelect = document.forms["contactAddForm"]["appselect"];
+    company.value = appSelect.options[appSelect.selectedIndex].value;
+    if(appSelect.options[appSelect.selectedIndex].value) {
+        company.value = appSelect.options[appSelect.selectedIndex].text.split(" at ")[1];
+    }
+}
+
 $(function() {
 
     $('tr.document-entry').click(function() {
