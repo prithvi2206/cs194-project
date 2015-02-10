@@ -164,8 +164,22 @@
                             <tr>
                               <td><%= data["contacts"][i].get("name") %></td>
                               <td><%= data["contacts"][i].get("title") %></td>
-                              <td><%= data["contacts"][i].get("email") %></td>
-                              <td><%= data["contacts"][i].get("phone") %></td>
+                              <td>
+
+                                <% if (!data["app"].get("email")) { %>
+                                --
+                                <% } else { %>
+                                <%= data["app"].get("email") %>
+                                <% } %>
+
+                              </td>
+                              <td>
+                                <% if (!data["app"].get("phone")) { %>
+                                --
+                                <% } else { %>
+                                <%= data["app"].get("phone") %>
+                                <% } %>
+                              </td>
                             </tr>
                             <% } %>
 
