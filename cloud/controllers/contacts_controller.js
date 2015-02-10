@@ -1,6 +1,6 @@
 'use strict';
 
-var render_main_page = function(contacts_list, res) {
+var get_apps_and_render_main_page = function(contacts_list, res) {
 	var AppObj = Parse.Object.extend("Application");
 	var query = new Parse.Query(AppObj);
 	query.equalTo("userId", Parse.User.current());
@@ -31,7 +31,7 @@ exports.main = function(req, res) {
 		query.equalTo("userId", Parse.User.current());
 		query.find({
 			success: function(results) {
-				render_main_page(results, res);
+				get_apps_and_render_main_page(results, res);
 			},
 			error: function(error) {
 				console.log(error.message);
@@ -80,20 +80,25 @@ exports.add = function(req, res) {
 		var notes = req.body.notes;
 		var app = req.body.appselect;
 
-		console.log("Going to add contact " + name + ", " + title + ", at " + company);
+		if(!name || !title || !app) {
+			console.log("invalid!");
+		} else {
+
+			console.log("Going to add contact " + name + ", " + title + ", at " + company);
 
 
-		var ContactObj = Parse.Object.extend("Contact");
-		var contact_entry = new ContactObj;
-		contact_entry.set("userId", Parse.User.current());
-		contact_entry.set("name", name);
-		contact_entry.set("title", title);
-		contact_entry.set("company", company);
-		contact_entry.set("email", email);
-		contact_entry.set("phone", phone);
-		contact_entry.set("notes", notes);
-		console.log("calling function");
-		var appObject = addAppAndSend(res, contact_entry, app);
+			var ContactObj = Parse.Object.extend("Contact");
+			var contact_entry = new ContactObj;
+			contact_entry.set("userId", Parse.User.current());
+			contact_entry.set("name", name);
+			contact_entry.set("title", title);
+			contact_entry.set("company", company);
+			contact_entry.set("email", email);
+			contact_entry.set("phone", phone);
+			contact_entry.set("notes", notes);
+			console.log("calling function");
+			addAppAndSend(res, contact_entry, app);
+		}	
 	} else {
 		res.render('pages/start', {
 			message:null,
