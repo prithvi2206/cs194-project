@@ -110,19 +110,22 @@
                                 <label>Phone number</label>
                                 <input type="tel" name="phone" class="form-control">
                             </div>
-                            <div class="form-group">
-                                <label>Company Name</label>
-                                <input name="company" class="form-control">
-                            </div>
+
                             <div class="form-group">
                               <label for="appselect">Application*</label>
-                              <select class="form-control" id="appselect" name="appselect">
-                                <option value="0" >None</option>
+                              <select class="form-control" id="appselect" name="appselect" onchange="appSelectListener()">
+                                <option value="" >None</option>
                                 <% for(var i=0; i<apps.length; i++) {%>
                                   <option value=<%= apps[i].id %> ><%= apps[i].get("title") %> at <%= apps[i].get("company") %></option>
                                 <% } %>
                               </select>
                             </div>
+
+                            <div class="form-group">
+                                <label>Company Name</label>
+                                <input name="company" class="form-control">
+                            </div>
+                            
                             <div class="form-group">
                                 <label>Notes</label>
                                 <textarea name="notes" placeholder="Met at engineering career fair, etc." class="form-control" rows="3"></textarea>
@@ -136,7 +139,7 @@
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->  
 
-  <% if (false) /*for(var i=0; i<contacts.length; i++)*/ {%>
+<!--   <% if (false) /*for(var i=0; i<contacts.length; i++)*/ {%>
 
 
   <!-- VIEW / EDIT CONTACT -->
@@ -191,7 +194,7 @@
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->  
 
-    <% }%>
+    <% }%> -->
 
   <footer>
     <% include ../../partials/footer %>

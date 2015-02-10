@@ -39,32 +39,34 @@
                         <button id="deleteFileButton" class="btn btn-danger">Delete File</button>
                     </div>
 
-                    <table class="table table-hover table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>File Name</th>
-                                <th>Version</th>    
-                                <th>Last Modified</th>
-                                <th>Size</th>
-                                <th>Kind</th> 
-                            </tr>
-                        </thead>
-                        <tbody>
-                           <% for(var i = 0; i < documents.length; i++) { %>
-                                <% if(active.id == documents[i].id) { %>
-                                    <tr class="document-entry selected" id="doc-<%= documents[i].id %>">
-                                <% } else { %> 
-                                    <tr class="document-entry" id="doc-<%= documents[i].id %>">
-                                <% } %>
-                                    <td><%= documents[i].get("name") %></td>
-                                    <td><%= documents[i].get("version") %></td>
-                                    <td><%= documents[i].createdAt %></td>
-                                    <td><%=documents[i].get("size") %></td>
-                                    <td><%=documents[i].get("extension") %></td>                                
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>File Name</th>
+                                    <th>Version</th>    
+                                    <th>Last Modified</th>
+                                    <th>Size</th>
+                                    <th>Kind</th> 
                                 </tr>
-                            <% } %>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                               <% for(var i = 0; i < documents.length; i++) { %>
+                                    <% if(active.id == documents[i].id) { %>
+                                        <tr class="document-entry selected" id="doc-<%= documents[i].id %>">
+                                    <% } else { %> 
+                                        <tr class="document-entry" id="doc-<%= documents[i].id %>">
+                                    <% } %>
+                                        <td><%= documents[i].get("name") %></td>
+                                        <td><%= documents[i].get("version") %></td>
+                                        <td><%= documents[i].createdAt %></td>
+                                        <td><%=documents[i].get("size") %></td>
+                                        <td><%=documents[i].get("extension") %></td>                                
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
                 </div> 
                 <div class="col-md-6 col-lg-6">
                     <div class="revision-history-animation-container text-center">
