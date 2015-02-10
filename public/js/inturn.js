@@ -48,7 +48,7 @@ $(function() {
         });
     });
 
-    $('#newDocumentButton').click(function(e) {
+    $('#addDocumentButton').click(function(e) {
         if($("#addDocumentModalContainer").html() == "") {
             $.get("/documents/all", function(response) {
                 var documents = response.documents;
