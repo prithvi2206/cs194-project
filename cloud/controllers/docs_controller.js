@@ -161,3 +161,28 @@ exports.delete = function(req, res) {
 		});
     }
 };
+
+exports.retrieveDocuments = function(req, res) {
+	console.log("retrieving all documents");
+	if (Parse.User.current()) {
+
+		Parse.User.current().fetch();
+
+		var username = Parse.User.current().get("username");
+		var Document = Parse.Object.extend("Document");
+		var query = new Parse.Query(Document);
+		query.equalTo("userId", Parse.User.current());
+		query.descending("createdAt");
+		query.find().then(function(results) {
+			res.send({documents: results});
+		}, function(error) {
+			console.log("The system was unable to retreive your documents.");
+		});
+
+	} else {
+		res.render('pages/start', {
+			message: null,
+			title: "Welcome | inturn"
+		});
+    }
+};

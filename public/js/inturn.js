@@ -14,7 +14,7 @@ $(function() {
                 $('#documentPreviewIFrame')[0].src = data.src
             });
         } else {
-            $.get("/documents/"+document_id, function(response) {
+            $.get("/documents/select/"+document_id, function(response) {
                 $('body').html(response);
             });
         }
@@ -46,5 +46,68 @@ $(function() {
         $.get("/documents/delete/"+document_id, function(response) {
             window.location = "/documents";
         });
+    });
+
+    $('#addDocumentButton').click(function(e) {
+        if($("#addDocumentModalContainer").html() == "") {
+            $.get("/documents/all", function(response) {
+                var documents = response.documents;
+                console.log(documents);
+                var html = '<div class="modal fade" id="addDocumentModal" tabindex="-1" role="dialog">';
+                html += '<div class="modal-dialog">';
+                html += '<div class="modal-content">';
+                html += '<form id="addDocumentToJobForm" role="form" method="post" action="/jobs/add_existing_document" enctype="multipart/form-data">';
+                html += '<div class="modal-header">';
+                html += '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+                html += '<h4 class="modal-title">Add Document</h4>';
+                html += '</div>';
+
+                html += '<div class="modal-body">';
+                html += '<div class="form-group">';
+                html += '<label>Select From Existing Document</label>';
+                html += '<select name="document_id" class="form-control">';
+                for(var i = 0; i < documents.length; i++) {
+                    html += '<option value="'+documents[i].objectId+'">'+documents[i].name+' (Version: '+documents[i].version+')</option>';
+                }
+                html += '</select>';
+                html += '</div>';
+
+                html += '<div class="form-group">';
+                html += '<input type="hidden" name="application_id" value="'+$("#addDocumentModalContainer").data("job-id")+'">';
+                html += '</div>';
+
+                html += '<div class="form-group">';
+                html += '<label><strong>-- OR --</strong></label>';
+                html += '</div>';
+
+                html += '<div class="form-group">';
+                html += '<a href="#" id="uploadNewDocumentButton">Upload New Document</a>';                    
+                html += '</div>';
+
+                html += '</div>';
+                html += '<div class="modal-footer">';
+                html += '<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>';
+                html += '<input id="addDocumentToJobButton" type="submit" class="btn btn-custom">';
+                html += '</div>';
+                html += '</form>';
+                html += '</div>';
+                html += '</div>';
+                html += '</div>';
+
+                $("#addDocumentModalContainer").html(html);
+                $("#addDocumentModal").modal();
+            });
+        }
+    });
+
+    $('#addDocumentModalContainer').on("click", '#uploadNewDocumentButton', function(e) {
+        $('#addDocumentModal').modal('hide');
+        $('#uploadDocumentModal').modal();
+    });
+
+    $('#documentUploadButton').click(function(e) {
+        $('#inputFileName')[0].files
+
+
     });
 });
