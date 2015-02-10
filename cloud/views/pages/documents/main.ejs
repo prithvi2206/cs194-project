@@ -24,6 +24,11 @@
                 <h1 class="page-header">
                     Documents <small>Application Materials</small>
                 </h1>
+                <ol class="breadcrumb">
+                    <li class="active">
+                      <i class="fa fa-file"></i> Documents
+                    </li>
+                </ol>
                 </div>
             </div>
                 
@@ -53,7 +58,7 @@
                                 <% } %>
                                     <td><%= documents[i].get("name") %></td>
                                     <td><%= documents[i].get("version") %></td>
-                                    <td><%= documents[i].updatedAt %></td>
+                                    <td><%= documents[i].createdAt %></td>
                                     <td><%=documents[i].get("size") %></td>
                                     <td><%=documents[i].get("extension") %></td>                                
                                 </tr>

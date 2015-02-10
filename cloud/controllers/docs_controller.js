@@ -10,6 +10,7 @@ exports.main = function(req, res) {
 		var Document = Parse.Object.extend("Document");
 		var query = new Parse.Query(Document);
 		query.equalTo("userId", Parse.User.current());
+		query.descending("createdAt");
 		query.find().then(function(results) {
 			if(results.length > 0) {
                 var active;
