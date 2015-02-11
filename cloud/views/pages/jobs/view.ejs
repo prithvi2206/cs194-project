@@ -190,18 +190,18 @@
                               <td><%= data["contacts"][i].get("title") %></td>
                               <td>
 
-                                <% if (!data["app"].get("email")) { %>
+                                <% if (!data["contacts"][i].get("email")) { %>
                                 --
                                 <% } else { %>
-                                <%= data["app"].get("email") %>
+                                <%= data["contacts"][i].get("email") %>
                                 <% } %>
 
                               </td>
                               <td>
-                                <% if (!data["app"].get("phone")) { %>
+                                <% if (!data["contacts"][i].get("phone")) { %>
                                 --
                                 <% } else { %>
-                                <%= data["app"].get("phone") %>
+                                <%= data["contacts"][i].get("phone") %>
                                 <% } %>
                               </td>
                             </tr>
