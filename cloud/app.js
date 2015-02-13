@@ -5,9 +5,9 @@ var parseExpressHttpsRedirect = require('parse-express-https-redirect');
 var parseExpressCookieSession = require('parse-express-cookie-session');
 var express = require('express');
 var app = express();
-var $ = require('cloud/node_modules/jquery');
+var $ = require('jquery');
 var fs = require('fs');
-var multer = require('cloud/node_modules/multer'); // For parsing multipart data
+var multer = require('multer'); // For parsing multipart data
 var moment = require('moment');
 
 // Global app configuration section
