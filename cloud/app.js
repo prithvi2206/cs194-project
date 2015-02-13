@@ -1,4 +1,3 @@
-
 // Initialize Express in Cloud Code.
 require('parse-express-cookie-session')
 var parseExpressHttpsRedirect = require('parse-express-https-redirect');
