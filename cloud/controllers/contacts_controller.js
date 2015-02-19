@@ -81,7 +81,9 @@ exports.add = function(req, res) {
 		var phone = req.body.phone;
 		var notes = req.body.notes;
 		var app = req.body.appselect;
-
+		if(!company) {
+			company = "";
+		}
 		console.log("Going to add contact " + name + ", " + title + ", at " + company);
 
 

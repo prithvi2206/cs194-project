@@ -5,6 +5,7 @@ function validate_add_contact() {
     var name = document.forms["contactAddForm"]["contact_name"];
     var title = document.forms["contactAddForm"]["contact_title"];
     var app = document.forms["contactAddForm"]["appselect"];
+    var company = document.forms["contactAddForm"]["company"];
 
     if (name.value == null || name.value == "") {
         name.parentNode.className += " " + "has-error";
@@ -16,8 +17,14 @@ function validate_add_contact() {
         validate++;
     }
 
-    if (app.value == null || app.value == "") {
+    if (app.value == null) {
         app.parentNode.className += " " + "has-error";
+        validate++;
+    }
+
+    if (app.value == "" && (company.value == "" || company.value == null) {
+        console.log("empty app");
+        company.parentNode.className += " " + "has-error";
         validate++;
     }
 
