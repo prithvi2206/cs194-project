@@ -22,7 +22,18 @@
     "mandrill": "git://github.com/flovilmart/parse-mandrill#0.0.1-parse",
     "sendgrid": "git://github.com/flovilmart/parse-sendgrid#0.0.1-parse",
     "stripe": "git://github.com/flovilmart/parse-stripe#2.5.0-parse",
-    "twilio": "~1.6.0"
+    "twilio": "~1.6.0",
+    "mongoose" : "~3.8.1",          
+    "passport" : "~0.1.17",         
+    "passport-local" : "~0.1.6",    
+    "passport-google-oauth" : "~0.1.5",
+    "connect-flash" : "~0.1.1",     
+    "bcrypt-nodejs" : "latest",
+    "morgan": "~1.0.0",
+    "body-parser": "~1.0.0",
+    "cookie-parser": "~1.0.0",
+    "method-override": "~1.0.0",
+    "express-session": "~1.0.0" 
   },
   "devDependencies": {},
   "scripts": {

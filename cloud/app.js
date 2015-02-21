@@ -1,12 +1,19 @@
 // Initialize Express in Cloud Code.
-var parseExpressHttpsRedirect = require('parse-express-https-redirect')
+var parseExpressHttpsRedirect   = require('parse-express-https-redirect')
 	, parseExpressCookieSession = require('parse-express-cookie-session')
-	, express = require('express')
-	, app = express()
+	, express      				= require('express')
+	, app          				= express()
 //var $ = require('jquery');
-	, fs = require('fs')
-	, multer = require('multer') // For parsing multipart data
-	, moment = require('moment');
+	, fs           				= require('fs')
+	, multer       				= require('multer') // For parsing multipart data
+	, moment       				= require('moment')
+
+	, passport     				= require('passport')
+	, flash        				= require('connect-flash')
+	, morgan       				= require('morgan')
+	, cookieParser 				= require('cookie-parser')
+	, bodyParser   				= require('body-parser')
+	, session      				= require('express-session');
 
 // Global app configuration section
 app.set('views', 'cloud/views');  // Specify the folder to find templates
@@ -20,15 +27,28 @@ app.use(parseExpressCookieSession({ cookie: { maxAge: 3600000 }, fetchUser: true
 app.use(multer({inMemory: true})); // inMemory creates a temporary buffer for file
 app.use(express.static(__dirname + '/public'));
 
-/* At the top, with other redirect methods before other routes */
-app.get('*',function(req,res,next){
-  if(req.headers['x-forwarded-proto']!='https')
-    res.redirect('https://inturn.herokuapp.com'+req.url)
-  else
-    next() /* Continue to other routes if we're not redirecting */
-});	
+app.use(cookieParser());
+app.use(session({ secret: 'inturn123#' })); // session secret
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+app.use(flash()); // use connect-flash for flash messages stored in session
 
-var auth = require('./routes/auth')(app)
+require('config/passport')(passport);
+
+/* HTTPS Redirect */
+
+/* At the top, with other redirect methods before other routes */
+// app.get('*',function(req,res,next){
+//   if(req.headers['x-forwarded-proto']!='https')
+//     res.redirect('https://inturn.herokuapp.com'+req.url)
+//   else
+//     next() /* Continue to other routes if we're not redirecting */
+// });	
+
+/* Routes */
+/**********/
+
+var auth = require('./routes/auth')(app, passport)
 	, dashboard = require('./routes/dashboard')(app)
 	, jobs = require('./routes/jobs')(app)
 	, events = require('./routes/events')(app)
