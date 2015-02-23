@@ -5,6 +5,7 @@ var alerts = require("../util/alerts.js");
 exports.main = function(req, res) {
 	if (Parse.User.current()) {
 
+		// console.log("at google auth");
 		// var gmail = new Gmail(Parse.User.current().get("google_token"));
 		// var s = gmail.messages('label:inbox', {max: 10})
 		// s.on('data', function (d) {
