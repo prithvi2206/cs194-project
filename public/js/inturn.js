@@ -1,3 +1,23 @@
+function validate_profile() {
+
+    var validate = 0;
+
+    var password = document.forms["profileUpdateForm"]["password"];
+    var password_conf = document.forms["profileUpdateForm"]["password_conf"];
+
+    console.log(password.value)
+    console.log(password_conf.value);
+
+    if ((password.value != password_conf.value) || 
+        password.value == "" || password_conf.value == "") {
+        password.parentNode.className += " " + "has-error";
+        password_conf.parentNode.className += " " + "has-error";
+        validate++;
+    }
+
+    return (validate == 0);
+}
+
 function validate_add_contact() {
 
     var validate = 0;
@@ -22,14 +42,13 @@ function validate_add_contact() {
         validate++;
     }
 
-    if (app.value == "" && (company.value == "" || company.value == null) {
+    if (app.value == "" && (company.value == "" || company.value == null)) {
         console.log("empty app");
         company.parentNode.className += " " + "has-error";
         validate++;
     }
 
-    if (validate > 0) return false;
-    else return true;
+    return (validate == 0);
 }
 
 function appSelectListener() {
