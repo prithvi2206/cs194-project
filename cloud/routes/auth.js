@@ -10,7 +10,9 @@ module.exports = function(app, passport) {
 	app.post('/login_post', auth.login);
 
 	app.get('/auth/google', 
-		passport.authenticate('google', { scope : ['profile', 'email', 'https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/gmail.compose'] })
+		passport.authenticate('google', { scope : ['profile', 
+			'email', 'https://www.googleapis.com/auth/calendar', 
+			'https://www.googleapis.com/auth/gmail.compose'] })
 	);
 
     // the callback after google has authenticated the user
