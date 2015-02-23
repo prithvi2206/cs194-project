@@ -13,7 +13,10 @@ var parseExpressHttpsRedirect   = require('parse-express-https-redirect')
 	, morgan       				= require('morgan')
 	, cookieParser 				= require('cookie-parser')
 	, bodyParser   				= require('body-parser')
-	, session      				= require('express-session');
+	, session      				= require('express-session')
+	, Gmail 					= require('node-gmail-api');
+
+global.Gmail = Gmail;
 
 // Global app configuration section
 app.set('views', 'cloud/views');  // Specify the folder to find templates
