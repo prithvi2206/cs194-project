@@ -131,7 +131,7 @@ var updateMessagesDB = function() {
 exports.main = function(req, res) {
 	var token = Parse.User.current().get("google_token");
 	// refreshes the token and calls updateMessagesDB
-	session.refreshToken(updateMessagesDB);
+	// session.refreshToken();
 
 	Parse.User.current().fetch()
 

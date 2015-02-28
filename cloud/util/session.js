@@ -3,7 +3,7 @@
 exports.isLoggedIn = function(req, res, next) {
 	// if user is authenticated in the session, carry on
 	if (Parse.User.current()) {
-		return next();
+		refreshToken(next);
 	} 
 
 	// if they aren't redirect them to the home page
@@ -15,9 +15,13 @@ exports.isLoggedIn = function(req, res, next) {
 	}
 };
 
-exports.refreshToken = function(next) {
+/* next is the wrapper function that makes the google API call 
+ * that is passed to refreshToken to be re-called upon successful 
+ * upating of the auth token 
+ */
+var refreshToken = function(next) {
 
-	var refresh_token = Parse.User.current().get('refresh_token')
+	var refresh_token = Parse.User.current().get('refresh_token');
 
 	refresh.requestNewAccessToken('google', refresh_token, 
 		function(err, accessToken, refreshToken) {
@@ -33,6 +37,8 @@ exports.refreshToken = function(next) {
 				}).then(
 				function(user) {
 					console.log('auth token refreshed');
+
+					/* auth token successfully updated, try again */
 					return next();
 				},
 				function(error) {
