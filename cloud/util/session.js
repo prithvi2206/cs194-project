@@ -15,7 +15,7 @@ exports.isLoggedIn = function(req, res, next) {
 	}
 };
 
-exports.refreshToken = function() {
+exports.refreshToken = function(next) {
 
 	var refresh_token = Parse.User.current().get('refresh_token')
 
@@ -33,6 +33,7 @@ exports.refreshToken = function() {
 				}).then(
 				function(user) {
 					console.log('auth token refreshed');
+					return next();
 				},
 				function(error) {
 					console.log('Something went wrong', error);

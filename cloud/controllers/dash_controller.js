@@ -7,7 +7,7 @@ exports.main = function(req, res) {
 	var token = Parse.User.current().get("google_token");
 
 	///// NOTE that this is asynchronous so probably want to put this in isLoggedIn
-	//session.refreshToken();
+	//session.refreshToken(next);
 
 	/* print emails to console */
 	// var gmail = new Gmail(token);
