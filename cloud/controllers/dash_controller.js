@@ -2,16 +2,83 @@
 
 var alerts = require("../util/alerts.js");
 
+
+/* 
+ */ 
+var mostRecentMessageStored = function() {
+	return null;
+}
+
+var addMessage = function(message) {
+	console.log("==================== MESSAGE DATA ====================")
+	console.log("\tid: " + message.id);
+	console.log("\tpayload part id: " + message.payload.partId);
+	console.log("\tpayload mime type: " + message.payload.mimeType);
+	console.log("\tpayload filename: " + message.payload.filename);
+	console.log("\theaders");
+	var headers = message.payload.headers;
+	for(var i = 0; i < headers.length; i++) {
+		console.log("\t\t" + headers[i].name + ": " + headers[i].value);
+	}
+	console.log("\tbody: " + message.payload.body);
+	console.log("======================================================")
+}
+
+var getTime = function(message) {
+	return null
+}
+
+/* should take care of server time, time zones, and all that bullshit 
+this should be more than date specific. the granularity of the ranges should have time 
+too, as it's quite possible for someone to receive more emails than the max in one day*/
+var formLabelRangeSearchQuery = function(label, from, to) {
+	var query = ""
+	if(label) {
+		query = query + "label:" + label;
+	}
+	if(from) {
+		query = query + " after:" + from;
+	}
+	if(to) {
+		query = query + " before:" + to;
+	}
+	// return "label:" + label + " after:" + from + " before:" + to;
+	console.log("query: " + query);
+	return query;
+}
+
+/* Adds all the messages received from "from" until "to" to the db 
+ */
+var getAllMessages = function(gmail, from, to) {
+	var s = gmail.messages(formLabelRangeSearchQuery("inbox", from, to), {max : 100})
+	var count = 0;
+	s.on('data', function (d) {
+		if(count < 3) {
+			addMessage(d);
+		}
+		count += 1;
+		// if(count == 100) {
+		// 	getAllMessages(gmail, getTime(addMessage), to);
+		// }
+	})
+
+	// get 100 messages
+	// on the 100th, call the function again with the new parameters
+}
+
+var updateMessagesDB = function() {
+	var token = Parse.User.current().get("google_token");
+	console.log("token is " + token);
+	var gmail = new Gmail(token);
+	var most_recent_message = mostRecentMessageStored();
+	console.log("mrm: " + most_recent_message);
+	getAllMessages(gmail, most_recent_message, null);
+}
+
 exports.main = function(req, res) {
 	if (Parse.User.current()) {
 
-		var token = Parse.User.current().get("google_token");
-
-		var gmail = new Gmail(token);
-		var s = gmail.messages('label:inbox', {max: 10})
-		s.on('data', function (d) {
-				console.log(d.snippet)
-		})
+		updateMessagesDB();
 
 		Parse.User.current().fetch()
 
