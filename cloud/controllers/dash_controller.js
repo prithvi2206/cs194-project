@@ -10,18 +10,56 @@ var mostRecentMessageStored = function() {
 	return null;
 }
 
+// 	CURRENTLY DOESN'T ACTUALLY ADD MESSAGES, JUST TRIES TO PRINT OUT RELEVANT PARTS
 var addMessage = function(message) {
-	console.log("==================== MESSAGE DATA ====================")
-	console.log("\tid: " + message.id);
-	console.log("\tpayload part id: " + message.payload.partId);
-	console.log("\tpayload mime type: " + message.payload.mimeType);
-	console.log("\tpayload filename: " + message.payload.filename);
-	console.log("\theaders");
+	var gmail_id = message.id;
+	var email_type = message.payload.mimeType;
 	var headers = message.payload.headers;
+	var subject = null;
+	var from = null;
+	var date_time = null;
+	
 	for(var i = 0; i < headers.length; i++) {
-		console.log("\t\t" + headers[i].name + ": " + headers[i].value);
+		if(headers[i].name == "Subject") {
+			subject = headers[i].value;
+		}
+		if(headers[i].name == "From") {
+			from = headers[i].value;
+		}
+		if(headers[i].name == "Date") {
+			date_time = headers[i].value;			
+		}
 	}
-	console.log("\tbody: " + message.payload.body);
+
+
+
+	console.log("==================== MESSAGE DATA ====================")
+	console.log("id: " + gmail_id);
+	console.log("payload mime type: " + email_type);
+	console.log("headers");
+	console.log("\tsubject: " + subject);
+	console.log("\tfrom: " + from);
+	console.log("\tdate and time: " + date_time);
+
+
+
+	console.log("------------");
+
+	var body = message.payload.body;
+	if(body) {
+		console.log("Body attachmentId: " + body.attachmentId);
+		console.log("Body size: " + body.size);
+		console.log("Body data: " + body.data);
+	}
+	var parts = message.payload.parts;
+	if(parts) {
+		for (var i = 0; i < parts.length; i++) {
+			var part = parts[i];
+			console.log("------ Part: ");
+			console.log(part)
+		};
+		// console.log("Number of parts: " + parts.length);
+	}
 	console.log("======================================================")
 }
 
@@ -43,43 +81,57 @@ var formLabelRangeSearchQuery = function(label, from, to) {
 	if(to) {
 		query = query + " before:" + to;
 	}
-	// return "label:" + label + " after:" + from + " before:" + to;
 	console.log("query: " + query);
 	return query;
 }
 
+// var some_function_that_uses_node_gmail_api = function() {
+// 	/// some call to s.on
+// }
+
+// var f = function() {
+// 	try {
+// 		some_function_that_uses_node_gmail_api();
+// 	} catch(error) {
+// 		session.refresh_token(f);
+// 	}
+// }
+
 /* Adds all the messages received from "from" until "to" to the db 
+ * if from is null, it's searching from the beginning of time
+ * if to is null, it's searching until now
  */
 var getAllMessages = function(gmail, from, to) {
 	var s = gmail.messages(formLabelRangeSearchQuery("inbox", from, to), {max : 100})
 	var count = 0;
 	s.on('data', function (d) {
-		if(count < 3) {
+		if(count < 10) {
 			addMessage(d);
 		}
 		count += 1;
+		// on the hundredth message, call getAllMessages starting from the time of the last message
+		// received, so that you can get the next hundred messages
 		// if(count == 100) {
 		// 	getAllMessages(gmail, getTime(addMessage), to);
 		// }
 	})
-
-	// get 100 messages
-	// on the 100th, call the function again with the new parameters
 }
 
+
+// retrieves all new messages, and inserts the scaped data into the database
 var updateMessagesDB = function() {
 	var token = Parse.User.current().get("google_token");
 	console.log("token is " + token);
 	var gmail = new Gmail(token);
 	var most_recent_message = mostRecentMessageStored();
-	console.log("mrm: " + most_recent_message);
+	console.log("most recent: " + most_recent_message);
 	getAllMessages(gmail, most_recent_message, null);
 }
 
 exports.main = function(req, res) {
 	var token = Parse.User.current().get("google_token");
-	session.refreshToken(next);
-	updateMessagesDB();
+	// refreshes the token and calls updateMessagesDB
+	session.refreshToken(updateMessagesDB);
 
 	Parse.User.current().fetch()
 
