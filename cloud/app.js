@@ -14,9 +14,12 @@ var parseExpressHttpsRedirect   = require('parse-express-https-redirect')
 	, cookieParser 				= require('cookie-parser')
 	, bodyParser   				= require('body-parser')
 	, session      				= require('express-session')
-	, Gmail 					= require('node-gmail-api');
+	, Gmail 					= require('node-gmail-api')
+	, refresh					= require('passport-oauth2-refresh');
 
 global.Gmail = Gmail;
+global.passport = passport;
+global.refresh = refresh;
 
 // Global app configuration section
 app.set('views', 'cloud/views');  // Specify the folder to find templates
@@ -36,7 +39,7 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
-require('config/passport')(passport);
+require('config/passport')();
 
 /* HTTPS Redirect */
 
@@ -51,7 +54,7 @@ require('config/passport')(passport);
 /* Routes */
 /**********/
 
-var auth = require('./routes/auth')(app, passport)
+var auth = require('./routes/auth')(app)
 	, dashboard = require('./routes/dashboard')(app)
 	, jobs = require('./routes/jobs')(app)
 	, events = require('./routes/events')(app)

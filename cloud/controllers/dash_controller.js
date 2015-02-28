@@ -1,10 +1,15 @@
 'use strict';
 
 var alerts = require("../util/alerts.js");
+var session = require("../util/session.js");
 
 exports.main = function(req, res) {
 	var token = Parse.User.current().get("google_token");
 
+	///// NOTE that this is asynchronous so probably want to put this in isLoggedIn
+	//session.refreshToken();
+
+	/* print emails to console */
 	// var gmail = new Gmail(token);
 	// var s = gmail.messages('label:inbox', {max: 10})
 	// s.on('data', function (d) {
