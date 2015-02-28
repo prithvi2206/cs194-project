@@ -26,8 +26,14 @@ var refreshToken = function(next) {
 	refresh.requestNewAccessToken('google', refresh_token, 
 		function(err, accessToken, refreshToken) {
 
+			/* handle error */	
+			if (err) {
+				res.redirect("/logout");
+			}
+
 			var user = Parse.User.current();
 			user.set("refresh_token", refreshToken);
+			user.set("google_token", accessToken);
 
 			/* Save changes */
 			user.save()
@@ -37,7 +43,6 @@ var refreshToken = function(next) {
 				}).then(
 				function(user) {
 					console.log('auth token refreshed');
-
 					/* auth token successfully updated, try again */
 					return next();
 				},
