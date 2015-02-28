@@ -60,126 +60,13 @@ var render_job_view = function(appObj, res) {
 }
 
 exports.view = function(req, res) {
-	if (Parse.User.current()) {
+	var jobId = req.params.id;
 
-		var jobId = req.params.id;
+	if (jobId) {
 
-		if (jobId) {
-
-			var JobObj = Parse.Object.extend("Application");
-			var query_job = new Parse.Query(JobObj);
-			query_job.equalTo("objectId", jobId);
-			query_job.find({
-				success: function(results) {
-
-					if (results.length == 0) {
-						res.redirect("/jobs/");
-					}
-
-					render_job_view(results[0], res);
-
-				},
-				error: function(error) {
-					console.log(error.message);
-				}
-			});
-
-		} else {
-			res.redirect('/jobs');
-		}
-
-	} else {
-		res.render('pages/start', {
-			message:null,
-			title: "Welcome | inturn"
-		});
-	}	
-}
-
-exports.doc_upload = function(req, res) {
-	if (Parse.User.current()) {
-		Parse.User.current().fetch();
-
-		var file = req.files.file;
-
-		if(file.name !== "") {
-			var buffer = new Buffer(file.buffer, 'base64');
-			var parseFile = new Parse.File(file.originalname, {base64: buffer.toString("base64")});
-			parseFile.save().then(function() {
-				var docObject = new Parse.Object("Document");
-				var file_name;
-
-				if(req.body.name) {
-					file_name = req.body.name;
-				} else {
-					file_name = file.originalname;
-				}
-
-				docObject.set("name", file_name);
-				docObject.set("file", parseFile);
-                docObject.set("extension", file.extension);
-                docObject.set("size", file.size/1000 + "KB");
-                docObject.add("appId", req.body.application_id);
-
-				docObject.set("userId", Parse.User.current());
-
-				var Document = Parse.Object.extend("Document");
-				var doc_query = new Parse.Query(Document);
-				doc_query.equalTo("name", file_name);
-				doc_query.ascending("version");
-				doc_query.find().done(function(results) {
-					if(results.length > 0) {
-						docObject.set("version", results[results.length-1].get("version") + 1);
-					} else {
-						docObject.set("version", 1);
-					}
-
-					docObject.save().then(function() {
-						var JobObj = Parse.Object.extend("Application");
-						var job_query = new Parse.Query(JobObj);
-						job_query.equalTo("objectId", req.body.application_id);
-						job_query.find().done(function(results) {
-							results[0].add("documentsId", docObject.id);
-							results[0].save().then(function() {
-								console.log("save successful");
-							res.redirect('/jobs/view/'+req.body.application_id);
-							}, function(error) {
-								console.log("file did not save properly");
-							});
-						});
-					}, function(error) {
-						console.log("file did not save properly");
-					});
-				});
-			}, function(error) {
-				console.log("file did not save properly");
-			});
-		}
-	} else {
-		res.render('pages/start', {
-			message: null,
-			title: "Welcome | inturn"
-		});
-	}
-}
-
-exports.edit = function(req, res) {
-	if (Parse.User.current()) {
-
-		Parse.User.current().fetch();
-
-		var appid = req.body.appid; 
-		var company = req.body.company;
-		var position = req.body.position;
-		var description = req.body.desc;
-		var status = req.body.status;
-
-
-		/* retriev app object */
-		var AppObj = Parse.Object.extend("Application");
-
-		var query_job = new Parse.Query(AppObj);
-		query_job.equalTo("objectId", appid);
+		var JobObj = Parse.Object.extend("Application");
+		var query_job = new Parse.Query(JobObj);
+		query_job.equalTo("objectId", jobId);
 		query_job.find({
 			success: function(results) {
 
@@ -187,117 +74,186 @@ exports.edit = function(req, res) {
 					res.redirect("/jobs/");
 				}
 
-				var app_entry = results[0];
-
-				app_entry.set("title", position);
-				app_entry.set("company", company);
-				app_entry.set("status", status);
-				app_entry.set("description", description);
-
-				app_entry.save({
-					success: function(results) {
-						console.log('successfuly edited job');
-						alerts.success("application edited successfully");
-						res.redirect("/jobs/view/" + appid);
-					},
-					error: function(error) {
-						console.log(error.message);
-						alerts.error("failed to edit application");
-						res.redirect("/jobs/view/" + appid);
-					}
-				});
+				render_job_view(results[0], res);
 
 			},
 			error: function(error) {
 				console.log(error.message);
-				alerts.error("failed to edit application");
 			}
 		});
-		
 
 	} else {
-		res.render('pages/start', {
-			message:null,
-			title: "Welcome | inturn"
+		res.redirect('/jobs');
+	}
+}
+
+exports.doc_upload = function(req, res) {
+	Parse.User.current().fetch();
+
+	var file = req.files.file;
+
+	if(file.name !== "") {
+		var buffer = new Buffer(file.buffer, 'base64');
+		var parseFile = new Parse.File(file.originalname, {base64: buffer.toString("base64")});
+		parseFile.save().then(function() {
+			var docObject = new Parse.Object("Document");
+			var file_name;
+
+			if(req.body.name) {
+				file_name = req.body.name;
+			} else {
+				file_name = file.originalname;
+			}
+
+			docObject.set("name", file_name);
+			docObject.set("file", parseFile);
+            docObject.set("extension", file.extension);
+            docObject.set("size", file.size/1000 + "KB");
+            docObject.add("appId", req.body.application_id);
+
+			docObject.set("userId", Parse.User.current());
+
+			var Document = Parse.Object.extend("Document");
+			var doc_query = new Parse.Query(Document);
+			doc_query.equalTo("name", file_name);
+			doc_query.ascending("version");
+			doc_query.find().done(function(results) {
+				if(results.length > 0) {
+					docObject.set("version", results[results.length-1].get("version") + 1);
+				} else {
+					docObject.set("version", 1);
+				}
+
+				docObject.save().then(function() {
+					var JobObj = Parse.Object.extend("Application");
+					var job_query = new Parse.Query(JobObj);
+					job_query.equalTo("objectId", req.body.application_id);
+					job_query.find().done(function(results) {
+						results[0].add("documentsId", docObject.id);
+						results[0].save().then(function() {
+							console.log("save successful");
+						res.redirect('/jobs/view/'+req.body.application_id);
+						}, function(error) {
+							console.log("file did not save properly");
+						});
+					});
+				}, function(error) {
+					console.log("file did not save properly");
+				});
+			});
+		}, function(error) {
+			console.log("file did not save properly");
 		});
 	}
+}
+
+exports.edit = function(req, res) {
+	Parse.User.current().fetch();
+
+	var appid = req.body.appid; 
+	var company = req.body.company;
+	var position = req.body.position;
+	var description = req.body.desc;
+	var status = req.body.status;
+
+
+	/* retriev app object */
+	var AppObj = Parse.Object.extend("Application");
+
+	var query_job = new Parse.Query(AppObj);
+	query_job.equalTo("objectId", appid);
+	query_job.find({
+		success: function(results) {
+
+			if (results.length == 0) {
+				res.redirect("/jobs/");
+			}
+
+			var app_entry = results[0];
+
+			app_entry.set("title", position);
+			app_entry.set("company", company);
+			app_entry.set("status", status);
+			app_entry.set("description", description);
+
+			app_entry.save({
+				success: function(results) {
+					console.log('successfuly edited job');
+					alerts.success("application edited successfully");
+					res.redirect("/jobs/view/" + appid);
+				},
+				error: function(error) {
+					console.log(error.message);
+					alerts.error("failed to edit application");
+					res.redirect("/jobs/view/" + appid);
+				}
+			});
+
+		},
+		error: function(error) {
+			console.log(error.message);
+			alerts.error("failed to edit application");
+		}
+	});
 }
 
 exports.add_existing_document = function(req, res) {
-	if (Parse.User.current()) {
-		Parse.User.current().fetch();
+	Parse.User.current().fetch();
 
-		var Document = Parse.Object.extend("Document");
-		var doc_query = new Parse.Query(Document);
-		doc_query.equalTo("objectId", req.body.document_id);
-		doc_query.find().done(function(documents) {
-			documents[0].add("appId", req.body.application_id)
-			documents[0].save().then(function() {
-				var Job = Parse.Object.extend("Application");
-				var job_query = new Parse.Query(Job);
-				job_query.equalTo("objectId", req.body.application_id);
-				job_query.find().done(function(jobs) {
-					jobs[0].add("documentsId", req.body.document_id);
-					jobs[0].save().then(function() {
-						console.log("save successful");
-						res.redirect('/jobs/view/'+req.body.application_id);
-					}, function(error) {
-						console.log("file did not save properly");
-					});
+	var Document = Parse.Object.extend("Document");
+	var doc_query = new Parse.Query(Document);
+	doc_query.equalTo("objectId", req.body.document_id);
+	doc_query.find().done(function(documents) {
+		documents[0].add("appId", req.body.application_id)
+		documents[0].save().then(function() {
+			var Job = Parse.Object.extend("Application");
+			var job_query = new Parse.Query(Job);
+			job_query.equalTo("objectId", req.body.application_id);
+			job_query.find().done(function(jobs) {
+				jobs[0].add("documentsId", req.body.document_id);
+				jobs[0].save().then(function() {
+					console.log("save successful");
+					res.redirect('/jobs/view/'+req.body.application_id);
+				}, function(error) {
+					console.log("file did not save properly");
 				});
-			}, function(error) {
-				console.log("file did not save properly");
 			});
+		}, function(error) {
+			console.log("file did not save properly");
 		});
-	} else {
-		res.render('pages/start', {
-			message: null,
-			title: "Welcome | inturn"
-		});
-	}
+	});
 }
 
 exports.add = function(req, res) {
-	if (Parse.User.current()) {
+	Parse.User.current().fetch();
 
-		Parse.User.current().fetch();
+	var company = req.body.company;
+	var position = req.body.position;
+	var description = req.body.desc;
+	var status = req.body.status;
 
-		var company = req.body.company;
-		var position = req.body.position;
-		var description = req.body.desc;
-		var status = req.body.status;
+	console.log("Going to add " + company + ", " + position);
 
-		console.log("Going to add " + company + ", " + position);
+	/* Add new Application object */
+	var AppObj = Parse.Object.extend("Application");
+	var app_entry = new AppObj;
+	app_entry.set("userId", Parse.User.current());
+	app_entry.set("title", position);
+	app_entry.set("company", company);
+	app_entry.set("status", status);
+	app_entry.set("description", description);
 
-		/* Add new Application object */
-		var AppObj = Parse.Object.extend("Application");
-		var app_entry = new AppObj;
-		app_entry.set("userId", Parse.User.current());
-		app_entry.set("title", position);
-		app_entry.set("company", company);
-		app_entry.set("status", status);
-		app_entry.set("description", description);
-
-		app_entry.save({
-			success: function(results) {
-				alerts.success("job added successfully");
-				res.redirect("/jobs");
-			},
-			error: function(error) {
-				console.log(error.message);
-				alerts.error("failed to add job");
-				res.redirect("/jobs");
-			}
-		});
-		
-		
-
-	} else {
-		res.render('pages/start', {
-			message:null,
-			title: "Welcome | inturn"
-		});
-	}
+	app_entry.save({
+		success: function(results) {
+			alerts.success("job added successfully");
+			res.redirect("/jobs");
+		},
+		error: function(error) {
+			console.log(error.message);
+			alerts.error("failed to add job");
+			res.redirect("/jobs");
+		}
+	});
 }
 
 var addAppAndSend = function(res, contact_entry, id) {
@@ -327,69 +283,50 @@ var addAppAndSend = function(res, contact_entry, id) {
 }
 
 exports.add_contact = function(req, res) {
-	if (Parse.User.current()) {
+	Parse.User.current().fetch();
 
-		Parse.User.current().fetch();
+	var name = req.body.contact_name;
+	var title = req.body.contact_title;
+	var company = req.body.company;
+	var email = req.body.email;
+	var phone = req.body.phone;
+	var notes = req.body.notes;
+	var app = req.body.application_id;
 
-		var name = req.body.contact_name;
-		var title = req.body.contact_title;
-		var company = req.body.company;
-		var email = req.body.email;
-		var phone = req.body.phone;
-		var notes = req.body.notes;
-		var app = req.body.application_id;
+	console.log("Going to add contact " + name + ", " + title + ", at " + company);
 
-		console.log("Going to add contact " + name + ", " + title + ", at " + company);
-
-		var ContactObj = Parse.Object.extend("Contact");
-		var contact_entry = new ContactObj;
-		contact_entry.set("userId", Parse.User.current());
-		contact_entry.set("name", name);
-		contact_entry.set("title", title);
-		contact_entry.set("company", company);
-		contact_entry.set("email", email);
-		contact_entry.set("phone", phone);
-		contact_entry.set("notes", notes);
-		addAppAndSend(res, contact_entry, app);
-		
-	} else {
-		res.render('pages/start', {
-			message:null,
-			title: "Welcome | inturn"
-		});
-	}
+	var ContactObj = Parse.Object.extend("Contact");
+	var contact_entry = new ContactObj;
+	contact_entry.set("userId", Parse.User.current());
+	contact_entry.set("name", name);
+	contact_entry.set("title", title);
+	contact_entry.set("company", company);
+	contact_entry.set("email", email);
+	contact_entry.set("phone", phone);
+	contact_entry.set("notes", notes);
+	addAppAndSend(res, contact_entry, app);
 }
 
 exports.main = function(req, res) {
+	Parse.User.current().fetch();
 
-	if (Parse.User.current()) {
+	var AppObj = Parse.Object.extend("Application");
+	var query = new Parse.Query(AppObj);
+	query.equalTo("userId", Parse.User.current());
+	query.find({
+		success: function(results) {
+			res.render('pages/jobs/main', { 
+				currentUser: Parse.User.current().getUsername(),
+				title: "Job Applications | inturn",
+				page: "jobs",
+				jobs: results,
+				alerts: alerts.Alert
+			});
 
-		Parse.User.current().fetch();
-
-		var AppObj = Parse.Object.extend("Application");
-		var query = new Parse.Query(AppObj);
-		query.equalTo("userId", Parse.User.current());
-		query.find({
-			success: function(results) {
-				res.render('pages/jobs/main', { 
-					currentUser: Parse.User.current().getUsername(),
-					title: "Job Applications | inturn",
-					page: "jobs",
-					jobs: results,
-					alerts: alerts.Alert
-				});
-
-				alerts.reset();
-			},
-			error: function(error) {
-				console.log(error.message);
-			}
-		});
-
-	} else {
-		res.render('pages/start', {
-			message:null,
-			title: "Welcome | inturn"
-		});
-	}	
+			alerts.reset();
+		},
+		error: function(error) {
+			console.log(error.message);
+		}
+	});
 }
