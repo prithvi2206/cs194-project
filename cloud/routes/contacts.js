@@ -1,9 +1,11 @@
 'use strict';
 
 var contacts = require("../controllers/contacts_controller.js");
+var session = require("../util/session.js");
 
 module.exports = function(app) {
-	
-	app.get('/contacts/:op?', contacts.main);
-	app.post('/contacts/add', contacts.add);
+
+	app.get('/contacts/:op?', session.isLoggedIn, contacts.main);
+	app.post('/contacts/add', session.isLoggedIn, contacts.add);
+
 };

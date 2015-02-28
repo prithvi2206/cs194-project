@@ -1,20 +1,11 @@
 'use strict';
 
 exports.main = function(req, res) {
-	if (Parse.User.current()) {
+	Parse.User.current().fetch()
 
-		Parse.User.current().fetch()
-
-		res.render('pages/messages/main',{ 
-			currentUser: Parse.User.current().getUsername(),
-			title: "Messages | inturn",
-			page: "messages"
-		});
-
-	} else {
-		res.render('pages/start', {
-			message:null,
-			title: "Welcome | inturn"
-		});
-	}
+	res.render('pages/messages/main',{ 
+		currentUser: Parse.User.current().getUsername(),
+		title: "Messages | inturn",
+		page: "messages"
+	});
 };

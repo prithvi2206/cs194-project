@@ -1,7 +1,6 @@
 'use strict';
 
 exports.main = function(req, res) {
-	if (Parse.User.current()) {
 
 		Parse.User.current().fetch()
 		// var clientID = '1073490943584-jihl83sesm1qcm10lik7mu86t5ioh5g5.apps.googleusercontent.com';
