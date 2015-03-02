@@ -3,6 +3,11 @@
 var alerts = require("../util/alerts.js");
 var session = require("../util/session.js");
 // var btoa = require('btoa')
+
+/** TODOS:
+ *  - Change read status, in addition to fetching new mails
+ */
+
 /* 
  */ 
 var mostRecentMessageStored = function() {
@@ -32,7 +37,7 @@ var sendIfNoDuplicate = function(message_entry, gmail_id) {
 
 }
 
-var addIfRelevant = function(gmail_id, subject, from, date_time, body, snippet) {
+var addIfRelevant = function(gmail_id, subject, from, date_time, body, snippet, flags) {
 	var from_email = from.substring(from.lastIndexOf("<") + 1, from.length - 1)
 	console.log(from_email);
 
@@ -50,6 +55,7 @@ var addIfRelevant = function(gmail_id, subject, from, date_time, body, snippet) 
 			message_entry.set("subject", subject);
 			message_entry.set("snippet", snippet);
 			message_entry.set("body", body.data);
+			message_entry.set("flags", flags);
 			message_entry.set("userId", Parse.User.current());
 			message_entry.set("senderName", results[0].name);
 			message_entry.set("senderEmail", results[0].email);
@@ -76,7 +82,7 @@ var addMessage = function(message) {
 	var from = null;
 	var date_time = null;
 	var snippet = message.snippet
-	
+	var flags = message.labelIds.join()
 	for(var i = 0; i < headers.length; i++) {
 		if(headers[i].name == "Subject") {
 			subject = headers[i].value;
@@ -116,7 +122,7 @@ var addMessage = function(message) {
 	// // }
 	// console.log("======================================================")
 
-	addIfRelevant(gmail_id, subject, from, date_time, body, snippet)
+	addIfRelevant(gmail_id, subject, from, date_time, body, snippet, flags)
 }
 
 var getTime = function(message) {
