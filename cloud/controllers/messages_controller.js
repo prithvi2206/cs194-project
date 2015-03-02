@@ -3,7 +3,7 @@
 var alerts = require("../util/alerts.js");
 var session = require("../util/session.js");
 // var btoa = require('btoa')
-
+var mres = null
 /** TODOS:
  *  - Change read status, in addition to fetching new mails
  */
@@ -23,6 +23,7 @@ var sendIfNoDuplicate = function(message_entry, gmail_id) {
 			if(results.length == 0)  {
 				message_entry.save().then(function() { 
 					console.log("----------- new message saved succesfully");
+					displayMessages(mres)
 				}, function(error) {
 					console.log(error);
 				});
@@ -39,7 +40,7 @@ var sendIfNoDuplicate = function(message_entry, gmail_id) {
 
 var addIfRelevant = function(gmail_id, subject, from, date_time, body, snippet, flags) {
 	var from_email = from.substring(from.lastIndexOf("<") + 1, from.length - 1)
-	console.log(from_email);
+	// console.log(from_email);
 
 	var ContactObj = Parse.Object.extend("Contact");
 	var query = new Parse.Query(ContactObj);
@@ -179,11 +180,8 @@ var updateMessagesDB = function() {
 	getAllMessages(gmail, most_recent_message, null);
 }
 
-exports.main = function(req, res) {
-	updateMessagesDB();
-
-	Parse.User.current().fetch()
-
+var displayMessages = function(res) {
+	console.log("re-displaying messages")
 	var MessageObj = Parse.Object.extend("Message");
 	var query = new Parse.Query(MessageObj);
 	query.equalTo("userId", Parse.User.current());
@@ -204,6 +202,15 @@ exports.main = function(req, res) {
 			console.log(error.message);
 		}
 	});
+}
+
+exports.main = function(req, res) {
+	mres = res
+	updateMessagesDB();
+
+	Parse.User.current().fetch()
+
+	displayMessages(res);
 
 	// res.render('pages/messages/main',{ 
 	// 	currentUser: Parse.User.current().getUsername(),
