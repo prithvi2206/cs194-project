@@ -14,7 +14,7 @@ var mostRecentMessageStored = function() {
 	return null;
 }
 
-var sendIfNoDuplicate = function(message_entry, gmail_id) {
+var sendIfNoDuplicate = function(message_entry, gmail_id, res) {
 	var MessageObj = Parse.Object.extend("Message");
 	var query = new Parse.Query(MessageObj);
 	query.equalTo("gmailId", gmail_id);
@@ -23,7 +23,7 @@ var sendIfNoDuplicate = function(message_entry, gmail_id) {
 			if(results.length == 0)  {
 				message_entry.save().then(function() { 
 					console.log("----------- new message saved succesfully");
-					displayMessages(mres)
+					displayMessages(res)
 				}, function(error) {
 					console.log(error);
 				});
@@ -38,7 +38,7 @@ var sendIfNoDuplicate = function(message_entry, gmail_id) {
 
 }
 
-var addIfRelevant = function(gmail_id, subject, from, date_time, body, snippet, flags) {
+var addIfRelevant = function(gmail_id, subject, from, date_time, body, snippet, flags, res) {
 	var from_email = from.substring(from.lastIndexOf("<") + 1, from.length - 1).toLowerCase();
 	// console.log(from_email);
 
@@ -60,6 +60,12 @@ var addIfRelevant = function(gmail_id, subject, from, date_time, body, snippet, 
 			message_entry.set("userId", Parse.User.current());
 			message_entry.set("senderName", results[0].get("name"));
 			message_entry.set("senderEmail", results[0].get("email"));
+
+			/* If contact is associated with an app id */
+			if (results[0].get("appId")) {
+				message_entry.set("appId", results[0].get("appId"));
+			}
+
 			var date = new Date(date_time);
 			message_entry.set("dateSent", date);	
 			sendIfNoDuplicate(message_entry, gmail_id);
@@ -74,7 +80,7 @@ var addIfRelevant = function(gmail_id, subject, from, date_time, body, snippet, 
 }
 
 // 	CURRENTLY DOESN'T ACTUALLY ADD MESSAGES, JUST TRIES TO PRINT OUT RELEVANT PARTS
-var addMessage = function(message) {
+var addMessage = function(message, res) {
 	var gmail_id = message.id;
 	var email_type = message.payload.mimeType;
 	var headers = message.payload.headers;
@@ -153,7 +159,7 @@ var formLabelRangeSearchQuery = function(label, from, to) {
  * if from is null, it's searching from the beginning of time
  * if to is null, it's searching until now
  */
-var getAllMessages = function(gmail, from, to) {
+var getAllMessages = function(gmail, from, to, res) {
 	var s = gmail.messages(formLabelRangeSearchQuery("inbox", from, to), {max : 100})
 	var count = 0;
 	s.on('data', function (d) {
@@ -171,13 +177,13 @@ var getAllMessages = function(gmail, from, to) {
 
 
 // retrieves all new messages, and inserts the scaped data into the database
-var updateMessagesDB = function() {
+var updateMessagesDB = function(res) {
 	var token = Parse.User.current().get("google_token");
 	console.log("token is " + token);
 	var gmail = new Gmail(token);
 	var most_recent_message = mostRecentMessageStored();
 	console.log("most recent: " + most_recent_message);
-	getAllMessages(gmail, most_recent_message, null);
+	getAllMessages(gmail, most_recent_message, null, res);
 }
 
 var displayMessages = function(res) {
@@ -205,7 +211,7 @@ var displayMessages = function(res) {
 }
 
 exports.main = function(req, res) {
-	updateMessagesDB();
+	updateMessagesDB(res);
 	displayMessages(res);
 	// res.render('pages/messages/main',{ 
 	// 	currentUser: Parse.User.current().getUsername(),

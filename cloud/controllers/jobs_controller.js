@@ -2,14 +2,15 @@
 
 var alerts = require("../util/alerts.js");
 
-/* get documents */
-var get_app_docs = function(data, res) {
-	var DocObj = Parse.Object.extend("Document");
-	var query_doc = new Parse.Query(DocObj);
-	query_doc.containedIn("objectId", data["app"].get("documentsId"));
-	query_doc.find({
+/* get messages */
+var get_app_messages = function(data, res) {
+
+	var MsgObj = Parse.Object.extend("Message");
+	var query_msg = new Parse.Query(MsgObj);
+	query_msg.equalTo("appId", data["app"]);
+	query_msg.find({
 		success: function(results) {
-			data["documents"] = results;
+			data["messages"] = results;
 
 			res.render('pages/jobs/view', { 
 				currentUser: Parse.User.current().getUsername(),
@@ -18,9 +19,28 @@ var get_app_docs = function(data, res) {
 				data: data,
 				alerts: alerts.Alert
 			});
-
+			
 			alerts.reset();
 
+		},
+		error: function(results) {
+			console.log(error.message);
+		}
+	});
+
+
+			
+}
+
+/* get documents */
+var get_app_docs = function(data, res) {
+	var DocObj = Parse.Object.extend("Document");
+	var query_doc = new Parse.Query(DocObj);
+	query_doc.containedIn("objectId", data["app"].get("documentsId"));
+	query_doc.find({
+		success: function(results) {
+			data["documents"] = results;
+			get_app_messages(data, res);
 		},
 		error: function(results) {
 			console.log(error.message);

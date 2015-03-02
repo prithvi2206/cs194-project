@@ -97,19 +97,18 @@
                   <div class="panel-body">
                     <div class="list-group">
 
-                      <a href="#" class="list-group-item">
-                        <div class="list-group-item-heading"><b>Email 1</b></div>
-                        <p class="list-group-item-text">
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                      <% for(var i = 0; i < data["messages"].length; i++) { %>
+                        <a href="#" class="list-group-item">
+                          <div class="list-group-item-heading"><b><%= data["messages"][i].get("senderName") %></b></div>
+                          <p class="list-group-item-text">
+                            <%= data["messages"][i].get("subject") %> 
 
-                        </p>
-                      </a>
-
-                      <a href="#" class="list-group-item">
-                        <div class="list-group-item-heading"><b>Email 2</b></div>
-                        <p class="list-group-item-text">
-                          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                          </p>
+                          <p class="text-muted" style="font-size: 11px;">
+                            <%= data["messages"][i].get("snippet") %>
+                          </p>
                         </a>
+                      <% } %>
 
                       </div>
                       <div class="text-right">
