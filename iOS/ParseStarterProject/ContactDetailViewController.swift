@@ -18,7 +18,6 @@ class ContactDetailViewController: UIViewController {
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var companyPositionLabel: UILabel!
-    
     @IBOutlet weak var phoneNumberLabel: UILabel!
     @IBOutlet weak var emailLabel: UILabel!
     @IBOutlet weak var noteLabel: UILabel!
@@ -54,6 +53,11 @@ class ContactDetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        nameLabel?.text = ""
+        companyPositionLabel?.text = ""
+        phoneNumberLabel?.text = ""
+        emailLabel?.text = ""
+        noteLabel?.text = ""
         
         refreshUI()
 
