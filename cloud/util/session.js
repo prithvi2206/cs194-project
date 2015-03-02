@@ -28,6 +28,7 @@ var refreshToken = function(next) {
 
 			/* handle error */	
 			if (err) {
+				console.log("error requesting new token");
 				res.redirect("/logout");
 			}
 
