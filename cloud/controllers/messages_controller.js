@@ -51,8 +51,8 @@ var addIfRelevant = function(gmail_id, subject, from, date_time, body, snippet) 
 			message_entry.set("snippet", snippet);
 			message_entry.set("body", body.data);
 			message_entry.set("userId", Parse.User.current());
-			message_entry.set("senderName", results[0].name);
-			message_entry.set("senderEmail", results[0].email);
+			message_entry.set("senderName", results[0].get("name"));
+			message_entry.set("senderEmail", results[0].get("email"));
 			var date = new Date(date_time);
 			message_entry.set("dateSent", date);	
 			sendIfNoDuplicate(message_entry, gmail_id);
@@ -183,7 +183,7 @@ exports.main = function(req, res) {
 	query.equalTo("userId", Parse.User.current());
 	query.find({
 		success: function(results) {
-			res.render('pages/dashboard', { 
+			res.render('pages/messages/main', { 
 				currentUser: Parse.User.current().getUsername(),
 				title: "Messages | inturn",
 				page: "messages",
@@ -199,9 +199,9 @@ exports.main = function(req, res) {
 		}
 	});
 
-	res.render('pages/messages/main',{ 
-		currentUser: Parse.User.current().getUsername(),
-		title: "Messages | inturn",
-		page: "messages"
-	});
+	// res.render('pages/messages/main',{ 
+	// 	currentUser: Parse.User.current().getUsername(),
+	// 	title: "Messages | inturn",
+	// 	page: "messages"
+	// });
 };
