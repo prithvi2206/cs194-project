@@ -3,7 +3,7 @@
 exports.isLoggedIn = function(req, res, next) {
 	// if user is authenticated in the session, carry on
 	if (Parse.User.current()) {
-		refreshToken(next);
+		refreshToken(req, res, next);
 	} 
 
 	// if they aren't redirect them to the home page
@@ -19,7 +19,7 @@ exports.isLoggedIn = function(req, res, next) {
  * that is passed to refreshToken to be re-called upon successful 
  * upating of the auth token 
  */
-var refreshToken = function(next) {
+var refreshToken = function(req, res, next) {
 
 	var refresh_token = Parse.User.current().get('refresh_token');
 
@@ -33,7 +33,6 @@ var refreshToken = function(next) {
 			}
 
 			var user = Parse.User.current();
-			user.set("refresh_token", refreshToken);
 			user.set("google_token", accessToken);
 
 			/* Save changes */
