@@ -2,11 +2,68 @@
 
 var alerts = require("../util/alerts.js");
 var session = require("../util/session.js");
-
+// var btoa = require('btoa')
 /* 
  */ 
 var mostRecentMessageStored = function() {
 	return null;
+}
+
+var sendIfNoDuplicate = function(message_entry, gmail_id) {
+	var MessageObj = Parse.Object.extend("Message");
+	var query = new Parse.Query(MessageObj);
+	query.equalTo("gmailId", gmail_id);
+	query.find({
+		success: function(results) {
+			if(results.length == 0)  {
+				message_entry.save().then(function() { 
+					console.log("----------- new message saved succesfully");
+				}, function(error) {
+					console.log(error);
+				});
+			} else {
+				console.log("the message is already there!")
+			}
+		},
+		error: function(error) {
+			console.log(error.message);
+		}
+	});	
+
+}
+
+var addIfRelevant = function(gmail_id, subject, from, date_time, body, snippet) {
+	var from_email = from.substring(from.lastIndexOf("<") + 1, from.length - 1)
+	console.log(from_email);
+
+	var ContactObj = Parse.Object.extend("Contact");
+	var query = new Parse.Query(ContactObj);
+	query.equalTo("email", from_email);
+	query.find({
+		success: function(results) {
+			if(results.length == 0) return;
+			console.log("------------ found relevant email from " + from_email)
+			var MessageObj = Parse.Object.extend("Message");
+			var message_entry = new MessageObj;		
+			message_entry.set("gmailId", gmail_id);
+			message_entry.set("contactId", results[0]);
+			message_entry.set("subject", subject);
+			message_entry.set("snippet", snippet);
+			message_entry.set("body", body.data);
+			message_entry.set("userId", Parse.User.current());
+			message_entry.set("senderName", results[0].name);
+			message_entry.set("senderEmail", results[0].email);
+			var date = new Date(date_time);
+			message_entry.set("dateSent", date);	
+			sendIfNoDuplicate(message_entry, gmail_id);
+		},
+		error: function(error) {
+			console.log(error.message);
+		}
+	});	
+
+
+
 }
 
 // 	CURRENTLY DOESN'T ACTUALLY ADD MESSAGES, JUST TRIES TO PRINT OUT RELEVANT PARTS
@@ -14,9 +71,11 @@ var addMessage = function(message) {
 	var gmail_id = message.id;
 	var email_type = message.payload.mimeType;
 	var headers = message.payload.headers;
+	var body = message.payload.body;
 	var subject = null;
 	var from = null;
 	var date_time = null;
+	var snippet = message.snippet
 	
 	for(var i = 0; i < headers.length; i++) {
 		if(headers[i].name == "Subject") {
@@ -30,38 +89,34 @@ var addMessage = function(message) {
 		}
 	}
 
-
-
-	console.log("==================== MESSAGE DATA ====================")
-	console.log("id: " + gmail_id);
-	console.log("payload mime type: " + email_type);
-	console.log("headers");
+	// console.log("==================== MESSAGE DATA ====================")
+	// console.log("id: " + gmail_id);
+	// console.log("payload mime type: " + email_type);
+	// console.log("headers");
 
 	
-	console.log("\tsubject: " + subject);
-	console.log("\tfrom: " + from);
-	console.log("\tdate and time: " + date_time);
+	// console.log("\tsubject: " + subject);
+	// console.log("\tfrom: " + from);
+	// console.log("\tdate and time: " + date_time);
+	// console.log("------------");
 
+	// if(body) {
+	// 	console.log("Body attachmentId: " + body.attachmentId);
+	// 	console.log("Body size: " + body.size);
+	// 	console.log("Body data: " + body);
+	// }
+	// var parts = message.payload.parts;
+	// // if(parts) {
+	// // 	for (var i = 0; i < parts.length; i++) {
+	// // 		var part = parts[i];
+	// // 		console.log("------ Part: ");
+	// // 		console.log(part)
+	// // 	};
+	// // 	// console.log("Number of parts: " + parts.length);
+	// // }
+	// console.log("======================================================")
 
-
-	console.log("------------");
-
-	var body = message.payload.body;
-	if(body) {
-		console.log("Body attachmentId: " + body.attachmentId);
-		console.log("Body size: " + body.size);
-		console.log("Body data: " + (new Buffer(body.data, 'base64')).toString('ascii'));
-	}
-	var parts = message.payload.parts;
-	if(parts) {
-		for (var i = 0; i < parts.length; i++) {
-			var part = parts[i];
-			console.log("------ Part: ");
-			console.log(part)
-		};
-		// console.log("Number of parts: " + parts.length);
-	}
-	console.log("======================================================")
+	addIfRelevant(gmail_id, subject, from, date_time, body, snippet)
 }
 
 var getTime = function(message) {
@@ -86,17 +141,6 @@ var formLabelRangeSearchQuery = function(label, from, to) {
 	return query;
 }
 
-// var some_function_that_uses_node_gmail_api = function() {
-// 	/// some call to s.on
-// }
-
-// var f = function() {
-// 	try {
-// 		some_function_that_uses_node_gmail_api();
-// 	} catch(error) {
-// 		session.refresh_token(f);
-// 	}
-// }
 
 /* Adds all the messages received from "from" until "to" to the db 
  * if from is null, it's searching from the beginning of time
@@ -106,7 +150,7 @@ var getAllMessages = function(gmail, from, to) {
 	var s = gmail.messages(formLabelRangeSearchQuery("inbox", from, to), {max : 100})
 	var count = 0;
 	s.on('data', function (d) {
-		if(count < 10) {
+		if(count < 100) {
 			addMessage(d);
 		}
 		count += 1;
@@ -144,7 +188,7 @@ exports.main = function(req, res) {
 				title: "Messages | inturn",
 				page: "messages",
 				message: null,
-				messages: results,
+				data: results,
 				alerts: alerts.Alert
 			});
 
