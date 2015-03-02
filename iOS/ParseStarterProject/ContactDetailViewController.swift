@@ -30,7 +30,7 @@ class ContactDetailViewController: UIViewController {
                 nameLabel?.text = name
             }
             
-            if let company = data!.objectForKey("name") as? String {
+            if let company = data!.objectForKey("company") as? String {
                 if let position = data!.objectForKey("title") as? String {
                     companyPositionLabel?.text = company + " - " + position
                 } else  {
