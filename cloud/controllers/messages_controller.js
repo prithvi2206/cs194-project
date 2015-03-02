@@ -39,7 +39,7 @@ var sendIfNoDuplicate = function(message_entry, gmail_id) {
 }
 
 var addIfRelevant = function(gmail_id, subject, from, date_time, body, snippet, flags) {
-	var from_email = from.substring(from.lastIndexOf("<") + 1, from.length - 1)
+	var from_email = from.substring(from.lastIndexOf("<") + 1, from.length - 1).toLowerCase();
 	// console.log(from_email);
 
 	var ContactObj = Parse.Object.extend("Contact");
@@ -205,13 +205,8 @@ var displayMessages = function(res) {
 }
 
 exports.main = function(req, res) {
-	mres = res
 	updateMessagesDB();
-
-	Parse.User.current().fetch()
-
 	displayMessages(res);
-
 	// res.render('pages/messages/main',{ 
 	// 	currentUser: Parse.User.current().getUsername(),
 	// 	title: "Messages | inturn",
