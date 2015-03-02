@@ -19,7 +19,7 @@ class ContactsTableViewController: UITableViewController {
     }
     
     private func fetchContacts() {
-        PFQuery(className: "Contact").whereKey("userId", equalTo: PFUser.currentUser()).findObjectsInBackgroundWithBlock { (result, error) -> Void in
+        PFQuery(className: "Contact").whereKey("userId", equalTo: PFUser.currentUser()).orderByAscending("name").findObjectsInBackgroundWithBlock { (result, error) -> Void in
             if let contacts = result as? [PFObject] {
                 self.contacts = contacts
             }
@@ -29,6 +29,8 @@ class ContactsTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let inset = UIEdgeInsetsMake(20, 0, 0, 0)
+        tableView.contentInset = inset
         fetchContacts()
 
         // Uncomment the following line to preserve selection between presentations
@@ -65,9 +67,16 @@ class ContactsTableViewController: UITableViewController {
         static let ContactsTableCell = "Contacts Table Cell"
     }
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(Identifier.ContactsTableCell, forIndexPath: indexPath) as ContactTableViewCell
-
-        cell.data = contacts?[indexPath.row]
+        let cell = tableView.dequeueReusableCellWithIdentifier(Identifier.ContactsTableCell, forIndexPath: indexPath) as UITableViewCell
+        
+        if let name = contacts?[indexPath.row].objectForKey("name") as? String
+        {
+            cell.textLabel.text = name
+        }
+        
+        if let company = contacts?[indexPath.row].objectForKey("company") as? String {
+            cell.detailTextLabel?.text = company
+        }
 
         return cell
     }
@@ -107,14 +116,30 @@ class ContactsTableViewController: UITableViewController {
     }
     */
 
-    /*
+    private struct Identifiers {
+        static let ContactDetailSegue = "Contact Detail Segue"
+    }
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
+        switch segue.identifier! {
+        case Identifiers.ContactDetailSegue:
+            if let contactDetailViewController = segue.destinationViewController as? ContactDetailViewController {
+                if let contactCell = sender as? UITableViewCell {
+                    if let indexPath = tableView.indexPathForCell(contactCell) {
+                        contactDetailViewController.data = contacts?[indexPath.row]
+                    }
+                }
+            }
+        default:
+            break
+        }
+        
+        
+        
     }
-    */
+    
 
 }
