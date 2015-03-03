@@ -221,24 +221,90 @@
             </objects>
             <point key="canvasLocation" x="2860" y="443"/>
         </scene>
-        <!--Documents-->
-        <scene sceneID="bPX-Lm-Zai">
+        <!--Documents Collection View Controller-->
+        <scene sceneID="VwX-Bf-uLa">
             <objects>
-                <viewController id="Tie-hL-qyw" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="u7i-Rp-YDx"/>
-                        <viewControllerLayoutGuide type="bottom" id="KCH-PW-xaX"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="DHW-I7-WU2">
+                <collectionViewController id="kQc-50-p8T" customClass="DocumentsCollectionViewController" customModule="Inturn_io" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="EA4-EB-Pfo">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <tabBarItem key="tabBarItem" title="Documents" id="qMN-vE-LIT"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="jBb-jJ-sNA" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="9Q8-FG-B02">
+                            <size key="itemSize" width="100" height="100"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Document Cell" id="ScA-tz-qsu" customClass="DocumentCollectionViewCell" customModule="Inturn_io" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ceo-GM-zqr">
+                                            <rect key="frame" x="25" y="8" width="50" height="50"/>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="document name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z4m-Iy-s2N">
+                                            <rect key="frame" x="8" y="63" width="84" height="21"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <connections>
+                                    <outlet property="documentImageView" destination="Ceo-GM-zqr" id="AnW-Vd-oY1"/>
+                                    <outlet property="documentNameLabel" destination="z4m-Iy-s2N" id="trI-ow-8vD"/>
+                                    <segue destination="48q-fm-Kub" kind="show" identifier="Document View Segue" id="GBW-3B-j6j"/>
+                                </connections>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="kQc-50-p8T" id="oSW-Pd-Z3A"/>
+                            <outlet property="delegate" destination="kQc-50-p8T" id="8Hm-gA-urO"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" id="A4r-Ub-CZv"/>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="b6o-GA-Z4q" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="342" y="-616"/>
+            <point key="canvasLocation" x="1882" y="-1191"/>
+        </scene>
+        <!--Document View Controller-->
+        <scene sceneID="Zw5-X0-ks8">
+            <objects>
+                <viewController id="48q-fm-Kub" customClass="DocumentViewController" customModule="Inturn_io" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="OGk-zu-VQ2"/>
+                        <viewControllerLayoutGuide type="bottom" id="O4C-eW-d9Q"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="hl3-gf-LFy">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dIc-dY-KzQ">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="O4C-eW-d9Q" firstAttribute="top" secondItem="dIc-dY-KzQ" secondAttribute="bottom" constant="-49" id="78B-xw-970"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="dIc-dY-KzQ" secondAttribute="trailing" constant="-16" id="7jQ-9I-0YL"/>
+                            <constraint firstItem="dIc-dY-KzQ" firstAttribute="leading" secondItem="hl3-gf-LFy" secondAttribute="leadingMargin" constant="-16" id="hDq-Fe-wJP"/>
+                            <constraint firstItem="dIc-dY-KzQ" firstAttribute="top" secondItem="OGk-zu-VQ2" secondAttribute="bottom" constant="-64" id="nDS-LE-nKo"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="documentWebView" destination="dIc-dY-KzQ" id="BK6-9L-5AN"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CbZ-ge-yol" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2684" y="-1191"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="l9e-Bs-nCf">
@@ -254,7 +320,7 @@
                         <segue destination="qWW-Lp-pSG" kind="relationship" relationship="viewControllers" id="HW9-8j-UTm"/>
                         <segue destination="MXL-ye-Sa6" kind="relationship" relationship="viewControllers" id="DGO-dm-kqR"/>
                         <segue destination="kJR-I5-q5O" kind="relationship" relationship="viewControllers" id="IEm-al-UQ3"/>
-                        <segue destination="Tie-hL-qyw" kind="relationship" relationship="viewControllers" id="SWq-40-rb4"/>
+                        <segue destination="0kh-k9-obB" kind="relationship" relationship="viewControllers" id="Hkz-tU-3kN"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RmB-jk-AyU" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -465,6 +531,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JIN-TM-6Cf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1085" y="-237"/>
+        </scene>
+        <!--Item-->
+        <scene sceneID="MaQ-hZ-PG9">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="0kh-k9-obB" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="KHj-EC-h9d"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="hwv-Kg-aTq">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="kQc-50-p8T" kind="relationship" relationship="rootViewController" id="89j-et-Bp3"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7s4-5h-Vik" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1070" y="-1191"/>
         </scene>
     </scenes>
 </document>
