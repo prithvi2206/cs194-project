@@ -1,3 +1,41 @@
+function validateURL(textval) {
+  var urlregex = new RegExp(
+        "^(http|https|ftp)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&amp;%\$#\=~_\-]+))*$");
+  return urlregex.test(textval);
+}
+
+function validate_add_job() {
+
+    var validate = 0;
+
+    var name = document.forms["jobAddForm"]["company"];
+    var position = document.forms["jobAddForm"]["position"];
+    var url = document.forms["jobAddForm"]["url"];
+
+    if (name.value == null || name.value == "") {
+        name.parentNode.className += " " + "has-error";
+        validate++;
+    } else {
+        name.parentNode.className = "form-group";
+    }
+
+    if (position.value == null || position.value == "") {
+        position.parentNode.className += " " + "has-error";
+        validate++;
+    } else {
+        position.parentNode.className = "form-group";
+    }
+
+    if (url.value == null || url.value == "" || !validateURL(url.value)) {
+        url.parentNode.className += " " + "has-error";
+        validate++;
+    } else {
+        url.parentNode.className = "form-group";
+    }
+
+    return (validate == 0);
+}
+
 function validate_profile() {
 
     var validate = 0;
@@ -13,7 +51,7 @@ function validate_profile() {
         password.parentNode.className += " " + "has-error";
         password_conf.parentNode.className += " " + "has-error";
         validate++;
-    }
+    } 
 
     return (validate == 0);
 }
@@ -30,22 +68,31 @@ function validate_add_contact() {
     if (name.value == null || name.value == "") {
         name.parentNode.className += " " + "has-error";
         validate++;
+    }else {
+        name.parentNode.className = "form-group";
     }
 
     if (title.value == null || title.value == "") {
         title.parentNode.className += " " + "has-error";
         validate++;
+    } else {
+        title.parentNode.className = "form-group";
     }
 
     if (app.value == null) {
         app.parentNode.className += " " + "has-error";
         validate++;
+    } else {
+        app.parentNode.className = "form-group";
     }
+
 
     if (app.value == "" && (company.value == "" || company.value == null)) {
         console.log("empty app");
         company.parentNode.className += " " + "has-error";
         validate++;
+    } else {
+        company.parentNode.className = "form-group";
     }
 
     return (validate == 0);

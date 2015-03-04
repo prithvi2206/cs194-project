@@ -251,6 +251,7 @@ exports.add = function(req, res) {
 	var position = req.body.position;
 	var description = req.body.desc;
 	var status = req.body.status;
+	var url = req.body.url;
 
 	console.log("Going to add " + company + ", " + position);
 
@@ -262,6 +263,7 @@ exports.add = function(req, res) {
 	app_entry.set("company", company);
 	app_entry.set("status", status);
 	app_entry.set("description", description);
+	app_entry.set("url", url);
 
 	app_entry.save({
 		success: function(results) {
