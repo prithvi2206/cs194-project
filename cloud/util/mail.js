@@ -19,12 +19,12 @@ var sendIfNoDuplicate = function(message_entry, gmail_id) {
 			if(results.length == 0)  {
 				// console.log("no duplicate")
 				message_entry.save().then(function() { 
-					console.log("----------- new message saved succesfully");
+					// console.log("----------- new message saved succesfully");
 				}, function(error) {
 					console.log(error);
 				});
 			} else {
-				console.log("the message is already there!")
+				// console.log("the message is already there!")
 			}
 		},
 		error: function(error) {
@@ -42,6 +42,10 @@ var addIfRelevant = function(gmail_id, subject, from, date_time, body_text, body
 	message_entry.set("subject", subject);
 	message_entry.set("snippet", snippet);
 	message_entry.set("bodyText", body_text);
+	if(subject == "Offer Letter") {
+		console.log("----------------- what's being added:")
+		console.log(body_html);
+	} 
 	message_entry.set("bodyHTML", body_html);
 	message_entry.set("flags", flags);
 	message_entry.set("userId", Parse.User.current());
@@ -106,7 +110,8 @@ var addMessageFromContact = function(message, contact) {
 	//     console.log("Subject:", mail_object.subject); 
 	//     console.log("Text body:", mail_object.text); 
  //    });
-    console.log("WRITING")
+
+    // console.log("WRITING")
 
 	var gmail_id = message.id;
 	var email_type = message.payload.mimeType;
@@ -135,6 +140,17 @@ var addMessageFromContact = function(message, contact) {
     // console.log("\n\n\n")
 	// parser.write(msg_str);
 
+	// if(subject == "Offer Letter") {
+	// 	console.log("found it!");
+	// 	console.log(msg_str);
+	// 	var parts = message.payload.parts;
+	// 	body_text = base64ToUtf(parts[0].body.data)
+	// 	body_html = base64ToUtf(parts[1].body.data)
+	// 	console.log("TYPE" + parts[0].mimeType)
+	// 	console.log(body_text);
+	// 	console.log("TYPE" + parts[1].mimeType)
+	// 	console.log(body_html);
+	// }
 
 	body = message.payload.body
 	if(body) {
@@ -145,8 +161,21 @@ var addMessageFromContact = function(message, contact) {
 	var body_html = ""
 	if(parts) {
 		// console.log(msg_str);
-		body_text = base64ToUtf(parts[0].body.data)
-		body_html = base64ToUtf(parts[1].body.data)
+		if(parts[0].mimeType.substring(0, 9) == "multipart") {
+			// console.log("weird af")
+			var first_parts = parts[0].parts
+			body_text = base64ToUtf(first_parts[0].body.data)
+			body_html = base64ToUtf(first_parts[1].body.data)
+			if(subject == "Offer Letter") {
+				console.log("--------------------------BODY TEXT: " + body_html)
+				console.log(first_parts[0].mimeType)
+			}
+			// console.log(body_text)
+		} else {
+			body_text = base64ToUtf(parts[0].body.data)
+			body_html = base64ToUtf(parts[1].body.data)			
+		}
+
 		// for (var i = 0; i < parts.length; i++) {
 		// 	var part = parts[i];
 		// 	console.log("------ Part: ");
@@ -154,6 +183,9 @@ var addMessageFromContact = function(message, contact) {
 		// 	// console.log(part_body) 
 		// };
 	}	
+	if(subject == "Offer Letter") {
+		console.log(body_html);
+	}
 	addIfRelevant(gmail_id, subject, from, date_time, body_text, body_html, snippet, flags, contact)
 
 
