@@ -45,7 +45,12 @@
             <div class="col-sm-3 col-md-2">
               <div class="btn-group">
                 
-                <!-- PUT ALL THE FILTERING STUFF HERE -->
+                <select class="form-control" id="appselect" name="appselect">
+                  <option value="0" >None</option>
+                  <% for(var i=0; i<apps.length; i++) {%>
+                    <option value=<%= apps[i].id %> ><%= apps[i].get("title") %> at <%= apps[i].get("company") %></option>
+                  <% } %>
+                </select>
               </div>
             </div>
 
@@ -74,7 +79,7 @@
               <a href="#" class="btn btn-danger btn-sm btn-block" role="button"><i class="glyphicon glyphicon-edit"></i> Compose</a>
               <hr>
               <ul class="nav nav-pills nav-stacked">
-                <li class="active"><a href="#"><span class="badge pull-right"><%= data.length %></span> Inbox </a>
+                <li class="active"><a href="#"><span class="badge pull-right"><%= 0 /*data.length*/ %></span> Inbox </a>
                 </li>
                 <li><a href="#">Starred</a></li>
                 <li><a href="#">Important</a></li>
@@ -106,6 +111,7 @@
                           -->
 
                           <!-- iterate email items -->
+                        <% if (data) { %>  
                         <% for(var i=0; i<data.length; i++) { %>   
                         <a href='javascript:renderMessage("<%= data[i].get("senderName") %>", "<%= data[i].get('senderEmail') %>",
                           "<%= data[i].get("subject") %>", "<%= data[i].get("bodyText") %>")' 
@@ -128,6 +134,7 @@
                           </span>
                       </a>
 
+                      <% } %>
                       <% } %>
 
                   </div>
