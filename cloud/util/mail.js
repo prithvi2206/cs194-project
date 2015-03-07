@@ -42,10 +42,10 @@ var addIfRelevant = function(gmail_id, subject, from, date_time, body_text, body
 	message_entry.set("subject", subject);
 	message_entry.set("snippet", snippet);
 	message_entry.set("bodyText", body_text);
-	if(subject == "Offer Letter") {
-		console.log("----------------- what's being added:")
-		console.log(body_html);
-	} 
+	// if(subject == "Offer Letter") {
+	// 	console.log("----------------- what's being added:")
+	// 	console.log(body_html);
+	// } 
 	message_entry.set("bodyHTML", body_html);
 	message_entry.set("flags", flags);
 	message_entry.set("userId", Parse.User.current());
@@ -153,24 +153,17 @@ var addMessageFromContact = function(message, contact) {
 	// }
 
 	body = message.payload.body
-	if(body) {
-		console.log(message.payload.body.data)
-	} 
+	// if(body) {
+	// 	console.log(message.payload.body.data)
+	// } 
 	var parts = message.payload.parts;
 	var body_text = ""
 	var body_html = ""
 	if(parts) {
-		// console.log(msg_str);
 		if(parts[0].mimeType.substring(0, 9) == "multipart") {
-			// console.log("weird af")
 			var first_parts = parts[0].parts
 			body_text = base64ToUtf(first_parts[0].body.data)
 			body_html = base64ToUtf(first_parts[1].body.data)
-			if(subject == "Offer Letter") {
-				console.log("--------------------------BODY TEXT: " + body_html)
-				console.log(first_parts[0].mimeType)
-			}
-			// console.log(body_text)
 		} else {
 			body_text = base64ToUtf(parts[0].body.data)
 			body_html = base64ToUtf(parts[1].body.data)			
@@ -183,9 +176,6 @@ var addMessageFromContact = function(message, contact) {
 		// 	// console.log(part_body) 
 		// };
 	}	
-	if(subject == "Offer Letter") {
-		console.log(body_html);
-	}
 	addIfRelevant(gmail_id, subject, from, date_time, body_text, body_html, snippet, flags, contact)
 
 
