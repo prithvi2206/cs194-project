@@ -4,10 +4,22 @@
  *  - Change read status, in addition to fetching new mails
  */
 
-/* 
- */ 
-var mostRecentMessageStored = function() {
-	return null;
+
+/* replace with sexy naive bayes bag of word classification algorithm */
+var emailIsRecruitingRelated = function(from, subject, body_text) {
+	if(body_text.indexOf("unsubscribe") > -1) {
+		return false;
+	}
+	if(body_text.indexOf("un-subscribe") > -1) {
+		return false;
+	}
+	if(body_text.indexOf("un-enroll") > -1) {
+		return false;
+	}
+	if(body_text.indexOf("unenroll") > -1) {
+		return false;
+	}
+	return true;
 }
 
 var sendIfNoDuplicate = function(message_entry, gmail_id) {
