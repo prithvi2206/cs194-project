@@ -11,6 +11,7 @@ var displayMessages = function(res) {
 	var MessageObj = Parse.Object.extend("Message");
 	var query = new Parse.Query(MessageObj);
 	query.equalTo("userId", Parse.User.current());
+	query.descending("dateSent");
 	query.find({
 		success: function(results) {
 			res.render('pages/messages/main', { 
