@@ -109,8 +109,6 @@ function appSelectListener() {
 
 $(function() {
 
-    
-
     $('tr.document-entry').click(function() {
         $('tr.selected').removeClass('selected');
         $(this).addClass('selected');

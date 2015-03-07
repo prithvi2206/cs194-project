@@ -57,8 +57,8 @@ exports.getMessages = function(req, res) {
 	var query = new Parse.Query(MessageObj);
 	var query_app = new Parse.Query(AppObj);
 
-	if(req.query.appid) {
-		query_app.get(req.query.appid, {
+	if(req.params.app) {
+		query_app.get(req.params.app, {
 		  success: function(appId) {
 
 		    /* Query messages on userId and app Id */
@@ -102,5 +102,4 @@ exports.getMessages = function(req, res) {
 exports.main = function(req, res) {
 	mail.updateMessagesDB(res);
 	displayMessages(res);
-
 };
