@@ -96,18 +96,19 @@
                   </div>
                   <div class="panel-body">
                     <div class="list-group">
+                      <% if (data["messages"]) { %>
+                        <% for(var i = 0; i < /*(data["messages"].length*/ 2; i++) { %>
+                          <a onclick="renderMessage(<%= JSON.stringify(data["messages"][i]) %>);" class="list-group-item">
+                            <div class="list-group-item-heading"><b><%= data["messages"][i].get("senderName") %></b></div>
+                            <p class="list-group-item-text">
+                              <%= data["messages"][i].get("subject") %> 
 
-                      <% for(var i = 0; i < data["messages"].length; i++) { %>
-                        <a href="#" class="list-group-item">
-                          <div class="list-group-item-heading"><b><%= data["messages"][i].get("senderName") %></b></div>
-                          <p class="list-group-item-text">
-                            <%= data["messages"][i].get("subject") %> 
-
-                          </p>
-                          <p class="text-muted" style="font-size: 11px;">
-                            <%= data["messages"][i].get("snippet") %>
-                          </p>
-                        </a>
+                            </p>
+                            <p class="text-muted" style="font-size: 11px;">
+                              <%= data["messages"][i].get("snippet") %>
+                            </p>
+                          </a>
+                        <% } %>
                       <% } %>
 
                       </div>
@@ -222,7 +223,7 @@
             </div>
             <!-- /.container-fluid -->
           </div>
-        </main>
+    </main>
 
       </div>
 
@@ -302,12 +303,40 @@
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->  
 
+  <div class="modal fade" id="messageViewModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 id="messageTitle" class="modal-title">Message
+            </h4>
+          </div>
+
+          <div class="modal-body">
+
+          <h5 id="messageSubject"></h5>
+
+          <div id="messageBody">
+          </div>
+        
+          </div>
+
+        <div class="modal-footer">
+
+        </div>
+
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal --> 
+
   <edit>
       <% include ../../partials/jobs_edit %>
   </edit>
 
   <footer>
     <% include ../../partials/footer %>
+    <script src="/js/messages.js"></script>
   </footer>
 
 </body>

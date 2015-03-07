@@ -244,6 +244,23 @@ exports.add_existing_document = function(req, res) {
 	});
 }
 
+var getDomain = function(url) {
+	var result = url 
+	if(result.indexOf("http://") == 0) {
+		result = result.substring(7, result.length)
+	}
+	if(result.indexOf("https://") == 0) {
+		result = result.substring(8, result.length)
+	}
+	if(result.indexOf("www.") == 0) {
+		result = result.substring(4, result.length)
+	}
+	if(result.indexOf("/") != -1) {
+		result = result.substring(0, result.indexOf("/"))
+	}
+	return result
+}
+
 exports.add = function(req, res) {
 	Parse.User.current().fetch();
 
@@ -251,7 +268,7 @@ exports.add = function(req, res) {
 	var position = req.body.position;
 	var description = req.body.desc;
 	var status = req.body.status;
-	var url = req.body.url;
+	var url = getDomain(req.body.url);
 
 	console.log("Going to add " + company + ", " + position);
 

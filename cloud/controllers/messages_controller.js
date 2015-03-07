@@ -4,25 +4,42 @@ var alerts = require("../util/alerts.js");
 var session = require("../util/session.js");
 var mail = require("../util/mail.js");
 
-// var btoa = require('btoa')
-
 var displayMessages = function(res) {
 	console.log("re-displaying messages")
 	var MessageObj = Parse.Object.extend("Message");
 	var query = new Parse.Query(MessageObj);
 	query.equalTo("userId", Parse.User.current());
+	query.descending("dateSent");
+
+	/* Get Messages */
 	query.find({
-		success: function(results) {
-			res.render('pages/messages/main', { 
-				currentUser: Parse.User.current().getUsername(),
-				title: "Messages | inturn",
-				page: "messages",
-				message: null,
-				data: results,
-				alerts: alerts.Alert
+		success: function(messages) {
+
+			/* Get App IDs */
+			var AppObj = Parse.Object.extend("Application");
+			var query = new Parse.Query(AppObj);
+			query.equalTo("userId", Parse.User.current());
+			query.find({
+				success: function(results) {
+					
+					res.render('pages/messages/main', { 
+						currentUser: Parse.User.current().getUsername(),
+						title: "Messages | inturn",
+						page: "messages",
+						message: null,
+						data: messages,
+						apps: results,
+						alerts: alerts.Alert
+					});
+					
+					alerts.reset();
+
+				},
+				error: function(error) {
+					console.log(error.message);
+				}
 			});
 
-			alerts.reset();
 		},
 		error: function(error) {
 			console.log(error.message);
@@ -30,9 +47,59 @@ var displayMessages = function(res) {
 	});
 }
 
+/* This method retrievs messages based on user criteria:
+userid
+appid (for app filtering)
+*/
+exports.getMessages = function(req, res) {
+	var AppObj = Parse.Object.extend("Application");
+	var MessageObj = Parse.Object.extend("Message");
+	var query = new Parse.Query(MessageObj);
+	var query_app = new Parse.Query(AppObj);
+
+	if(req.params.app != 0) {
+		query_app.get(req.params.app, {
+		  success: function(appId) {
+
+		    /* Query messages on userId and app Id */
+		    query.equalTo("appId", appId);
+			query.equalTo("userId", Parse.User.current());
+			query.descending("dateSent");
+			query.find({
+				success: function(results) {
+					res.send({data: results});
+				},
+				error: function(error) {
+					console.log(error.message);
+				}
+			});
+
+		  },
+		  error: function(object, error) {
+		  	console.log(error.message);
+		  }
+		});
+
+	}
+
+	else {
+		/* Query messages on userId and app Id */
+		query.equalTo("userId", Parse.User.current());
+		query.descending("dateSent");
+		query.find({
+			success: function(results) {
+				res.send({data: results});
+			},
+			error: function(error) {
+				console.log(error.message);
+			}
+		});
+	}
+	
+	
+}
+
 exports.main = function(req, res) {
 	mail.updateMessagesDB(res);
-
 	displayMessages(res);
-
 };
