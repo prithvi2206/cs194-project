@@ -100,7 +100,7 @@ var base64ToUtf = function(s) {
 }
 
 // 	CURRENTLY DOESN'T ACTUALLY ADD MESSAGES, JUST TRIES TO PRINT OUT RELEVANT PARTS
-var addMessageFromContact = function(message, parser, contact) {
+var addMessageFromContact = function(message, contact) {
 	// parser.on("end", function(mail){
 	// 	console.log("From:", mail_object.from);
 	//     console.log("Subject:", mail_object.subject); 
@@ -254,7 +254,28 @@ var formLabelContactSearchQuery = function(label, contact) {
 	
 // }
 
-var getAllMessages = function(gmail, parser) {
+var getAllFromContact = function(gmail, contact) {
+	// console.log("Contact: " + contact.get("name"));
+	var query = formLabelContactSearchQuery("inbox", contact)
+	var s = gmail.messages(query, {max : 100})
+	// var count = 0
+	s.on('data', function (d) {
+		// if(count < 1) {
+		addMessageFromContact(d, contact);
+		// }
+		// count++
+		// count++
+		// if(count < 1) {
+		// }
+		// on the hundredth message, call getAllMessages starting from the time of the last message
+		// received, so that you can get the next hundred messages
+		// if(count == 100) {
+		// 	getAllMessages(gmail, getTime(addMessage), to);
+		// }
+	})
+}
+
+var getAllMessages = function(gmail) {
 	var ContactObj = Parse.Object.extend("Contact");
 	var query = new Parse.Query(ContactObj);
 	query.equalTo("userId", Parse.User.current());
@@ -263,25 +284,7 @@ var getAllMessages = function(gmail, parser) {
 			var num_contacts = results.length
 			console.log("searching for emails from " + num_contacts + " contacts");
 			for(var i = 0; i < results.length; i++) {
-				var contact = results[i];
-				// console.log("Contact: " + contact.get("name"));
-				query = formLabelContactSearchQuery("inbox", contact)
-				var s = gmail.messages(query, {max : 100})
-				// var count = 0
-				s.on('data', function (d) {
-					// if(count < 1) {
-					addMessageFromContact(d, parser, contact);
-					// }
-					// count++
-					// count++
-					// if(count < 1) {
-					// }
-					// on the hundredth message, call getAllMessages starting from the time of the last message
-					// received, so that you can get the next hundred messages
-					// if(count == 100) {
-					// 	getAllMessages(gmail, getTime(addMessage), to);
-					// }
-				})
+				getAllFromContact(gmail, results[i]);
 			}
 		},
 		error: function(error) {
@@ -293,12 +296,10 @@ var getAllMessages = function(gmail, parser) {
 
 // retrieves all new messages, and inserts the scaped data into the database
 exports.updateMessagesDB = function(res) {
-	var MailParser = require("mailparser").MailParser;
-	var parser = new MailParser();
 	var token = Parse.User.current().get("google_token");
 	console.log("token is " + token);
 	var gmail = new Gmail(token);
 	var most_recent_message = mostRecentMessageStored();
 	console.log("most recent: " + most_recent_message);
-	getAllMessages(gmail, parser);
+	getAllMessages(gmail);
 }
