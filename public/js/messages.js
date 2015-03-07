@@ -8,8 +8,6 @@ function renderMessage(name, email, subject, body) {
 
 function getMessages() {
     var app = document.forms["filterMessage"]["app"].value;
-    if (app == 0) 
-        return;
 
     $('#messagesList').html("loading...");
 
@@ -20,7 +18,7 @@ function getMessages() {
         var data = response.data;
 
         for(var i=0; i<data.length; i++) {
-            console.log(data[i]["dateSent"]["iso"]);
+
             var body = ""
 
             newHTML += "<a href='javascript:renderMessage(\"" + data[i]["senderName"] + "\", \"" + data[i]["senderEmail"] + "\", \"";

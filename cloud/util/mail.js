@@ -218,7 +218,7 @@ exports.updateMessagesDB = function(res) {
 	var token = Parse.User.current().get("google_token");
 	console.log("token is " + token);
 	var gmail = new Gmail(token);
-	var most_recent_message = mostRecentMessageStored();
-	console.log("most recent: " + most_recent_message);
+	// var most_recent_message = mostRecentMessageStored();
+	// console.log("most recent: " + most_recent_message);
 	getAllMessages(gmail);
 }

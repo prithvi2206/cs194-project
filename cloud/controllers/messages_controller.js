@@ -57,7 +57,7 @@ exports.getMessages = function(req, res) {
 	var query = new Parse.Query(MessageObj);
 	var query_app = new Parse.Query(AppObj);
 
-	if(req.params.app) {
+	if(req.params.app != 0) {
 		query_app.get(req.params.app, {
 		  success: function(appId) {
 
