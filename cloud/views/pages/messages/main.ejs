@@ -16,7 +16,7 @@
     <main>
       <div id="page-wrapper">
 
-        <div class="container-fluid">
+      <div class="container-fluid">
 
           <!-- Page Heading -->
           <div class="row">
@@ -38,25 +38,30 @@
               <div class="btn-group">
                 
                 <!-- PUT ALL THE FILTERING STUFF HERE -->
-            </div>
-          </div>
-          <div class="col-sm-9 col-md-10">
-              <div class="pull-right">
-                <span class="text-muted"><b>1</b>–<b><%= data.length %></b> of <b><%= data.length %></b></span>
-                <div class="btn-group btn-group-sm">
-                  <button type="button" class="btn btn-default">
-                    <span class="glyphicon glyphicon-chevron-left"></span>
-                  </button>
-                  <button type="button" class="btn btn-default">
-                    <span class="glyphicon glyphicon-chevron-right"></span>
-                  </button>
-                </div>
               </div>
             </div>
+
+            <!-- PAGINATION BUTTONS -->
+            <div class="col-sm-9 col-md-10">
+                <div class="pull-right">
+                  <span class="text-muted"><b>1</b>–<b><%= data.length %></b> of <b><%= data.length %></b></span>
+                  <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-default">
+                      <span class="glyphicon glyphicon-chevron-left"></span>
+                    </button>
+                    <button type="button" class="btn btn-default">
+                      <span class="glyphicon glyphicon-chevron-right"></span>
+                    </button>
+                  </div>
+                </div>
+            </div>
           </div>
+
           <hr>
 
           <div class="row">
+
+            <!-- FOLDER BUTTONS -->
             <div class="col-sm-3 col-md-2">
               <a href="#" class="btn btn-danger btn-sm btn-block" role="button"><i class="glyphicon glyphicon-edit"></i> Compose</a>
               <hr>
@@ -69,6 +74,7 @@
                 <li><a href="#"><!--<span class="badge pull-right">3</span>-->Drafts</a></li>
               </ul>
             </div>
+
             <div class="col-sm-9 col-md-10">
               <!-- Nav tabs -->
               <ul class="nav nav-tabs">
@@ -78,9 +84,9 @@
                   Social</a></li>
                   <li><a href="#messages" data-toggle="tab"><span class="glyphicon glyphicon-tags"></span>
                     Promotions</a></li>
-                    <li><a href="#settings" data-toggle="tab"><span class="glyphicon glyphicon-plus no-margin">
-                    </span></a></li>
-                  </ul>
+                  <li><a href="#settings" data-toggle="tab"><span class="glyphicon glyphicon-plus no-margin">
+                  </span></a></li>
+              </ul>
                   <!-- Tab panes -->
                   <div class="tab-content">
                     <div class="tab-pane fade in active" id="home">
@@ -93,7 +99,7 @@
 
                           <!-- iterate email items -->
                         <% for(var i=0; i<data.length; i++) { %>   
-                        <a href="#" class="list-group-item">
+                        <a href="javascript:renderMessage(<%= JSON.stringify(data[i]) %>);" id="<%= "msg_" + i %>" class="list-group-item">
                           <div class="checkbox">
                             <label>
                               <input type="checkbox">
@@ -116,6 +122,7 @@
 
                   </div>
                 </div>
+
                 <div class="tab-pane fade in" id="profile">
                   <div class="list-group">
                     <div class="list-group-item">
@@ -123,11 +130,14 @@
                     </div>
                   </div>
                 </div>
+
                 <div class="tab-pane fade in" id="messages">
                   ...</div>
-                  <div class="tab-pane fade in" id="settings">
-                    This tab is empty.</div>
-                  </div>
+
+                <div class="tab-pane fade in" id="settings">
+                  This tab is empty.</div>
+
+                </div>
 
                 </div>
               </div>
@@ -135,14 +145,41 @@
             </div>
             <!-- /.container-fluid -->
           </div>
-        </main>
+    </main>
 
-      </div>
+  </div>
 
-      <footer>
-        <% include ../../partials/footer %>
-      </footer>
+  <div class="modal fade" id="messageViewModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
 
-    </body>
-    </html>
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 id="messageTitle" class="modal-title">Message
+              </h4>
+            </div>
+
+            <div class="modal-body">
+
+            <h5 id="messageSubject"></h5>
+
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dictum dolor sit amet orci blandit, quis dapibus lectus feugiat. Nulla convallis maximus ante at bibendum. Mauris magna neque, aliquam scelerisque sodales ut, interdum at elit. Fusce nec urna nec dolor tempus pulvinar ut sit amet sem. Ut efficitur orci quis risus commodo, nec finibus purus lobortis. Etiam et malesuada mauris, ut interdum lorem. Cras nec eros id nibh aliquam aliquet. Suspendisse quis diam in velit gravida rutrum. Proin ut nibh enim. Mauris ornare orci eros, viverra euismod leo ultricies viverra. Pellentesque eget odio vitae eros porta efficitur at id nulla.
+          
+            </div>
+
+          <div class="modal-footer">
+
+          </div>
+
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal --> 
+
+  <footer>
+    <% include ../../partials/footer %>
+    <script src="/js/messages.js"></script>
+  </footer>
+
+</body>
+</html>
 

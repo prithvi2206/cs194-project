@@ -34,5 +34,5 @@ exports.main = function(req, res) {
 	mail.updateMessagesDB(res);
 
 	displayMessages(res);
-
+8
 };
