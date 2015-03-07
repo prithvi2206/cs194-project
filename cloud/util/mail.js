@@ -41,12 +41,17 @@ var addIfRelevant = function(gmail_id, subject, from, date_time, body_text, body
 	message_entry.set("contactId", contact);
 	message_entry.set("subject", subject);
 	message_entry.set("snippet", snippet);
-	message_entry.set("bodyText", body_text);
+	message_entry.set("bodyText", body_text.replace(/"/g, "'"));
 	// if(subject == "Offer Letter") {
 	// 	console.log("----------------- what's being added:")
 	// 	console.log(body_html);
 	// } 
-	message_entry.set("bodyHTML", body_html);
+
+	var bodytext = '';
+	var m = body_html.match(/<body[^>]*>([^<]*(?:(?!<\/?body)<[^<]*)*)<\/body\s*>/i);
+	if (m) bodytext = m[1];
+
+	message_entry.set("bodyHTML", bodytext.replace(/"/g, "'"));
 	message_entry.set("flags", flags);
 	message_entry.set("userId", Parse.User.current());
 	message_entry.set("senderName", contact.get("name"));
