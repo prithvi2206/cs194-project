@@ -72,21 +72,6 @@ var addIfRelevant = function(gmail_id, subject, from, date_time, body_text, body
 	sendIfNoDuplicate(message_entry, gmail_id);
 }
 
-var addAttachment = function(attachment_id, attachment_name, message_id) {
-	var AttachmentObj = Parse.Object.extend("Attachment");
-	var attachment_entry = new AttachmentObj;		
-	attachment_entry.set("filename", attachment_name);
-	attachment_entry.set("userId", Parse.User.current());
-	attachment_entry.set("messageId", message_id);
-	attachment_entry.set("attachmentId", attachment_id);
-	// console.log(attachment_name + " " + attachment_id + " " + message_id)
-	attachment_entry.save().then(function() { 
-		console.log("----------- new attachment saved succesfully");
-	}, function(error) {
-		console.log(error);
-	});
-}
-
 var base64ToUtf = function(s) {
 	var buffer = new Buffer(s + '', 'base64');
 	return buffer.toString("utf-8");
@@ -127,9 +112,6 @@ var addMessageFromContact = function(message, contact) {
 			var first_parts = parts[0].parts
 			body_text = base64ToUtf(first_parts[0].body.data)
 			body_html = base64ToUtf(first_parts[1].body.data)
-			for (var i = 1; i < parts.length; i++) {
-				addAttachment(parts[i].body.attachmentId, parts[i].filename, gmail_id)
-			};
 		} else {
 			body_text = base64ToUtf(parts[0].body.data)
 			body_html = base64ToUtf(parts[1].body.data)			
