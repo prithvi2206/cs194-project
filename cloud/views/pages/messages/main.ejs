@@ -99,7 +99,7 @@
 
                           <!-- iterate email items -->
                         <% for(var i=0; i<data.length; i++) { %>   
-                        <a href="javascript:renderMessage(<%= JSON.stringify(data[i]) %>);" id="<%= "msg_" + i %>" class="list-group-item">
+                        <a onclick="renderMessage(<%= JSON.stringify(data[i]) %>);" id="<%= "msg_" + i %>" class="list-group-item">
                           <div class="checkbox">
                             <label>
                               <input type="checkbox">
