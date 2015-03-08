@@ -61,13 +61,13 @@ var addMessageWithContact = function(gmail_id, subject, date_time, body_text, bo
 	message_entry.set("contactId", contact);
 	message_entry.set("subject", subject);
 	message_entry.set("snippet", snippet);
-	message_entry.set("bodyText", body_text.replace(/"/g, "'"));
+	message_entry.set("bodyText", body_text);
 
 	var bodytext = '';
 	var m = body_html.match(/<body[^>]*>([^<]*(?:(?!<\/?body)<[^<]*)*)<\/body\s*>/i);
 	if (m) bodytext = m[1];
 
-	message_entry.set("bodyHTML", bodytext.replace(/"/g, "'"));
+	message_entry.set("bodyHTML", bodytext);
 	message_entry.set("flags", flags);
 	message_entry.set("userId", Parse.User.current());
 	message_entry.set("senderName", contact.get("name"));
