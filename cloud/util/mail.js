@@ -4,6 +4,7 @@
  *  - Change read status, in addition to fetching new mails
  */
 
+var kill_words = ["unsubscribe", "un-subscribe", "un-enroll", "unenroll"]
 
 /* replace with sexy naive bayes bag of word classification algorithm */
 var emailIsRecruitingRelated = function(from, subject, body_text) {
@@ -19,6 +20,12 @@ var emailIsRecruitingRelated = function(from, subject, body_text) {
 	if(body_text.indexOf("unenroll") > -1) {
 		return false;
 	}
+	if(from.contains("no-reply") > -1) {
+		return false;
+	}
+	if(from.contains("noreply") > -1) {
+		return false;
+	}
 	return true;
 }
 
@@ -31,7 +38,7 @@ var sendIfNoDuplicate = function(message_entry, gmail_id) {
 			if(results.length == 0)  {
 				// console.log("no duplicate")
 				message_entry.save().then(function() { 
-					// console.log("----------- new message saved succesfully");
+					console.log("----------- new message saved succesfully");
 				}, function(error) {
 					console.log(error);
 				});
@@ -46,7 +53,7 @@ var sendIfNoDuplicate = function(message_entry, gmail_id) {
 
 }
 
-var addIfRelevant = function(gmail_id, subject, from, date_time, body_text, body_html, snippet, flags, contact) {
+var addMessageWithContact = function(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact) {
 	var MessageObj = Parse.Object.extend("Message");
 	var message_entry = new MessageObj;		
 	message_entry.set("gmailId", gmail_id);
@@ -117,7 +124,7 @@ var addMessageFromContact = function(message, contact) {
 			body_html = base64ToUtf(parts[1].body.data)			
 		}
 	}	
-	addIfRelevant(gmail_id, subject, from, date_time, body_text, body_html, snippet, flags, contact)
+	addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact)
 
 /*	console.log("==================== MESSAGE DATA ====================")
 	console.log("id: " + gmail_id);
@@ -148,6 +155,88 @@ var addMessageFromContact = function(message, contact) {
 
 }
 
+
+var addMessageFromApp = function(message, app) {
+	var gmail_id = message.id;
+	var email_type = message.payload.mimeType;
+	var headers = message.payload.headers;
+	var body = message.payload.body;
+	var subject = null;
+	var from = null;
+	var date_time = null;
+	var snippet = message.snippet
+	var flags = message.labelIds.join()
+   	for(var i = 0; i < headers.length; i++) {
+		if(headers[i].name == "Subject") {
+			subject = headers[i].value;
+		}
+		if(headers[i].name == "From") {
+			from = headers[i].value;
+		}
+		if(headers[i].name == "Date") {
+			date_time = headers[i].value;			
+		}
+	}
+
+	var ind = from.lastIndexOf("<")
+	var from_email = from.substring(ind + 1, from.length - 1)
+	var from_name = from.substring(0, ind - 1)
+
+
+    var msg_str = JSON.stringify(message.payload)
+    var body = ""
+
+	body = message.payload.body
+
+	var parts = message.payload.parts;
+	var body_text = ""
+	var body_html = ""
+	if(parts) {
+		if(parts[0].mimeType.substring(0, 9) == "multipart") {
+			var first_parts = parts[0].parts
+			body_text = base64ToUtf(first_parts[0].body.data)
+			body_html = base64ToUtf(first_parts[1].body.data)
+		} else {
+			body_text = base64ToUtf(parts[0].body.data)
+			body_html = base64ToUtf(parts[1].body.data)			
+		}
+	}
+
+	var ContactObj = Parse.Object.extend("Contact");
+	var query = new Parse.Query(ContactObj);
+	query.equalTo("email", from_email);
+	query.find({
+		success: function(results) {
+			if(results.length == 0)  {
+				console.log("the contact for " + from_name + " isn't there")
+				var ContactObj = Parse.Object.extend("Contact");
+				var contact_entry = new ContactObj;		
+				contact_entry.set("appId", app);
+				contact_entry.set("company", app.get("company"));
+				contact_entry.set("email", from_email);
+				contact_entry.set("name", from_name);
+				contact_entry.set("notes", "Automatically generated from Messages");
+				contact_entry.set("title", "");
+				contact_entry.set("userId", Parse.User.current());
+				contact_entry.save().then(function() { 
+					addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact_entry)
+				}, function(error) {
+					console.log(error);
+				});
+			} else {
+				addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, results[0])
+			}
+		},
+		error: function(error) {
+			console.log(error.message);
+		}
+	});	
+
+
+
+	// addIfRelevant(gmail_id, subject, from, date_time, body_text, body_html, snippet, flags, contact)
+}
+
 var getTime = function(message) {
 	return null
 }
@@ -169,11 +258,14 @@ var formLabelRangeSearchQuery = function(label, from, to, sender) {
 	if(sender) {
 		query = query + " from:" + sender;
 	}
+	for (var i = 0; i < kill_words.length; i++) {
+		query = query + " -" + kill_words[i];
+	};
 	console.log("query: " + query);
 	return query;
 }
 
-var formLabelContactSearchQuery = function(label, contact) {
+var formLabelContactAppSearchQuery = function(label, contact, domain) {
 	var query = ""
 	if(label) {
 		query = query + "label:" + label;
@@ -181,16 +273,28 @@ var formLabelContactSearchQuery = function(label, contact) {
 	if(contact) {
 		query = query + " from:" + contact.get("email");
 	}
+	if(domain && domain.length > 0) {
+		query = query + " from:" + domain;
+	}
 	console.log("query: " + query);
 	return query;
 }
 
 
 var getAllFromContact = function(gmail, contact) {
-	var query = formLabelContactSearchQuery("inbox", contact)
+	var query = formLabelContactAppSearchQuery("inbox", contact, null)
 	var s = gmail.messages(query, {max : 100})
 	s.on('data', function (d) {
 		addMessageFromContact(d, contact);
+	})
+}
+
+var getAllFromApplication = function(gmail, app) {
+	var query = formLabelContactAppSearchQuery("inbox", null, app.get("url"))
+	var s = gmail.messages(query, {max : 100})
+	var count = 0;
+	s.on('data', function (d) {
+		addMessageFromApp(d, app);
 	})
 }
 
@@ -210,6 +314,21 @@ var getAllMessages = function(gmail) {
 			console.log(error.message);
 		}
 	});	
+	var ApplicationObj = Parse.Object.extend("Application");
+	var query = new Parse.Query(ApplicationObj);
+	query.equalTo("userId", Parse.User.current());
+	query.find({
+		success: function(results) {
+			var num_applications = results.length
+			console.log("searching for emails from " + num_applications + " applications");
+			for(var i = 0; i < results.length; i++) {
+				getAllFromApplication(gmail, results[i]);
+			}
+		},
+		error: function(error) {
+			console.log(error.message);
+		}
+	});	
 }
 
 
@@ -218,7 +337,5 @@ exports.updateMessagesDB = function(res) {
 	var token = Parse.User.current().get("google_token");
 	console.log("token is " + token);
 	var gmail = new Gmail(token);
-	// var most_recent_message = mostRecentMessageStored();
-	// console.log("most recent: " + most_recent_message);
 	getAllMessages(gmail);
 }

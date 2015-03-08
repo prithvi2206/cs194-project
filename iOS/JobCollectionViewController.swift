@@ -36,6 +36,9 @@ class JobCollectionViewController: UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //PFUser.logInWithUsername("cs194demo@stanford.edu", password: "password")
+        
         let inset = UIEdgeInsetsMake(20, 0, 0, 0)
         collectionView.contentInset = inset
         
