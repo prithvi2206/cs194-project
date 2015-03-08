@@ -23,7 +23,11 @@
 		9429B0731AA539E1001EBD50 /* DocumentsCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9429B0721AA539E1001EBD50 /* DocumentsCollectionViewController.swift */; };
 		9429B0751AA53AFA001EBD50 /* DocumentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9429B0741AA53AFA001EBD50 /* DocumentCollectionViewCell.swift */; };
 		9429B0771AA53E6C001EBD50 /* DocumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9429B0761AA53E6C001EBD50 /* DocumentViewController.swift */; };
+		944D81FA1AAB380700AEE2DA /* JobMessagesTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944D81F91AAB380700AEE2DA /* JobMessagesTableView.swift */; };
+		944D81FD1AABD4CE00AEE2DA /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 944D81FB1AABD4CE00AEE2DA /* AddressBook.framework */; };
+		944D81FE1AABD4CE00AEE2DA /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 944D81FC1AABD4CE00AEE2DA /* AddressBookUI.framework */; };
 		9469AAA31A9B412300B97693 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9469AAA21A9B412300B97693 /* LoginViewController.swift */; };
+		9475D0D61AAC56F100BAE764 /* NewContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9475D0D51AAC56F100BAE764 /* NewContactViewController.swift */; };
 		94A80E811A9B479B00EFC9F0 /* ContactsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A80E801A9B479B00EFC9F0 /* ContactsTableViewController.swift */; };
 		94A80E831A9B4C2600EFC9F0 /* ContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A80E821A9B4C2600EFC9F0 /* ContactTableViewCell.swift */; };
 		94DA817E1AA47C5700093D72 /* ContactDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94DA817D1AA47C5700093D72 /* ContactDetailViewController.swift */; };
@@ -52,7 +56,11 @@
 		9429B0721AA539E1001EBD50 /* DocumentsCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsCollectionViewController.swift; sourceTree = "<group>"; };
 		9429B0741AA53AFA001EBD50 /* DocumentCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentCollectionViewCell.swift; sourceTree = "<group>"; };
 		9429B0761AA53E6C001EBD50 /* DocumentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentViewController.swift; sourceTree = "<group>"; };
+		944D81F91AAB380700AEE2DA /* JobMessagesTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JobMessagesTableView.swift; sourceTree = "<group>"; };
+		944D81FB1AABD4CE00AEE2DA /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		944D81FC1AABD4CE00AEE2DA /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 		9469AAA21A9B412300B97693 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		9475D0D51AAC56F100BAE764 /* NewContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewContactViewController.swift; sourceTree = "<group>"; };
 		94A80E801A9B479B00EFC9F0 /* ContactsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsTableViewController.swift; sourceTree = "<group>"; };
 		94A80E821A9B4C2600EFC9F0 /* ContactTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactTableViewCell.swift; sourceTree = "<group>"; };
 		94DA817D1AA47C5700093D72 /* ContactDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactDetailViewController.swift; sourceTree = "<group>"; };
@@ -66,6 +74,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				944D81FD1AABD4CE00AEE2DA /* AddressBook.framework in Frameworks */,
+				944D81FE1AABD4CE00AEE2DA /* AddressBookUI.framework in Frameworks */,
 				81BA817F1A49E0F000E65899 /* libstdc++.6.dylib in Frameworks */,
 				81BA817D1A49E0EA00E65899 /* MobileCoreServices.framework in Frameworks */,
 				81BA817B1A49E0E500E65899 /* SystemConfiguration.framework in Frameworks */,
@@ -105,12 +115,14 @@
 				81BA814A1A49DA1800E65899 /* AppDelegate.swift */,
 				9469AAA21A9B412300B97693 /* LoginViewController.swift */,
 				81BA814E1A49DA1800E65899 /* Main.storyboard */,
+				944D81F91AAB380700AEE2DA /* JobMessagesTableView.swift */,
 				9429B0721AA539E1001EBD50 /* DocumentsCollectionViewController.swift */,
 				9429B0741AA53AFA001EBD50 /* DocumentCollectionViewCell.swift */,
 				9429B0761AA53E6C001EBD50 /* DocumentViewController.swift */,
 				94F0C4F71AA49B6300C5B998 /* JobDetailViewController.swift */,
 				94F0C4F31AA489EF00C5B998 /* JobCollectionViewController.swift */,
 				94F0C4F51AA48DAA00C5B998 /* JobCollectionViewCell.swift */,
+				9475D0D51AAC56F100BAE764 /* NewContactViewController.swift */,
 				94A80E801A9B479B00EFC9F0 /* ContactsTableViewController.swift */,
 				94A80E821A9B4C2600EFC9F0 /* ContactTableViewCell.swift */,
 				94DA817D1AA47C5700093D72 /* ContactDetailViewController.swift */,
@@ -132,6 +144,8 @@
 		81BA816A1A49DB5600E65899 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				944D81FB1AABD4CE00AEE2DA /* AddressBook.framework */,
+				944D81FC1AABD4CE00AEE2DA /* AddressBookUI.framework */,
 				81BA816B1A49DB6800E65899 /* Bolts.framework */,
 				81BA816C1A49DB6800E65899 /* Parse.framework */,
 				81BA816D1A49DB6800E65899 /* ParseCrashReporting.framework */,
@@ -244,10 +258,12 @@
 				94A80E831A9B4C2600EFC9F0 /* ContactTableViewCell.swift in Sources */,
 				94DA817E1AA47C5700093D72 /* ContactDetailViewController.swift in Sources */,
 				9429B0751AA53AFA001EBD50 /* DocumentCollectionViewCell.swift in Sources */,
+				9475D0D61AAC56F100BAE764 /* NewContactViewController.swift in Sources */,
 				9429B0731AA539E1001EBD50 /* DocumentsCollectionViewController.swift in Sources */,
 				9429B0771AA53E6C001EBD50 /* DocumentViewController.swift in Sources */,
 				9469AAA31A9B412300B97693 /* LoginViewController.swift in Sources */,
 				81BA814B1A49DA1800E65899 /* AppDelegate.swift in Sources */,
+				944D81FA1AAB380700AEE2DA /* JobMessagesTableView.swift in Sources */,
 				94F0C4F41AA489EF00C5B998 /* JobCollectionViewController.swift in Sources */,
 				94F0C4F81AA49B6300C5B998 /* JobDetailViewController.swift in Sources */,
 				94A80E811A9B479B00EFC9F0 /* ContactsTableViewController.swift in Sources */,
