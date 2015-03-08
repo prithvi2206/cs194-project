@@ -118,10 +118,12 @@
                           -->
 
                           <!-- iterate email items -->
+
                         <% if (data) { %>  
                         <% for(var i=0; i<data.length; i++) { %>   
+
                         <a href='javascript:renderMessage("<%= data[i].get("senderName") %>", "<%= data[i].get('senderEmail') %>",
-                          "<%= data[i].get("subject") %>", "<%= data[i].get("bodyText") %>")' 
+                          "<%= data[i].get("subject") %>", "<%= msgHtml[i] %>")' 
                           id="<%= "msg_" + i %>" class="list-group-item">
                           <div class="checkbox">
                             <label>

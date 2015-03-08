@@ -16,10 +16,11 @@ function getMessages() {
 
         var newHTML = "";
         var data = response.data;
+        var msgHtml = response.msgHtml;
 
         for(var i=0; i<data.length; i++) {
 
-            var body = ""
+            var body = msgHtml[i];
 
             newHTML += "<a href='javascript:renderMessage(\"" + data[i]["senderName"] + "\", \"" + data[i]["senderEmail"] + "\", \"";
             newHTML += data[i]["subject"] + "\", \"" + body + "\")'"; 

@@ -6,6 +6,7 @@
 
 var kill_words = ["unsubscribe", "un-subscribe", "un-enroll", "unenroll"]
 
+
 /* replace with sexy naive bayes bag of word classification algorithm */
 var emailIsRecruitingRelated = function(from, subject, body_text) {
 	if(body_text.indexOf("unsubscribe") > -1) {
