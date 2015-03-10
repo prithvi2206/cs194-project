@@ -126,6 +126,6 @@ exports.getMessages = function(req, res) {
 }
 
 exports.main = function(req, res) {
-	//mail.updateMessagesDB(res);
+	mail.updateMessagesDB(res);
 	displayMessages(res);
 };
