@@ -66,8 +66,10 @@ class NewContactViewController: UIViewController, ABPeoplePickerNavigationContro
             }
         }
         
-        if let note = ABRecordCopyValue(person, kABPersonNoteProperty)?.takeRetainedValue() as? String {
-            notesTextField.text = note
+        if let note: CFStringRef = ABRecordCopyValue(person, kABPersonNoteProperty)?.takeRetainedValue() as? String {
+            
+            println(note)
+            
         }
     }
     
