@@ -13,6 +13,8 @@ class LoginViewController: UIViewController
 {
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var loginPanelView: UIView!
+    @IBOutlet weak var loginButton: UIButton!
     
     private struct Identifier {
         static let SuccessfulLoginSegue = "Sucessful Login Segue"
@@ -32,6 +34,12 @@ class LoginViewController: UIViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.loginPanelView.layer.borderColor = UIColor.lightGrayColor().CGColor
+        self.loginPanelView.layer.borderWidth = 1.0
+        self.loginPanelView.layer.cornerRadius = 2.0
+        
+        self.loginButton.layer.cornerRadius = 2.0
     }
 
     override func didReceiveMemoryWarning() {
