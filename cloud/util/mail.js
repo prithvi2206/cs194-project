@@ -203,35 +203,35 @@ var addMessageFromApp = function(message, app) {
 		}
 	}
 
-	var ContactObj = Parse.Object.extend("Contact");
-	var query = new Parse.Query(ContactObj);
-	query.equalTo("email", from_email);
-	query.find({
-		success: function(results) {
-			if(results.length == 0)  {
-				console.log("the contact for " + from_name + " isn't there")
-				var ContactObj = Parse.Object.extend("Contact");
-				var contact_entry = new ContactObj;		
-				contact_entry.set("appId", app);
-				contact_entry.set("company", app.get("company"));
-				contact_entry.set("email", from_email);
-				contact_entry.set("name", from_name);
-				contact_entry.set("notes", "Automatically generated from Messages");
-				contact_entry.set("title", "");
-				contact_entry.set("userId", Parse.User.current());
-				contact_entry.save().then(function() { 
-					addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact_entry)
-				}, function(error) {
-					console.log(error);
-				});
-			} else {
-				addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, results[0])
-			}
-		},
-		error: function(error) {
-			console.log(error.message);
-		}
-	});	
+	// var ContactObj = Parse.Object.extend("Contact");
+	// var query = new Parse.Query(ContactObj);
+	// query.equalTo("email", from_email);
+	// query.find({
+	// 	success: function(results) {
+	// 		if(results.length == 0)  {
+	// 			console.log("the contact for " + from_name + " isn't there")
+	// 			var ContactObj = Parse.Object.extend("Contact");
+	// 			var contact_entry = new ContactObj;		
+	// 			contact_entry.set("appId", app);
+	// 			contact_entry.set("company", app.get("company"));
+	// 			contact_entry.set("email", from_email);
+	// 			contact_entry.set("name", from_name);
+	// 			contact_entry.set("notes", "Automatically generated from Messages");
+	// 			contact_entry.set("title", "");
+	// 			contact_entry.set("userId", Parse.User.current());
+	// 			contact_entry.save().then(function() { 
+	// 				addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact_entry)
+	// 			}, function(error) {
+	// 				console.log(error);
+	// 			});
+	// 		} else {
+	// 			addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, results[0])
+	// 		}
+	// 	},
+	// 	error: function(error) {
+	// 		console.log(error.message);
+	// 	}
+	// });	
 
 
 

@@ -3,6 +3,8 @@
 exports.main = function(req, res) {
 
 	Parse.User.current().fetch()
+
+	console.log("Starting...")
 	// var clientID = '1073490943584-jihl83sesm1qcm10lik7mu86t5ioh5g5.apps.googleusercontent.com';
 //       var clientSecret = 'MKAnbihZSzT75VOC61bapiPQ';
 //       var callbackURL ='http://localhost:3000/auth/google/callback';
