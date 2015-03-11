@@ -8,8 +8,11 @@
 
 import UIKit
 import Parse
+import AddressBook
+import AddressBookUI
 
-class ContactsTableViewController: UITableViewController {
+
+class ContactsTableViewController: UITableViewController, ABPeoplePickerNavigationControllerDelegate {
     var contacts: [PFObject]? {
         didSet {
             if contacts?.count > 0 {
@@ -27,10 +30,44 @@ class ContactsTableViewController: UITableViewController {
         
     }
     
+    func segueToNewContactForm() {
+        performSegueWithIdentifier("New Contact Segue", sender: self)
+    }
+    
+    func showAddressBook() {
+        var picker = ABPeoplePickerNavigationController()
+        picker.peoplePickerDelegate = self
+        
+        self.presentViewController(picker, animated: true) { () -> Void in
+            println("sweet!")
+        }
+        
+        /*
+        var error: Unmanaged<CFError>? = nil
+        var addressBook: ABAddressBookRef? = ABAddressBookCreateWithOptions(nil, &error)?.takeRetainedValue()
+        var emptyDictionary: CFDictionaryRef?
+        
+        if let addressBook: ABAddressBookRef = addressBook {
+            ABAddressBookRequestAccessCompletionHandler(ABAddressBookRequestAccessWithCompletion(addressBook, { (access, error) -> Void in
+                if (access) {
+                    
+                } else {
+                    
+                }
+            }))
+        }
+        */
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         let inset = UIEdgeInsetsMake(20, 0, 0, 0)
         tableView.contentInset = inset
+        
+        var importContactButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "segueToNewContactForm")
+
+        self.navigationItem.rightBarButtonItem = importContactButton
+        
         fetchContacts()
 
         // Uncomment the following line to preserve selection between presentations
