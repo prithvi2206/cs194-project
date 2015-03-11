@@ -163,7 +163,7 @@ class ContactsTableViewController: UITableViewController, ABPeoplePickerNavigati
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
         case Identifiers.ContactDetailSegue:
-            if let contactDetailViewController = segue.destinationViewController as? ContactDetailViewController {
+            if let contactDetailViewController = segue.destinationViewController as? ContactDetailTableViewController {
                 if let contactCell = sender as? UITableViewCell {
                     if let indexPath = tableView.indexPathForCell(contactCell) {
                         contactDetailViewController.data = contacts?[indexPath.row]
