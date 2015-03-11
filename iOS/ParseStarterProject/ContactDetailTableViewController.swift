@@ -1,21 +1,17 @@
 //
-//  NavigationTableViewController.swift
+//  ContactDetailTableViewController.swift
 //  Inturn.io
 //
-//  Created by Ricky Tran on 3/10/15.
+//  Created by Ricky Tran on 3/11/15.
 //  Copyright (c) 2015 Parse. All rights reserved.
 //
 
 import UIKit
-import Parse
 
-class NavigationTableViewController: UITableViewController {
+class ContactDetailTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0)
-        
-        var user = PFUser.logInWithUsername("cs194demo@stanford.edu", password: "password")
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -34,13 +30,13 @@ class NavigationTableViewController: UITableViewController {
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
-        return 1
+        return 0
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
-        return 5
+        return 0
     }
 
     /*
