@@ -24,6 +24,7 @@
 		9429B0751AA53AFA001EBD50 /* DocumentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9429B0741AA53AFA001EBD50 /* DocumentCollectionViewCell.swift */; };
 		9429B0771AA53E6C001EBD50 /* DocumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9429B0761AA53E6C001EBD50 /* DocumentViewController.swift */; };
 		94338CD51AB06FE1000099E3 /* ContactDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94338CD41AB06FE1000099E3 /* ContactDetailTableViewController.swift */; };
+		94338CD71AB080FF000099E3 /* NewContactTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94338CD61AB080FF000099E3 /* NewContactTableViewController.swift */; };
 		943E1E981AAF188300987908 /* NavigationTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 943E1E971AAF188300987908 /* NavigationTableViewController.swift */; };
 		944D81FA1AAB380700AEE2DA /* JobMessagesTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944D81F91AAB380700AEE2DA /* JobMessagesTableView.swift */; };
 		944D81FD1AABD4CE00AEE2DA /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 944D81FB1AABD4CE00AEE2DA /* AddressBook.framework */; };
@@ -58,6 +59,7 @@
 		9429B0741AA53AFA001EBD50 /* DocumentCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentCollectionViewCell.swift; sourceTree = "<group>"; };
 		9429B0761AA53E6C001EBD50 /* DocumentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentViewController.swift; sourceTree = "<group>"; };
 		94338CD41AB06FE1000099E3 /* ContactDetailTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactDetailTableViewController.swift; sourceTree = "<group>"; };
+		94338CD61AB080FF000099E3 /* NewContactTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NewContactTableViewController.swift; path = ../NewContactTableViewController.swift; sourceTree = "<group>"; };
 		943E1E971AAF188300987908 /* NavigationTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationTableViewController.swift; sourceTree = "<group>"; };
 		944D81F91AAB380700AEE2DA /* JobMessagesTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JobMessagesTableView.swift; sourceTree = "<group>"; };
 		944D81FB1AABD4CE00AEE2DA /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
@@ -126,6 +128,7 @@
 				94F0C4F31AA489EF00C5B998 /* JobCollectionViewController.swift */,
 				94F0C4F51AA48DAA00C5B998 /* JobCollectionViewCell.swift */,
 				9475D0D51AAC56F100BAE764 /* NewContactViewController.swift */,
+				94338CD61AB080FF000099E3 /* NewContactTableViewController.swift */,
 				94A80E801A9B479B00EFC9F0 /* ContactsTableViewController.swift */,
 				94A80E821A9B4C2600EFC9F0 /* ContactTableViewCell.swift */,
 				94338CD41AB06FE1000099E3 /* ContactDetailTableViewController.swift */,
@@ -258,6 +261,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94338CD71AB080FF000099E3 /* NewContactTableViewController.swift in Sources */,
 				94A80E831A9B4C2600EFC9F0 /* ContactTableViewCell.swift in Sources */,
 				9429B0751AA53AFA001EBD50 /* DocumentCollectionViewCell.swift in Sources */,
 				9475D0D61AAC56F100BAE764 /* NewContactViewController.swift in Sources */,
