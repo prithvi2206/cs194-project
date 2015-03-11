@@ -16,6 +16,10 @@ class LoginViewController: UIViewController
     @IBOutlet weak var loginPanelView: UIView!
     @IBOutlet weak var loginButton: UIButton!
     
+    
+    
+    
+    
     private struct Identifier {
         static let SuccessfulLoginSegue = "Sucessful Login Segue"
     }
