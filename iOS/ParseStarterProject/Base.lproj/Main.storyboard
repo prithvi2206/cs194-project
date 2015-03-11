@@ -88,7 +88,7 @@
         <scene sceneID="wbe-Il-uSp">
             <objects>
                 <tableViewController automaticallyAdjustsScrollViewInsets="NO" id="7fv-SO-lmg" customClass="NavigationTableViewController" customModule="Inturn_io" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="static" style="plain" rowHeight="104" sectionHeaderHeight="1" sectionFooterHeight="1" id="qgp-kZ-rTN">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="static" style="plain" rowHeight="104" sectionHeaderHeight="1" sectionFooterHeight="1" id="qgp-kZ-rTN">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.85606060610000001" green="0.78088889780000004" blue="0.53103351929999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -392,7 +392,7 @@
         <scene sceneID="Zuf-Qp-zmN">
             <objects>
                 <tableViewController id="GMc-qd-UDF" customClass="NewContactTableViewController" customModule="Inturn_io" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="static" style="grouped" separatorStyle="default" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="V6u-Ls-5sz">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="static" style="grouped" separatorStyle="default" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="V6u-Ls-5sz">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.87450980389999999" green="0.86666666670000003" blue="0.61176470589999998" alpha="1" colorSpace="calibratedRGB"/>
