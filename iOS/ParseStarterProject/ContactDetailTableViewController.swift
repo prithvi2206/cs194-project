@@ -10,33 +10,62 @@ import UIKit
 
 class ContactDetailTableViewController: UITableViewController {
 
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var companyPositionLabel: UILabel!
+    @IBOutlet weak var phoneNumberLabel: UILabel!
+    @IBOutlet weak var emailLabel: UILabel!
+    @IBOutlet weak var noteLabel: UILabel!
+        
+    var data: AnyObject? {
+        didSet {
+            refreshUI()
+        }
+    }
+    
+    private func refreshUI() {
+        if data != nil {
+            if let name = data!.objectForKey("name") as? String {
+                nameLabel?.text = name
+            }
+            
+            if let company = data!.objectForKey("company") as? String {
+                if let position = data!.objectForKey("title") as? String {
+                    companyPositionLabel?.text = company + " - " + position
+                } else  {
+                    companyPositionLabel?.text = company
+                }
+            }
+            
+            if let phoneNumber = data!.objectForKey("phone") as? String {
+                phoneNumberLabel?.text = phoneNumber
+            }
+            
+            if let email = data!.objectForKey("email") as? String {
+                emailLabel?.text = email
+            }
+            
+            if let note = data!.objectForKey("notes") as? String {
+                noteLabel?.text = note
+            }
+        }
+    }
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        nameLabel?.text = ""
+        companyPositionLabel?.text = ""
+        phoneNumberLabel?.text = ""
+        emailLabel?.text = ""
+        noteLabel?.text = ""
+        
+        refreshUI()
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-    // MARK: - Table view data source
-
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        // #warning Potentially incomplete method implementation.
-        // Return the number of sections.
-        return 0
-    }
-
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete method implementation.
-        // Return the number of rows in the section.
-        return 0
     }
 
     /*
