@@ -435,7 +435,7 @@
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                     <connections>
-                                        <segue destination="u96-cj-hyd" kind="show" id="U2h-hl-mHi"/>
+                                        <action selector="continueButton:" destination="GMc-qd-UDF" eventType="touchUpInside" id="fw2-Mo-T2X"/>
                                     </connections>
                                 </button>
                             </subviews>
@@ -664,6 +664,7 @@
                         <outlet property="notesTextField" destination="skI-9t-gEC" id="YMT-1D-Vjv"/>
                         <outlet property="phoneNumberTextField" destination="fxA-Xy-FwC" id="GJj-ie-x7Y"/>
                         <outlet property="titleTextField" destination="a7d-8t-sFI" id="YNg-KI-STb"/>
+                        <segue destination="u96-cj-hyd" kind="show" identifier="Continue Segue" id="wh9-KL-kb3"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gem-Pe-Bzg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -731,6 +732,9 @@
                             <outlet property="delegate" destination="u96-cj-hyd" id="QUN-WB-XrS"/>
                         </connections>
                     </tableView>
+                    <connections>
+                        <segue destination="nHf-p0-clF" kind="show" identifier="Successful Save Segue" id="ftl-1h-Z1i"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bkp-hC-3fi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1089,4 +1093,7 @@
         <image name="login-background" width="1920" height="1080"/>
         <image name="messages-icon" width="600" height="405"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="ftl-1h-Z1i"/>
+    </inferredMetricsTieBreakers>
 </document>

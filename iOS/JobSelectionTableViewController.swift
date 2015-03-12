@@ -11,6 +11,8 @@ import Parse
 
 class JobSelectionTableViewController: UITableViewController {
 
+    var contact: [String: String]?
+    
     var applications: [PFObject]? {
         didSet {
             if applications?.count > 0 {
@@ -37,6 +39,12 @@ class JobSelectionTableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        tableView.selectRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0), animated: true, scrollPosition: UITableViewScrollPosition.Bottom)
     }
 
     override func didReceiveMemoryWarning() {

@@ -19,6 +19,64 @@ class NewContactTableViewController: UITableViewController, ABPeoplePickerNaviga
     @IBOutlet weak var companyTextField: UITextField!
     @IBOutlet weak var notesTextField: UITextField!
     
+    private var contact: [String: String]?
+    
+    class Contact {
+        var name: String?
+        var title: String?
+        var email: String?
+        var phone_number: String?
+        var company: String?
+        var notes: String?
+    }
+    
+    @IBAction func continueButton(sender: UIButton) {
+        var data = [String: String]()
+        data["name"] = nameTextField?.text
+        data["title"] = titleTextField?.text
+        data["email"] = emailTextField?.text
+        data["phone_number"] = phoneNumberTextField?.text
+        data["company"] = companyTextField?.text
+        data["notes"] = notesTextField?.text
+        
+        if(data["name"] == "") {
+            var alert = UIAlertController(
+                title: "Name required",
+                message: "Please enter a name for this contact.",
+                preferredStyle: UIAlertControllerStyle.Alert
+            )
+            alert.addAction(UIAlertAction(title: "Continue", style: .Cancel, handler: { (action) -> Void in
+                // do nothing
+            }))
+            presentViewController(alert, animated: true, completion: nil)
+        } else if(data["title"] == "") {
+            var alert = UIAlertController(
+                title: "Title required",
+                message: "Please enter a title for this contact.",
+                preferredStyle: UIAlertControllerStyle.Alert
+            )
+            alert.addAction(UIAlertAction(title: "Continue", style: .Cancel, handler: { (action) -> Void in
+                // do nothing
+            }))
+            presentViewController(alert, animated: true, completion: nil)
+        } else if(data["company"] == "") {
+            var alert = UIAlertController(
+                title: "Company required",
+                message: "Please enter a company for this contact.",
+                preferredStyle: UIAlertControllerStyle.Alert
+            )
+            alert.addAction(UIAlertAction(title: "Continue", style: .Cancel, handler: { (action) -> Void in
+                // do nothing
+            }))
+            presentViewController(alert, animated: true, completion: nil)
+        }
+        
+        if(data["name"] != "" && data["title"] != "" && data["company"] != "") {
+            contact = data
+            performSegueWithIdentifier(Identifiers.ContinueSegue, sender: self)
+        }
+    }
+    
     @IBAction func showContactPicker(sender: UIButton) {
         var picker = ABPeoplePickerNavigationController()
         picker.peoplePickerDelegate = self
@@ -86,5 +144,20 @@ class NewContactTableViewController: UITableViewController, ABPeoplePickerNaviga
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    private struct Identifiers {
+        static let ContinueSegue = "Continue Segue"
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        switch segue {
+        case Identifiers.ContinueSegue:
+            if let selectJobTVC = segue.destinationViewController as? JobSelectionTableViewController {
+                selectJobTVC.contact = self.contact
+            }
+        default:
+            break
+        }
     }
 }
