@@ -21,15 +21,6 @@ class NewContactTableViewController: UITableViewController, ABPeoplePickerNaviga
     
     private var contact: [String: String]?
     
-    class Contact {
-        var name: String?
-        var title: String?
-        var email: String?
-        var phone_number: String?
-        var company: String?
-        var notes: String?
-    }
-    
     @IBAction func continueButton(sender: UIButton) {
         var data = [String: String]()
         data["name"] = nameTextField?.text
@@ -151,7 +142,7 @@ class NewContactTableViewController: UITableViewController, ABPeoplePickerNaviga
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        switch segue {
+        switch segue.identifier! {
         case Identifiers.ContinueSegue:
             if let selectJobTVC = segue.destinationViewController as? JobSelectionTableViewController {
                 selectJobTVC.contact = self.contact

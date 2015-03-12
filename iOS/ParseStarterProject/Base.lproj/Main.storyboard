@@ -692,6 +692,9 @@
                                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
+                                    <connections>
+                                        <action selector="saveButton:" destination="u96-cj-hyd" eventType="touchUpInside" id="qEi-fc-L8I"/>
+                                    </connections>
                                 </button>
                             </subviews>
                             <color key="backgroundColor" red="0.87450980389999999" green="0.86666666670000003" blue="0.61176470589999998" alpha="1" colorSpace="calibratedRGB"/>

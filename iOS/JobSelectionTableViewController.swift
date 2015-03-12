@@ -11,7 +11,7 @@ import Parse
 
 class JobSelectionTableViewController: UITableViewController {
 
-    var contact: [String: String]?
+    var contact: [String: String]!
     
     var applications: [PFObject]? {
         didSet {
@@ -25,6 +25,44 @@ class JobSelectionTableViewController: UITableViewController {
         PFQuery(className: "Application").whereKey("userId", equalTo: PFUser.currentUser()).orderByAscending("createdAt").findObjectsInBackgroundWithBlock { (result, error) -> Void in
             if let applications = result as? [PFObject] {
                 self.applications = applications
+            }
+        }
+    }
+    
+    private struct Identifiers {
+        static let SuccessfulSaveSegue = "Successful Save Segue"
+        static let JobCellIdentifier = "Job Cell"
+    }
+    
+    @IBAction func saveButton(sender: UIButton) {
+        let selected = tableView.indexPathForSelectedRow()!
+        
+        var contactObj = PFObject(className:"Contact")
+        contactObj["name"] = contact["name"]
+        contactObj["company"] = contact["company"]
+        contactObj["email"] = contact["email"]
+        contactObj["notes"] = contact["notes"]
+        contactObj["email"] = contact["email"]
+        contactObj["phone"] = contact["phone_number"]
+        contactObj["userId"] = PFUser.currentUser()
+        
+        if(selected.row != 0 && applications != nil) {
+            contactObj["applicationId"] = applications![selected.row-1]
+        }
+        
+        contactObj.saveInBackgroundWithBlock { [unowned self] (success, error) -> Void in
+            if(success) {
+                self.performSegueWithIdentifier(Identifiers.SuccessfulSaveSegue, sender: nil)
+            } else {
+                var alert = UIAlertController(
+                    title: "Oops",
+                    message: "Something went wrong. Could not save contact successfully.",
+                    preferredStyle: UIAlertControllerStyle.Alert
+                )
+                alert.addAction(UIAlertAction(title: "Continue", style: .Cancel, handler: { (action) -> Void in
+                    // do nothing
+                }))
+                self.presentViewController(alert, animated: true, completion: nil)
             }
         }
     }
@@ -70,10 +108,6 @@ class JobSelectionTableViewController: UITableViewController {
         }
     }
 
-    private struct Identifiers {
-        static let JobCellIdentifier = "Job Cell"
-    }
-    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.JobCellIdentifier, forIndexPath: indexPath) as UITableViewCell
 
