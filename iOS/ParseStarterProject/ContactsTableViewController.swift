@@ -61,8 +61,8 @@ class ContactsTableViewController: UITableViewController, ABPeoplePickerNavigati
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let inset = UIEdgeInsetsMake(20, 0, 0, 0)
-        tableView.contentInset = inset
+        //let inset = UIEdgeInsetsMake(20, 0, 0, 0)
+        //tableView.contentInset = inset
         
         var importContactButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "segueToNewContactForm")
 
