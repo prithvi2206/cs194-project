@@ -11,6 +11,8 @@ import Parse
 
 class MessagesTableViewController: UITableViewController {
     
+    var jobId: PFObject?
+    
     var messages: [PFObject]? {
         didSet {
             if messages?.count > 0 {
@@ -20,9 +22,24 @@ class MessagesTableViewController: UITableViewController {
     }
 
     private func fetchMessages() {
-        PFQuery(className: "Message").whereKey("userId", equalTo: PFUser.currentUser()).orderByDescending("dateSent").findObjectsInBackgroundWithBlock { (result, error) -> Void in
-            if let messages = result as? [PFObject] {
-                self.messages = messages
+        if (jobId != nil) {
+            if let company = jobId!.objectForKey("company") as? String {
+                self.title = "Messages: " + company
+            } else {
+                self.title = "Messages"
+            }
+            
+            PFQuery(className: "Message").whereKey("userId", equalTo: PFUser.currentUser()).whereKey("appId", equalTo: jobId!).orderByDescending("dateSent").findObjectsInBackgroundWithBlock { (result, error) -> Void in
+                if let messages = result as? [PFObject] {
+                    self.messages = messages
+                }
+            }
+        } else {
+            self.title = "Messages"
+            PFQuery(className: "Message").whereKey("userId", equalTo: PFUser.currentUser()).orderByDescending("dateSent").findObjectsInBackgroundWithBlock { (result, error) -> Void in
+                if let messages = result as? [PFObject] {
+                    self.messages = messages
+                }
             }
         }
         
@@ -30,15 +47,11 @@ class MessagesTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Messages"
 
         fetchMessages()
-        
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
+    
     // MARK: - Table view data source
-
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }

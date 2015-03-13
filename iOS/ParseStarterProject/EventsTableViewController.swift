@@ -11,6 +11,8 @@ import Parse
 
 class EventsTableViewController: UITableViewController {
 
+    var jobId: PFObject?
+    
     var events: [PFObject]? {
         didSet {
             if events?.count > 0 {
@@ -20,9 +22,23 @@ class EventsTableViewController: UITableViewController {
     }
     
     private func fetchEvents() {
-        PFQuery(className: "Event").whereKey("userId", equalTo: PFUser.currentUser()).includeKey("applicationId").orderByAscending("datetime").findObjectsInBackgroundWithBlock { (result, error) -> Void in
-            if let events = result as? [PFObject] {
-                self.events = events
+        if (jobId != nil) {
+            if let company = jobId!.objectForKey("company") as? String {
+                self.title = "Events: " + company
+            } else {
+                self.title = "Events"
+            }
+            PFQuery(className: "Event").whereKey("userId", equalTo: PFUser.currentUser()).whereKey("applicationId", equalTo: jobId!).includeKey("applicationId").orderByAscending("datetime").findObjectsInBackgroundWithBlock { (result, error) -> Void in
+                if let events = result as? [PFObject] {
+                    self.events = events
+                }
+            }
+        } else {
+            super.title = "Events"
+            PFQuery(className: "Event").whereKey("userId", equalTo: PFUser.currentUser()).includeKey("applicationId").orderByAscending("datetime").findObjectsInBackgroundWithBlock { (result, error) -> Void in
+                if let events = result as? [PFObject] {
+                    self.events = events
+                }
             }
         }
         
@@ -37,7 +53,6 @@ class EventsTableViewController: UITableViewController {
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
     // MARK: - Table view data source

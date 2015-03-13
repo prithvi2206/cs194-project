@@ -28,15 +28,6 @@ class DocumentViewController: UIViewController, UIWebViewDelegate, UIScrollViewD
         }
     }
     
-//    @IBOutlet weak var scrollView: UIScrollView! {
-//        didSet {
-//            scrollView.delegate = self
-//            scrollView.contentSize = super.view.frame.size
-//            scrollView.minimumZoomScale = 0.03
-//            scrollView.maximumZoomScale = 5.0
-//            }
-//    }
-    
     @IBOutlet weak var documentWebView: UIWebView! {
         didSet {
             documentWebView.delegate = self
@@ -50,11 +41,9 @@ class DocumentViewController: UIViewController, UIWebViewDelegate, UIScrollViewD
         documentWebView.backgroundColor = UIColor.whiteColor()
         
         loadDocument()
-        // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 }

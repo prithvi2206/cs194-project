@@ -67,15 +67,4 @@ class LoginViewController: UIViewController
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    /*
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        switch segue {
-        case Identifier.SuccessfulLoginSegue:
-            if let destination = segue.destinationViewController as? ContactsTableViewController {
-                destination.model =
-            }
-        }
-    }
-    */
-
 }
