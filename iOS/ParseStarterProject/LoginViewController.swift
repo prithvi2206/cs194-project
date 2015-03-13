@@ -16,10 +16,6 @@ class LoginViewController: UIViewController
     @IBOutlet weak var loginPanelView: UIView!
     @IBOutlet weak var loginButton: UIButton!
     
-    
-    
-    
-    
     private struct Identifier {
         static let SuccessfulLoginSegue = "Sucessful Login Segue"
     }
@@ -29,10 +25,31 @@ class LoginViewController: UIViewController
             let username = usernameTextField.text
             let password = passwordTextField.text
             
-            var user = PFUser.logInWithUsername(username, password: password)
-            if user != nil {
-                performSegueWithIdentifier(Identifier.SuccessfulLoginSegue, sender: sender)
-            }
+            PFUser.logInWithUsernameInBackground(username, password: password, block: { [unowned self] (result, error) -> Void in
+                if (result != nil) {
+                    self.performSegueWithIdentifier(Identifier.SuccessfulLoginSegue, sender: sender)
+                } else {
+                    var alert = UIAlertController(
+                        title: "Oops",
+                        message: "Your username or password was incorrect. Please try again.",
+                        preferredStyle: UIAlertControllerStyle.Alert
+                    )
+                    alert.addAction(UIAlertAction(title: "Continue", style: .Cancel, handler: { (action) -> Void in
+                        // do nothing
+                    }))
+                    self.presentViewController(alert, animated: true, completion: nil)
+                }
+            })
+        } else {
+            var alert = UIAlertController(
+                title: "Oops",
+                message: "Please enter your username and password.",
+                preferredStyle: UIAlertControllerStyle.Alert
+            )
+            alert.addAction(UIAlertAction(title: "Continue", style: .Cancel, handler: { (action) -> Void in
+                // do nothing
+            }))
+            self.presentViewController(alert, animated: true, completion: nil)
         }
     }
     
