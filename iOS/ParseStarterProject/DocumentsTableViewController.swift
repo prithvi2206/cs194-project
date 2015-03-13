@@ -7,11 +7,35 @@
 //
 
 import UIKit
+import Parse
 
 class DocumentsTableViewController: UITableViewController {
 
+    var documents: [PFObject]? {
+        didSet {
+            if documents?.count > 0 {
+                tableView.reloadData()
+            }
+        }
+    }
+    
+    private func fetchDocuments() {
+        PFQuery(className: "Document").whereKey("userId", equalTo: PFUser.currentUser()).orderByDescending("createdAt").findObjectsInBackgroundWithBlock { (result, error) -> Void in
+            if let documents = result as? [PFObject] {
+                self.documents = documents
+            }
+        }
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "Documents"
+
+        //let inset = UIEdgeInsetsMake(20, 0, 0, 0)
+        //tableView.contentInset = inset
+        
+        fetchDocuments()
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -25,29 +49,49 @@ class DocumentsTableViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    private struct Identifiers {
+        static let DocumentCellReuseIdentifier = "Document Cell"
+        static let DocumentViewSegue = "Document Preview Segue"
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        // Get the new view controller using [segue destinationViewController].
+        // Pass the selected object to the new view controller.
+        switch segue.identifier! {
+        case Identifiers.DocumentViewSegue:
+            if let documentViewController = segue.destinationViewController as? DocumentViewController {
+                if let documentCell = sender as? DocumentTableViewCell {
+                    documentViewController.data = documentCell.data
+                }
+            }
+        default:
+            break
+        }
+    }
+    
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        // #warning Potentially incomplete method implementation.
-        // Return the number of sections.
-        return 0
+        return 1
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete method implementation.
-        // Return the number of rows in the section.
-        return 0
+        if documents != nil {
+            return documents!.count
+        } else {
+            return 0
+        }
     }
 
-    /*
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath) as UITableViewCell
-
-        // Configure the cell...
-
+        let cell = tableView.dequeueReusableCellWithIdentifier(Identifiers.DocumentCellReuseIdentifier, forIndexPath: indexPath) as UITableViewCell
+        if let documentCell = cell as? DocumentTableViewCell {
+        documentCell.data = documents?[indexPath.row]
+        return documentCell
+        }
+        
         return cell
     }
-    */
 
     /*
     // Override to support conditional editing of the table view.

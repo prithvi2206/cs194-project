@@ -9,7 +9,7 @@
 import UIKit
 import Parse
 
-class DocumentViewController: UIViewController, UIWebViewDelegate {
+class DocumentViewController: UIViewController, UIWebViewDelegate, UIScrollViewDelegate {
 
     var data: PFObject? {
         didSet {
@@ -28,6 +28,15 @@ class DocumentViewController: UIViewController, UIWebViewDelegate {
         }
     }
     
+//    @IBOutlet weak var scrollView: UIScrollView! {
+//        didSet {
+//            scrollView.delegate = self
+//            scrollView.contentSize = super.view.frame.size
+//            scrollView.minimumZoomScale = 0.03
+//            scrollView.maximumZoomScale = 5.0
+//            }
+//    }
+    
     @IBOutlet weak var documentWebView: UIWebView! {
         didSet {
             documentWebView.delegate = self
@@ -36,7 +45,9 @@ class DocumentViewController: UIViewController, UIWebViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "Preview"
         view.backgroundColor = UIColor.whiteColor()
+        documentWebView.backgroundColor = UIColor.whiteColor()
         
         loadDocument()
         // Do any additional setup after loading the view.
@@ -46,16 +57,4 @@ class DocumentViewController: UIViewController, UIWebViewDelegate {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

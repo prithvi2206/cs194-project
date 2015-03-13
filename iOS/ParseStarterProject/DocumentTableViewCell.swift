@@ -7,18 +7,45 @@
 //
 
 import UIKit
+import Parse
 
 class DocumentTableViewCell: UITableViewCell {
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    
+    var data: PFObject? {
+        didSet {
+            updateUI()
+        }
     }
-
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    
+    @IBOutlet weak var documentImageView: UIImageView!
+    @IBOutlet weak var documentNameLabel: UILabel!
+    
+    private func updateUI() {
+        documentNameLabel?.text = nil
+        documentImageView?.image = nil
+        
+        if data != nil {
+            if let file_extension = data!.objectForKey("extension") as? String {
+                if file_extension == "pdf" {
+                    if let image = UIImage(named: "pdf-icon") {
+                        documentImageView?.image = image
+                    }
+                } else if file_extension == "doc" || file_extension == "docx" {
+                    if let image = UIImage(named: "doc-icon") {
+                        documentImageView?.image = image
+                    }
+                }
+            }
+            if let image = UIImage(named: "pdf-icon.png") {
+                documentImageView?.image = image
+            }
+            if let name = data!.objectForKey("name") as? String {
+                documentNameLabel?.text = name
+            }
+            if let version = data!.objectForKey("version") as? Int {
+                documentNameLabel?.text = documentNameLabel.text! + " (ver. \(version))"
+            }
+        }
     }
 
 }
