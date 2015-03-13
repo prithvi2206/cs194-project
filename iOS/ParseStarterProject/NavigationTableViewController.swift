@@ -14,9 +14,7 @@ class NavigationTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0)
-        
-        var user = PFUser.logInWithUsername("cs194demo@stanford.edu", password: "password")
-
+    
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
