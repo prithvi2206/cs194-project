@@ -59,14 +59,21 @@ class ContactsTableViewController: UITableViewController, ABPeoplePickerNavigati
         */
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        //let inset = UIEdgeInsetsMake(20, 0, 0, 0)
-        //tableView.contentInset = inset
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         
         var importContactButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "segueToNewContactForm")
-
+        
         self.navigationItem.rightBarButtonItem = importContactButton
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.title = "Contacts"
+        //let inset = UIEdgeInsetsMake(20, 0, 0, 0)
+        //tableView.contentInset = inset
+
+        //var backButton = UIBarButtonItem(barButtonSystemItem: UIBarButton, target: self, action: Selector("back"))
         
         fetchContacts()
 
