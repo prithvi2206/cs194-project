@@ -45,6 +45,11 @@ class DocumentsTableViewController: UITableViewController {
         
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        fetchDocuments()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }

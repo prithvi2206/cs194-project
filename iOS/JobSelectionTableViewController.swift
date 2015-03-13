@@ -40,7 +40,7 @@ class JobSelectionTableViewController: UITableViewController {
         var contactObj = PFObject(className:"Contact")
         contactObj["name"] = contact["name"]
         contactObj["company"] = contact["company"]
-        contactObj["email"] = contact["email"]
+        contactObj["title"] = contact["title"]
         contactObj["notes"] = contact["notes"]
         contactObj["email"] = contact["email"]
         contactObj["phone"] = contact["phone_number"]
@@ -52,7 +52,19 @@ class JobSelectionTableViewController: UITableViewController {
         
         contactObj.saveInBackgroundWithBlock { [unowned self] (success, error) -> Void in
             if(success) {
-                self.performSegueWithIdentifier(Identifiers.SuccessfulSaveSegue, sender: nil)
+                var alert = UIAlertController(
+                    title: "Contact Saved",
+                    message: "Your contact was saved to inturn.io!",
+                    preferredStyle: UIAlertControllerStyle.Alert
+                )
+                alert.addAction(UIAlertAction(title: "Woop!", style: UIAlertActionStyle.Default, handler: { [unowned self] (action) -> Void in
+                }))
+                
+                self.presentViewController(alert, animated: true, completion: { [unowned self] () -> Void in
+                    
+                    self.navigationController?.popToRootViewControllerAnimated(true)
+                    return
+                })
             } else {
                 var alert = UIAlertController(
                     title: "Oops",
@@ -66,6 +78,18 @@ class JobSelectionTableViewController: UITableViewController {
             }
         }
     }
+    
+//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+//        switch segue.identifier! {
+//        case Identifiers.SuccessfulSaveSegue:
+//            if let contactDetailViewController = segue.destinationViewController as? ContactDetailTableViewController {
+//                contactDetailViewController.data = sender as PFObject
+//                
+//            }
+//        default:
+//            break
+//        }
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

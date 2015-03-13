@@ -67,14 +67,14 @@ class ContactsTableViewController: UITableViewController, ABPeoplePickerNavigati
         var importContactButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "segueToNewContactForm")
         
         self.navigationItem.rightBarButtonItem = importContactButton
+        
+        fetchContacts()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         //let inset = UIEdgeInsetsMake(20, 0, 0, 0)
         //tableView.contentInset = inset
-        
-        fetchContacts()
     }
 
     override func didReceiveMemoryWarning() {
@@ -134,5 +134,9 @@ class ContactsTableViewController: UITableViewController, ABPeoplePickerNavigati
         default:
             break
         }
+    }
+    
+    @IBAction func unwindToContactsTableViewController(segue: UIStoryboardSegue) {
+        
     }
 }

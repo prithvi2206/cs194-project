@@ -133,6 +133,7 @@ class NewContactTableViewController: UITableViewController, ABPeoplePickerNaviga
     
     private struct Identifiers {
         static let ContinueSegue = "Continue Segue"
+        static let SuccessfulSaveSegue = "Successful Save Segue"
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
