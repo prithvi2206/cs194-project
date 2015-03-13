@@ -26,7 +26,7 @@ class EventsTableViewController: UITableViewController {
             if let company = jobId!.objectForKey("company") as? String {
                 self.title = "Events: " + company
             } else {
-                self.title = "Events"
+                self.title = "Events: All"
             }
             PFQuery(className: "Event").whereKey("userId", equalTo: PFUser.currentUser()).whereKey("applicationId", equalTo: jobId!).includeKey("applicationId").orderByAscending("datetime").findObjectsInBackgroundWithBlock { (result, error) -> Void in
                 if let events = result as? [PFObject] {
@@ -34,7 +34,7 @@ class EventsTableViewController: UITableViewController {
                 }
             }
         } else {
-            super.title = "Events"
+            super.title = "Events: All"
             PFQuery(className: "Event").whereKey("userId", equalTo: PFUser.currentUser()).includeKey("applicationId").orderByAscending("datetime").findObjectsInBackgroundWithBlock { (result, error) -> Void in
                 if let events = result as? [PFObject] {
                     self.events = events
@@ -71,7 +71,7 @@ class EventsTableViewController: UITableViewController {
 
     private struct Identifiers {
         static let EventCellReuseIdentifier = "Event Cell"
-        static let DocumentViewSegue = "Document Preview Segue"
+        static let EventDetailSegue = "Event Detail Segue"
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -82,5 +82,18 @@ class EventsTableViewController: UITableViewController {
         }
         
         return cell
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        switch segue.identifier! {
+        case Identifiers.EventDetailSegue:
+            if let eventDetailViewController = segue.destinationViewController as? EventDetailTableViewController {
+                if let eventCellIndexPath = tableView.indexPathForCell(sender as EventTableViewCell) {
+                    eventDetailViewController.event = events![eventCellIndexPath.row]
+                }
+            }
+        default:
+            break
+        }
     }
 }

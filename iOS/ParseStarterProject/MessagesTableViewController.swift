@@ -26,7 +26,7 @@ class MessagesTableViewController: UITableViewController {
             if let company = jobId!.objectForKey("company") as? String {
                 self.title = "Messages: " + company
             } else {
-                self.title = "Messages"
+                self.title = "Messages: "
             }
             
             PFQuery(className: "Message").whereKey("userId", equalTo: PFUser.currentUser()).whereKey("appId", equalTo: jobId!).orderByDescending("dateSent").findObjectsInBackgroundWithBlock { (result, error) -> Void in
@@ -35,7 +35,7 @@ class MessagesTableViewController: UITableViewController {
                 }
             }
         } else {
-            self.title = "Messages"
+            self.title = "Messages: All"
             PFQuery(className: "Message").whereKey("userId", equalTo: PFUser.currentUser()).orderByDescending("dateSent").findObjectsInBackgroundWithBlock { (result, error) -> Void in
                 if let messages = result as? [PFObject] {
                     self.messages = messages

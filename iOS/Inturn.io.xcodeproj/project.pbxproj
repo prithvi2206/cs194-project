@@ -38,6 +38,7 @@
 		946E0BC41AB2C7DC00ABDA2D /* DocumentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946E0BC31AB2C7DC00ABDA2D /* DocumentTableViewCell.swift */; };
 		94921DBA1AB09892009E7E01 /* JobSelectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94921DB91AB09892009E7E01 /* JobSelectionTableViewController.swift */; };
 		94A80E811A9B479B00EFC9F0 /* ContactsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A80E801A9B479B00EFC9F0 /* ContactsTableViewController.swift */; };
+		94C720B11AB357F3001F9D6E /* EventDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C720B01AB357F3001F9D6E /* EventDetailTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -75,6 +76,7 @@
 		946E0BC31AB2C7DC00ABDA2D /* DocumentTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentTableViewCell.swift; sourceTree = "<group>"; };
 		94921DB91AB09892009E7E01 /* JobSelectionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JobSelectionTableViewController.swift; path = ../JobSelectionTableViewController.swift; sourceTree = "<group>"; };
 		94A80E801A9B479B00EFC9F0 /* ContactsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsTableViewController.swift; sourceTree = "<group>"; };
+		94C720B01AB357F3001F9D6E /* EventDetailTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDetailTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +176,7 @@
 		945B0B451AB3019B00DCF37D /* Events */ = {
 			isa = PBXGroup;
 			children = (
+				94C720B01AB357F3001F9D6E /* EventDetailTableViewController.swift */,
 				945B0B481AB304B400DCF37D /* EventTableViewCell.swift */,
 				945B0B461AB301AC00DCF37D /* EventsTableViewController.swift */,
 			);
@@ -310,6 +313,7 @@
 				945B0B491AB304B400DCF37D /* EventTableViewCell.swift in Sources */,
 				94338CD71AB080FF000099E3 /* NewContactTableViewController.swift in Sources */,
 				943E1E981AAF188300987908 /* NavigationTableViewController.swift in Sources */,
+				94C720B11AB357F3001F9D6E /* EventDetailTableViewController.swift in Sources */,
 				9429B0771AA53E6C001EBD50 /* DocumentViewController.swift in Sources */,
 				9469AAA31A9B412300B97693 /* LoginViewController.swift in Sources */,
 				945B0B4C1AB30E8400DCF37D /* JobsTableViewController.swift in Sources */,

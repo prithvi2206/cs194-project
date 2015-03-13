@@ -68,7 +68,7 @@ class JobSelectionTableViewController: UITableViewController {
             } else {
                 var alert = UIAlertController(
                     title: "Oops",
-                    message: "Something went wrong. Could not save contact successfully.",
+                    message: "Something went wrong. This contact could not be saved.",
                     preferredStyle: UIAlertControllerStyle.Alert
                 )
                 alert.addAction(UIAlertAction(title: "Continue", style: .Cancel, handler: { (action) -> Void in
@@ -78,18 +78,6 @@ class JobSelectionTableViewController: UITableViewController {
             }
         }
     }
-    
-//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-//        switch segue.identifier! {
-//        case Identifiers.SuccessfulSaveSegue:
-//            if let contactDetailViewController = segue.destinationViewController as? ContactDetailTableViewController {
-//                contactDetailViewController.data = sender as PFObject
-//                
-//            }
-//        default:
-//            break
-//        }
-//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

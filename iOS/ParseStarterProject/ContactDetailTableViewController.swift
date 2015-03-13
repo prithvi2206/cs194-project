@@ -92,7 +92,7 @@ class ContactDetailTableViewController: UITableViewController {
                     message: "Contact was saved to your phone.",
                     preferredStyle: UIAlertControllerStyle.Alert
                 )
-                alert.addAction(UIAlertAction(title: "Woop!", style: .Cancel, handler: { (action) -> Void in
+                alert.addAction(UIAlertAction(title: "Woop!", style: .Default, handler: { (action) -> Void in
                     // do nothing
                 }))
                 presentViewController(alert, animated: true, completion: nil)
