@@ -34,7 +34,7 @@ exports.main = function(req, res) {
 
 };
 
-exports.update_profile = function(req, res ) {
+exports.update_profile = function(req, res) {
 	var user = Parse.User.current();
 	var set_status = user.get("password_set")
 
@@ -60,9 +60,10 @@ exports.update_profile = function(req, res ) {
 				alerts.success("Password succesfully set");
 
 				/* Create inturn calendar and redirect to dashboard */
+				var token = Parse.User.current().get("google_token");
 				var gcal = require('google-calendar');
 				var google_calendar = new gcal.GoogleCalendar(token);
-				events.createInturnCal(res.redirect("/dashboard"));
+				events.createInturnCal(google_calendar, res);
 
 			} else {
 				alerts.success("Password succesfully changed");
