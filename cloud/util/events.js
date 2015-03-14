@@ -13,7 +13,7 @@ var getAllEvents = function(res, gcal) {
 	    
  //  	});
 	gcal.calendarList.list(function(err, data) {
-		console.log(data);
+		console.log(data[0]);
 	});
 
 }
