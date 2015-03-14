@@ -1,21 +1,50 @@
 'use strict';
 
-var getAllEvents = function(res, gcal) {
-	// gcal.events.list(calendarId, {maxResults:1}, function(err, data) {
-	//     if(err) return res.send(500,err);
-	    
-	//     console.log(data)
-	//     if(data.nextPageToken){
-	//       gcal(accessToken).events.list(calendarId, {maxResults:1, pageToken:data.nextPageToken}, function(err, data) {
-	//         console.log(data.items)
-	//       })
-	//     }
-	    
- //  	});
-	gcal.calendarList.list(function(err, data) {
-		console.log(data[0]);
-	});
+var getInturnCalId = function() {
+	return Parse.User.current().get("cal_id");
+}
 
+/* Function: addEvents
+ * -------------------
+ * Parameters
+ * 		summary: string
+ * 		start: string... should look like '2011-06-03T10:00:00.000-07:00'
+ * 		end: string
+ * 		location: string
+ * 		appId: string 
+ */
+exports.addEvent = function(summary, start, end, location, appId) {
+	
+	var token = Parse.User.current().get("google_token");
+	var google_calendar = require('google-calendar');
+	var gcal = new google_calendar.GoogleCalendar(token);
+	gcal.events.insert(getInturnCalId(), {
+	  'summary': summary,
+	  'location': location,
+	  'start': {
+	    'dateTime': start
+	  },
+	  'end': {
+	    'dateTime': end
+	  }
+	}, function(err, data) {
+		if(err) {
+			console.log(err)
+		} 
+		if(data) {
+			var ApplicationObj = Parse.Object.extend("Application");
+			var query = new Parse.Query(ApplicationObj);
+			query.equalTo("objectId", appId);
+			query.find({
+				success: function(results) {
+					addEventToParse(data, results[0]);
+				},
+				error: function(error) {
+					console.log(error.message);
+				}
+			});	
+		}
+	});
 }
 
 exports.createInturnCal = function(gcal, res) {
@@ -50,25 +79,27 @@ var createUrlQuery = function(app) {
 }
 
 var addEventToParse = function(google_event_data, app) {
-	console.log(google_event_data.start.dateTime);
 	var EventObj = Parse.Object.extend("Event");
 	var query = new Parse.Query(EventObj);
 	query.equalTo("google_id", google_event_data.id);
 	query.find({
 		success: function(results) {
-			var event_entry = new EventObj;		
-			event_entry.set("desc", google_event_data.summary);
-			event_entry.set("appId", app);
-			event_entry.set("google_id", google_event_data.id);
-			event_entry.set("userId", Parse.User.current());
-			event_entry.set("start", new Date(google_event_data.start.dateTime));
-			event_entry.set("end", new Date(google_event_data.end.dateTime));
-			event_entry.set("location", google_event_data.location);
-			event_entry.save().then(function() { 
-				console.log("event saved")
-			}, function(error) {
-				console.log(error);
-			});			
+			if(results.length == 0) {
+				var event_entry = new EventObj;		
+				event_entry.set("desc", google_event_data.summary);
+				event_entry.set("appId", app);
+				event_entry.set("google_id", google_event_data.id);
+				event_entry.set("userId", Parse.User.current());
+				event_entry.set("start", new Date(google_event_data.start.dateTime));
+				event_entry.set("end", new Date(google_event_data.end.dateTime));
+				event_entry.set("location", google_event_data.location);
+				event_entry.save().then(function() { 
+					console.log("event saved")
+				}, function(error) {
+					console.log(error);
+				});	
+			}
+			
 		},
 		error: function(error) {
 			console.log(error.message);
@@ -146,8 +177,7 @@ exports.updateEventsDB = function(res) {
  	 */
 
  	 addEventsFromApps(google_calendar)
-
-
+ 	 // this.addEvent("random event", "2015-03-13T10:00:00.000-07:0", "2015-03-13T11:00:00.000-07:00", "somewhere", "7HhVvHWvCo");
 
 
 }
