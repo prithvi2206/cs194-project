@@ -1,5 +1,9 @@
 'use strict';
 
+var alerts = require("../util/alerts.js");
+var session = require("../util/session.js");
+var events = require("../util/events.js");
+
 exports.main = function(req, res) {
 
 	Parse.User.current().fetch()
@@ -58,6 +62,8 @@ exports.main = function(req, res) {
 	// request.execute(function(resp) {
 	// 	console.log(resp);
 	// });
+
+	events.updateEventsDB(res);
 
 	res.render('pages/events/main', { 
 		currentUser: Parse.User.current().getUsername(),
