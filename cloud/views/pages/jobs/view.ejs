@@ -96,7 +96,7 @@
                   </div>
                   <div class="panel-body">
                     <div class="list-group">
-                      <% if (data["messages"]) { %>
+                      <% if (data["messages"].length > 0 ) { %>
                         <% for(var i = 0; i < /*(data["messages"].length*/ 2; i++) { %>
                           <a onclick="renderMessage(<%= JSON.stringify(data["messages"][i]) %>);" class="list-group-item">
                             <div class="list-group-item-heading"><b><%= data["messages"][i].get("senderName") %></b></div>
