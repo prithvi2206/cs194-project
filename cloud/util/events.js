@@ -18,6 +18,27 @@ var getAllEvents = function(res, gcal) {
 
 }
 
+var createInturnCal = function(gcal) {
+	// var cal = ;
+	gcal.calendars.insert({
+		'summary': 'inturn',
+		'timeZone': 'America/Los_Angeles'
+	}, function(err, data) {
+		if(err) {
+			console.log(err);
+		}
+		if(data) {
+			var user = Parse.User.current();
+			user.set("cal_id", data.id);
+			user.save().then(function() { 
+				console.log("----------- calendar id saved successfully");
+			}, function(error) {
+				console.log(error);
+			});
+		}
+	});
+}
+
 // retrieves all new messages, and inserts the scaped data into the database
 exports.updateEventsDB = function(res) {
 	var token = Parse.User.current().get("google_token");
@@ -26,5 +47,6 @@ exports.updateEventsDB = function(res) {
 	var gcal = require('google-calendar');
 	var google_calendar = new gcal.GoogleCalendar(token);
 
-	getAllEvents(res, google_calendar);
+	// getAllEvents(res, google_calendar);
+	createInturnCal(google_calendar);
 }
