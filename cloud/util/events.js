@@ -18,7 +18,7 @@ var getAllEvents = function(res, gcal) {
 
 }
 
-var createInturnCal = function(gcal) {
+exports.createInturnCal = function(gcal) {
 	// var cal = ;
 	gcal.calendars.insert({
 		'summary': 'inturn',
@@ -31,7 +31,9 @@ var createInturnCal = function(gcal) {
 			var user = Parse.User.current();
 			user.set("cal_id", data.id);
 			user.save().then(function() { 
-				console.log("----------- calendar id saved successfully");
+				
+				return next;
+
 			}, function(error) {
 				console.log(error);
 			});
@@ -47,6 +49,4 @@ exports.updateEventsDB = function(res) {
 	var gcal = require('google-calendar');
 	var google_calendar = new gcal.GoogleCalendar(token);
 
-	// getAllEvents(res, google_calendar);
-	createInturnCal(google_calendar);
 }

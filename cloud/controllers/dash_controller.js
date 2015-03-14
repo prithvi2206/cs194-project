@@ -2,7 +2,7 @@
 
 var alerts = require("../util/alerts.js");
 var session = require("../util/session.js");
-
+var events = require("../util/events.js");
 
 exports.main = function(req, res) {
 	var token = Parse.User.current().get("google_token");
@@ -58,7 +58,12 @@ exports.update_profile = function(req, res ) {
 
 			if (!set_status) {
 				alerts.success("Password succesfully set");
-				res.redirect("/dashboard");
+
+				/* Create inturn calendar and redirect to dashboard */
+				var gcal = require('google-calendar');
+				var google_calendar = new gcal.GoogleCalendar(token);
+				events.createInturnCal(res.redirect("/dashboard"));
+
 			} else {
 				alerts.success("Password succesfully changed");
 				res.redirect("/dashboard");
