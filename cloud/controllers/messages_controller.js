@@ -121,8 +121,6 @@ exports.getMessages = function(req, res) {
 			}
 		});
 	}
-	
-	
 }
 
 exports.main = function(req, res) {
