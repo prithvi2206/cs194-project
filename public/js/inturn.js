@@ -135,7 +135,25 @@ function appSelectListener() {
     }
 }
 
-$(function() {
+function populateNewsFeed() {
+    /* Get jobs list from db */
+    $.get("/jobs/get", function(response) {
+
+        var newHTML = "";
+        var data = response.data;
+        for(var i=0; i<data.length; i++) {  
+            newHTML += "<p>" + data[i] + "</p>";
+            console.log(data[i]);
+        }
+
+        $('#newsfeed').html(newHTML);
+
+    });
+}
+
+$(function() { /* on document ready */
+
+    populateNewsFeed();
 
     $('tr.document-entry').click(function() {
         $('tr.selected').removeClass('selected');

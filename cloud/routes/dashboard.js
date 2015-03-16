@@ -5,7 +5,6 @@ var session = require("../util/session.js");
 
 module.exports = function(app) {
 	app.get('/dashboard', session.isLoggedIn, dash.main);
-	app.get('dashboard/list_companies', session.isLoggedIn, dash.list_companies)
 	app.get('/profile', session.isLoggedIn, dash.profile);
 	app.post('/profile/update', session.isLoggedIn, dash.update_profile);
 };

@@ -12,4 +12,5 @@ module.exports = function(app) {
 	app.post('/jobs/doc_upload', session.isLoggedIn, jobs.doc_upload);
 	app.post('/jobs/add_existing_document', session.isLoggedIn, jobs.add_existing_document);
 	app.post('/jobs/add_contact', session.isLoggedIn, jobs.add_contact);
+	app.get('/jobs/get', session.isLoggedIn, jobs.get_jobs);
 };

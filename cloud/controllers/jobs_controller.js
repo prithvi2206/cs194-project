@@ -346,6 +346,26 @@ exports.add_contact = function(req, res) {
 	addAppAndSend(res, contact_entry, app);
 }
 
+exports.get_jobs = function(req, res) {
+	var AppObj = Parse.Object.extend("Application");
+	var query = new Parse.Query(AppObj);
+	query.equalTo("userId", Parse.User.current());
+
+	var companies = [];
+
+	query.find({
+		success: function(results) {
+			for (var i in results) {
+				companies.push(results[i].get("company"));
+			}
+			res.send({data: companies});
+		},
+		error: function(error) {
+			console.log(error.message);
+		} 
+	});
+}
+
 exports.main = function(req, res) {
 	Parse.User.current().fetch();
 
