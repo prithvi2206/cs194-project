@@ -107,7 +107,7 @@ exports.edit = function(req, res)  {
 	/* retriev contact object */
 	var ContactObj = Parse.Object.extend("Contact");
 
-	var query_contact = new Parse.Query(AppObj);
+	var query_contact = new Parse.Query(ContactObj);
 	query_contact.equalTo("objectId", contactId);
 	query_contact.find({
 		success: function(results) {
