@@ -65,8 +65,8 @@ exports.add = function(req, res) {
 
 	Parse.User.current().fetch();
 
-	var name = req.body.contact_name;
-	var title = req.body.contact_title;
+	var name = req.body.name;
+	var title = req.body.title;
 	var company = req.body.company;
 	var email = req.body.email.toLowerCase();
 	var phone = req.body.phone;
@@ -90,4 +90,49 @@ exports.add = function(req, res) {
 	console.log("calling function");
 	addAppAndSend(res, contact_entry, app);
 	
+}
+
+exports.edit = function(req, res)  {
+
+	/* Retriev params from req */
+	var name = req.body.name;
+	var title = req.body.title;
+	var company = req.body.company;
+	var email = req.body.email.toLowerCase();
+	var phone = req.body.phone;
+	var notes = req.body.notes;
+	var app = req.body.appselect;
+	var contactId = req.body.contactId;
+
+	/* retriev contact object */
+	var ContactObj = Parse.Object.extend("Contact");
+
+	var query_contact = new Parse.Query(AppObj);
+	query_contact.equalTo("objectId", contactId);
+	query_contact.find({
+		success: function(results) {
+
+			if (results.length == 0) {
+				res.redirect("/contacts/");
+			}
+
+			var contact_entry = results[0];
+
+			contact_entry.set("userId", Parse.User.current());
+			contact_entry.set("name", name);
+			contact_entry.set("title", title);
+			contact_entry.set("company", company);
+			contact_entry.set("email", email);
+			contact_entry.set("phone", phone);
+			contact_entry.set("notes", notes);
+			console.log("calling function");
+			addAppAndSend(res, contact_entry, app);
+
+
+		},
+		error: function(error) {
+			console.log(error.message);
+			alerts.error("failed to edit application");
+		}
+	});
 }

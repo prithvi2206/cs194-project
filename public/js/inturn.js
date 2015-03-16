@@ -1,3 +1,25 @@
+function prepEditContact(contact) {
+
+    var name = document.forms["contactEditForm"]["name"];
+    var title = document.forms["contactEditForm"]["title"];
+    var app = document.forms["contactEditForm"]["appselect"];
+    var company = document.forms["contactEditForm"]["company"];
+    var notes = document.forms["contactEditForm"]["notes"];
+    var email = document.forms["contactEditForm"]["email"];
+    var phone = document.forms["contactEditForm"]["phone"];
+    var id = document.forms["contactEditForm"]["contactId"];
+
+    name.value = contact.name;
+    title.value = contact.title;
+    notes.value = (contact.notes) ? (contact.notes) : ""
+    company.value = (contact.company) ? (contact.company) : ""
+    email.value = (contact.email) ? (contact.email) : ""
+    phone.value = (contact.phone) ? (contact.phone) : "";
+    id.value = contact.objectId;
+    app.value = (contact.appId.objectId) ? (contact.appId.objectId) : 0;
+
+}
+
 function validateURL(textval) {
   var urlregex = new RegExp(
         "^(http|https|ftp)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&amp;%\$#\=~_\-]+))*$");
@@ -56,14 +78,20 @@ function validate_profile() {
     return (validate == 0);
 }
 
-function validate_add_contact() {
+function validate_add_contact(switch_add_edit) {
+
+    if (switch_add_edit) {
+        var div_name = "contactAddForm";
+    } else {
+        var div_name = "contactEditForm"
+    }
 
     var validate = 0;
 
-    var name = document.forms["contactAddForm"]["contact_name"];
-    var title = document.forms["contactAddForm"]["contact_title"];
-    var app = document.forms["contactAddForm"]["appselect"];
-    var company = document.forms["contactAddForm"]["company"];
+    var name = document.forms[div_name]["name"];
+    var title = document.forms[div_name]["title"];
+    var app = document.forms[div_name]["appselect"];
+    var company = document.forms[div_name]["company"];
 
     if (name.value == null || name.value == "") {
         name.parentNode.className += " " + "has-error";
