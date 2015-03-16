@@ -34,6 +34,49 @@ exports.main = function(req, res) {
 
 };
 
+// var escapeHtml = function(string) {
+// 	return String(string).replace(/[&<>"'\/]/g, function (s) {
+// 	  return entityMap[s];
+// 	});
+// }
+
+// var escapeAll = function(messages) {
+// 	var html = [];
+// 	for (var i = 0; i < messages.length; i++) {
+// 		html.push(escapeHtml(messages[i].get("bodyHTML")));
+// 	}
+// 	return html;
+// }
+
+exports.list_companies = function(req, res) {
+	Parse.User.current().fetch()
+
+	var AppObj = Parse.Object.extend("Application");
+	var query = new Parse.Query(AppObj);
+	query.equalTo("userId", Parse.User.current());
+	query.find({
+		success: function(results) {
+			
+			for (var i = 0; i < results.length; i++) {
+			 results[i].get("company")
+			};
+			// res.render('pages/dashboard', { 
+			// 	currentUser: Parse.User.current().getUsername(),
+			// 	title: "Dashboard | inturn",
+			// 	page: "dashboard",
+			// 	jobs_count: results.length,
+			// 	message: null,
+			// 	alerts: alerts.Alert
+			// });
+
+			// alerts.reset();
+		},
+		error: function(error) {
+			console.log(error.message);
+		} 
+	});
+}
+
 exports.update_profile = function(req, res) {
 	var user = Parse.User.current();
 	var set_status = user.get("password_set")
