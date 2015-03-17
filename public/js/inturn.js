@@ -178,6 +178,7 @@ function populateNewsFeed() {
                 var articles = response.articles;
                 total += articles.length;
                 for (var j = 0; j < articles.length; j++) {
+                    if(j >= 5) break;
                     var article = articles[j];
                     var articleObj = new Object;
                     // console.log(article);
@@ -188,10 +189,10 @@ function populateNewsFeed() {
                     articleObj.source = article.source;
                     results.push(articleObj);
                     // if(i == data.length - 1 && j == articles.length - 1) {
-                    // console.log(results);
+                    console.log(results);
                     results.sort(function(a, b) {
-                        if (a.date < b.date) return -1;
-                        if (a.date > b.date) return 1;
+                        if (a.date < b.date) return 1;
+                        if (a.date > b.date) return -1;
                         return 0;
                     });
 
