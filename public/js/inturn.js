@@ -135,19 +135,72 @@ function appSelectListener() {
     }
 }
 
+function returnNewsItemDiv(article) {
+    var html = ""
+    html += "<div class=\"media\">";
+    html += "<div class=\"media-body\">";
+    html += "<h4 class=\"media-heading\">" + article.title + "</h4>";
+    html += article.summary;
+    html += "</div>";
+    html += "</div>";
+
+    return html;
+}
+
+function returnAllNewsDivs(articles) {
+    var html = ""
+    for (var i = 0; i < articles.length; i++) {
+        html += returnNewsItemDiv(articles[i]);
+    }
+    return html;
+}
+
+
 function populateNewsFeed() {
+    // var total_jobs = 0;
+    // var total_articles = 0;
     /* Get jobs list from db */
     $.get("/jobs/get", function(response) {
-
-        var newHTML = "";
+        var total = 0;
+        var total_jobs = response.data.length;
+        var count = 0;
+        var results = []
+        // var newHTML = "";
         var data = response.data;
         for(var i=0; i<data.length; i++) {  
-            newHTML += "<p>" + data[i] + "</p>";
-            console.log(data[i]);
+            var company = data[i];
+            // newHTML += "<p>" + data[i] + "</p>";
+            // console.log(data[i]);
+            var api_call = "http://api.feedzilla.com/v1/articles/search.json?q=" + encodeURIComponent(company.trim());
+            
+            $.get(api_call, function(response) {
+                // total += articles.length;
+                var articles = response.articles;
+                total += articles.length;
+                for (var j = 0; j < articles.length; j++) {
+                    var article = articles[j];
+                    var articleObj = new Object;
+                    // console.log(article);
+                    articleObj.date = new Date(article.publish_date);                     
+                    articleObj.title = article.title;
+                    articleObj.summary = article.summary;
+                    articleObj.url = article.url;
+                    articleObj.source = article.source;
+                    results.push(articleObj);
+                    // if(i == data.length - 1 && j == articles.length - 1) {
+                    // console.log(results);
+                    results.sort(function(a, b) {
+                        if (a.date < b.date) return -1;
+                        if (a.date > b.date) return 1;
+                        return 0;
+                    });
+
+                    $('#newsfeed').html(returnAllNewsDivs(results));
+                    // }
+                };
+                // company = encodeURIComponent(company.trim())
+            });
         }
-
-        $('#newsfeed').html(newHTML);
-
     });
 }
 
