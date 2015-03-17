@@ -1,5 +1,9 @@
 #inturn.io
 
+**Authors: Prithvi Ramakrishnan, Aditya Dev Gupta, Ricky Tran**
+
+*Made for the CS194 Senior Project at Stanford in Winter 2015*
+
 *inturn.io* is a web and mobile solution for college students to manage the various facets of their internship or job recruitment process through a centralized cloud-hosted platform. Centered around an efficient, easy-to-use dashboard, the product allows students to streamline the recruiting process for all their positions, providing tools for managing resumes, cover letters, contacts from networking events, job-related events, and interviews. Furthering its utility, the solution features integrations into various popular tools commonly used to help manage the job recruitment platform, such as Gmail and Google Calendar. 
 
 ### Installation
