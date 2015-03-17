@@ -8,7 +8,8 @@ var getInturnCalId = function() {
  * -------------------
  * Parameters
  * 		input_string: string, something like "Coffee chat at Coupa Cafe with Prithvi tomorrow at 5pm"
- * 		appId: string 
+ * 		appId: string, basically the ID of the application
+ * 				SENTINEL: empty string, if no application is selected.
  */
 exports.quickAddEvent = function(input_string, appId) {
 	var token = Parse.User.current().get("google_token");
@@ -24,7 +25,11 @@ exports.quickAddEvent = function(input_string, appId) {
 			query.equalTo("objectId", appId);
 			query.find({
 				success: function(results) {
-					addEventToParse(data, results[0]);
+					if(results.length > 0) {
+						addEventToParse(data, results[0]);
+					} else {
+						addEventToParse(data, null);
+					}
 				},
 				error: function(error) {
 					console.log(error.message);
