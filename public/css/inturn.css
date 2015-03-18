@@ -58,6 +58,10 @@ tr.document-entry:hover {
     overflow-y: scroll;
 }
 
+.panel-newsfeed {
+  height: 378px;
+  overflow-y: scroll;
+}
 
 /**************/
 /* CSS FOR MESSAGES PANE */
