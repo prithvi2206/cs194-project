@@ -4,6 +4,41 @@ var getInturnCalId = function() {
 	return Parse.User.current().get("cal_id");
 }
 
+/* Function: quickAddEvent
+ * -------------------
+ * Parameters
+ * 		input_string: string, something like "Coffee chat at Coupa Cafe with Prithvi tomorrow at 5pm"
+ * 		appId: string, basically the ID of the application
+ * 				SENTINEL: empty string, if no application is selected.
+ */
+exports.quickAddEvent = function(input_string, appId) {
+	var token = Parse.User.current().get("google_token");
+	var google_calendar = require('google-calendar');
+	var gcal = new google_calendar.GoogleCalendar(token);
+	gcal.events.quickAdd(getInturnCalId(), input_string, function(err, data) {
+		if(err) {
+			console.log(err)
+		} 
+		if(data) {
+			var ApplicationObj = Parse.Object.extend("Application");
+			var query = new Parse.Query(ApplicationObj);
+			query.equalTo("objectId", appId);
+			query.find({
+				success: function(results) {
+					if(results.length > 0) {
+						addEventToParse(data, results[0]);
+					} else {
+						addEventToParse(data, null);
+					}
+				},
+				error: function(error) {
+					console.log(error.message);
+				}
+			});	
+		}
+	});
+}
+
 /* Function: addEvents
  * -------------------
  * Parameters
@@ -177,6 +212,7 @@ exports.updateEventsDB = function(res) {
  	 */
 
  	 addEventsFromApps(google_calendar)
+ 	 // this.quickAddEvent("Coffee chat at Coupa Cafe with Prithvi tomorrow at 5pm", "qERicYvmA1")
  	 // this.addEvent("random event", "2015-03-13T10:00:00.000-07:0", "2015-03-13T11:00:00.000-07:00", "somewhere", "7HhVvHWvCo");
 
 

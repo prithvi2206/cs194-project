@@ -47,7 +47,7 @@ var displayMessages = function(res) {
 					var msgHtml = escapeAll(messages);
 
 					res.render('pages/messages/main', { 
-						currentUser: Parse.User.current().getUsername(),
+						currentUser: Parse.User.current(),
 						title: "Messages | inturn",
 						page: "messages",
 						message: null,
@@ -121,8 +121,25 @@ exports.getMessages = function(req, res) {
 			}
 		});
 	}
-	
-	
+}
+
+exports.getAttachmentIds = function(req, res) {
+	var AttachObj = Parse.Object.extend("Attachment");
+	var query = new Parse.Query(AttachObj);
+	/* Query messages on userId and app Id */
+	query.equalTo("messageId", req.params.msg);
+	query.find({
+		success: function(results) {
+			res.send({data: results});
+		},
+		error: function(error) {
+			console.log(error.message);
+		}
+	});
+}
+
+exports.getAttachment = function(req, res) {
+	mail.download_attachment(req, res);
 }
 
 exports.main = function(req, res) {

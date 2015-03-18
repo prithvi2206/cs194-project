@@ -2,6 +2,29 @@
 
 var alerts = require("../util/alerts.js");
 
+var entityMap = {
+	"&": "&amp;",
+	"<": "&lt;",
+	">": "&gt;",
+	'"': '&quot;',
+	"'": '&#39;',
+	"/": '&#x2F;'
+};
+
+var escapeHtml = function(string) {
+	return String(string).replace(/[&<>"'\/]/g, function (s) {
+	  return entityMap[s];
+	});
+}
+
+var escapeAll = function(messages) {
+	var html = [];
+	for (var i = 0; i < messages.length; i++) {
+		html.push(escapeHtml(messages[i].get("bodyHTML")));
+	}
+	return html;
+}
+
 /* get messages */
 var get_app_messages = function(data, res) {
 
@@ -12,11 +35,14 @@ var get_app_messages = function(data, res) {
 		success: function(results) {
 			data["messages"] = results;
 
+			var msgHtml = escapeAll(results);
+
 			res.render('pages/jobs/view', { 
-				currentUser: Parse.User.current().getUsername(),
+				currentUser: Parse.User.current(),
 				title: "View Job | inturn",
 				page: "jobs",
 				data: data,
+				msgHtml: msgHtml,
 				alerts: alerts.Alert
 			});
 			
@@ -269,6 +295,8 @@ exports.add = function(req, res) {
 	var description = req.body.desc;
 	var status = req.body.status;
 	var url = getDomain(req.body.url);
+	var deadline_str = req.body.deadline;
+	var deadline = new Date(deadline_str);
 
 	console.log("Going to add " + company + ", " + position);
 
@@ -281,6 +309,7 @@ exports.add = function(req, res) {
 	app_entry.set("status", status);
 	app_entry.set("description", description);
 	app_entry.set("url", url);
+	app_entry.set("deadline", deadline);
 
 	app_entry.save({
 		success: function(results) {
@@ -346,6 +375,26 @@ exports.add_contact = function(req, res) {
 	addAppAndSend(res, contact_entry, app);
 }
 
+exports.get_jobs = function(req, res) {
+	var AppObj = Parse.Object.extend("Application");
+	var query = new Parse.Query(AppObj);
+	query.equalTo("userId", Parse.User.current());
+
+	var companies = [];
+
+	query.find({
+		success: function(results) {
+			for (var i in results) {
+				companies.push(results[i].get("company"));
+			}
+			res.send({data: companies});
+		},
+		error: function(error) {
+			console.log(error.message);
+		} 
+	});
+}
+
 exports.main = function(req, res) {
 	Parse.User.current().fetch();
 
@@ -355,7 +404,7 @@ exports.main = function(req, res) {
 	query.find({
 		success: function(results) {
 			res.render('pages/jobs/main', { 
-				currentUser: Parse.User.current().getUsername(),
+				currentUser: Parse.User.current(),
 				title: "Job Applications | inturn",
 				page: "jobs",
 				jobs: results,

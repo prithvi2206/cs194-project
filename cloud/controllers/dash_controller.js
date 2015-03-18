@@ -17,7 +17,7 @@ exports.main = function(req, res) {
 	query.find({
 		success: function(results) {
 			res.render('pages/dashboard', { 
-				currentUser: Parse.User.current().getUsername(),
+				currentUser: Parse.User.current(),
 				title: "Dashboard | inturn",
 				page: "dashboard",
 				jobs_count: results.length,
@@ -29,10 +29,24 @@ exports.main = function(req, res) {
 		},
 		error: function(error) {
 			console.log(error.message);
-		}
+		} 
 	});
 
 };
+
+// var escapeHtml = function(string) {
+// 	return String(string).replace(/[&<>"'\/]/g, function (s) {
+// 	  return entityMap[s];
+// 	});
+// }
+
+// var escapeAll = function(messages) {
+// 	var html = [];
+// 	for (var i = 0; i < messages.length; i++) {
+// 		html.push(escapeHtml(messages[i].get("bodyHTML")));
+// 	}
+// 	return html;
+// }
 
 exports.update_profile = function(req, res) {
 	var user = Parse.User.current();
@@ -86,7 +100,7 @@ exports.profile = function(req, res) {
 	Parse.User.current().fetch()
 	res.render('pages/profile', {
 		user: Parse.User.current(),
-		currentUser: Parse.User.current().getUsername(),
+		currentUser: Parse.User.current(),
 		page: null,
 		alerts: alerts.Alert,
 		title: "Profile | inturn"

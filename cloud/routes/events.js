@@ -5,5 +5,6 @@ var session = require("../util/session.js");
 
 module.exports = function(app) {
 	app.get('/events', session.isLoggedIn, events.main);
+	app.get('/events/get', session.isLoggedIn, events.getEvents);
 };
 

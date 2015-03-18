@@ -4,14 +4,6 @@
 <html lang="en">
 <head>
   <% include ../../partials/head %>
-  <script>
-  function htmlEncode(str) {
-    var div = document.createElement('div');
-    var txt = document.createTextNode(str);
-    div.appendChild(txt);
-    return div.innerHTML;
-}
-</script>
 </head>
 
 <body>
@@ -24,7 +16,7 @@
     <main>
       <div id="page-wrapper">
 
-      <div class="container-fluid">
+        <div class="container-fluid">
 
           <!-- Page Heading -->
           <div class="row">
@@ -32,11 +24,11 @@
               <h1 class="page-header">
                 Messages <small> Overview</small>
               </h1>
-              <ol class="breadcrumb">
+<!--               <ol class="breadcrumb">
                 <li class="active">
                   <i class="fa fa-envelope"></i> Messages
                 </li>
-              </ol>
+              </ol> -->
             </div>
           </div>
 
@@ -49,31 +41,32 @@
 
             <!-- PAGINATION BUTTONS -->
             <div class="col-sm-9 col-md-10">
+              <button type="button" class="btn btn-default" data-toggle="tooltip" title="Refresh">
+              <span class="glyphicon glyphicon-refresh"></span></button>
+              <div class="btn-group">
+                <form onsubmit="getMessages();return false;" name="filterMessage" class="form-inline">
+                  <label>Filter by Application </label>
+                  <select class="form-control" id="app" name="app">
+                    <option value="0" >None</option>
+                    <% for(var i=0; i<apps.length; i++) {%>
+                    <option value=<%= apps[i].id %> ><%= apps[i].get("title") %> at <%= apps[i].get("company") %></option>
+                    <% } %>
+                  </select>
+                  <button type="submit" class="btn btn-default">Go</button>
+                </form>
+              </div>
 
-                <div class="btn-group">
-                  <form onsubmit="getMessages();return false;" name="filterMessage" class="form-inline">
-                    <label>Filter by Application </label>
-                    <select class="form-control" id="app" name="app">
-                      <option value="0" >None</option>
-                      <% for(var i=0; i<apps.length; i++) {%>
-                        <option value=<%= apps[i].id %> ><%= apps[i].get("title") %> at <%= apps[i].get("company") %></option>
-                      <% } %>
-                    </select>
-                    <button type="submit" class="btn btn-default">Go</button>
-                  </form>
+              <div class="pull-right">
+                <span class="text-muted"><b>1</b>–<b><%= data.length %></b> of <b><%= data.length %></b></span>
+                <div class="btn-group btn-group-sm">
+                  <button type="button" class="btn btn-default">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+                  </button>
+                  <button type="button" class="btn btn-default">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                  </button>
                 </div>
-
-                <div class="pull-right">
-                  <span class="text-muted"><b>1</b>–<b><%= data.length %></b> of <b><%= data.length %></b></span>
-                  <div class="btn-group btn-group-sm">
-                    <button type="button" class="btn btn-default">
-                      <span class="glyphicon glyphicon-chevron-left"></span>
-                    </button>
-                    <button type="button" class="btn btn-default">
-                      <span class="glyphicon glyphicon-chevron-right"></span>
-                    </button>
-                  </div>
-                </div>
+              </div>
             </div>
           </div>
 
@@ -88,10 +81,10 @@
               <ul class="nav nav-pills nav-stacked">
                 <li class="active"><a href="#"><span class="badge pull-right"><%= 0 /*data.length*/ %></span> Inbox </a>
                 </li>
-                <li><a href="#">Starred</a></li>
+<!--                 <li><a href="#">Starred</a></li>
                 <li><a href="#">Important</a></li>
                 <li><a href="#">Sent Mail</a></li>
-                <li><a href="#"><!--<span class="badge pull-right">3</span>-->Drafts</a></li>
+                <li><a href="#">Drafts</a></li> -->
               </ul>
             </div>
 
@@ -100,13 +93,13 @@
               <ul class="nav nav-tabs">
                 <li class="active"><a href="#home" data-toggle="tab"><span class="glyphicon glyphicon-inbox">
                 </span>Primary</a></li>
-                <li><a href="#profile" data-toggle="tab"><span class="glyphicon glyphicon-user"></span>
+                <!-- <li><a href="#profile" data-toggle="tab"><span class="glyphicon glyphicon-user"></span>
                   Social</a></li>
                   <li><a href="#messages" data-toggle="tab"><span class="glyphicon glyphicon-tags"></span>
                     Promotions</a></li>
-                  <li><a href="#settings" data-toggle="tab"><span class="glyphicon glyphicon-plus no-margin">
-                  </span></a></li>
-              </ul>
+                    <li><a href="#settings" data-toggle="tab"><span class="glyphicon glyphicon-plus no-margin">
+                    </span></a></li> -->
+                  </ul>
                   <!-- Tab panes -->
                   <div class="tab-content">
                     <div class="tab-pane fade in active" id="home">
@@ -119,94 +112,96 @@
 
                           <!-- iterate email items -->
 
-                        <% if (data) { %>  
-                        <% for(var i=0; i<data.length; i++) { %>   
+                          <% if (data) { %>  
+                          <% for(var i=0; i<data.length; i++) { %>   
 
-                        <a href='javascript:renderMessage("<%= data[i].get("senderName") %>", "<%= data[i].get('senderEmail') %>",
-                          "<%= data[i].get("subject") %>", "<%= msgHtml[i] %>")' 
-                          id="<%= "msg_" + i %>" class="list-group-item">
-                          <div class="checkbox">
-                            <label>
-                              <input type="checkbox">
-                            </label>
-                          </div>
-                          <span class="glyphicon glyphicon-star-empty"></span><span class="name" style="min-width: 120px;
-                          display: inline-block;"><%= data[i].get("senderName") %></span> 
+                          <a href='javascript:renderMessage("<%= data[i].get("gmailId") %>", "<%= data[i].get("senderName") %>", "<%= data[i].get('senderEmail') %>",
+                            "<%= data[i].get("subject") %>", "<%= msgHtml[i] %>")' 
+                            id="<%= "msg_" + i %>" class="list-group-item">
+      <!--                       <div class="checkbox">
+                              <label>
+                                <input type="checkbox">
+                              </label>
+                            </div> -->
+                            <!-- <span class="glyphicon glyphicon-star-empty"></span> --><span class="name" style="min-width: 120px;
+                            display: inline-block;"><%= data[i].get("senderName") %></span> 
 
-                          <span class=""><%= data[i].get("subject") %></span>
+                            <span class=""><%= data[i].get("subject") %></span>
 
-                          <!-- <span class="text-muted" style="font-size: 11px;"><%= data[i].get("snippet") %></span>  -->
+                            <!-- <span class="text-muted" style="font-size: 11px;"><%= data[i].get("snippet") %></span>  -->
 
-                          <span class="badge"><%= (new Date(data[i].get("dateSent"))).toDateString() %></span> <span class="pull-right">
+                            <span class="badge"><%= (new Date(data[i].get("dateSent"))).toDateString() %></span> <span class="pull-right">
 
-                          <span class="glyphicon glyphicon-paperclip"> </span>
+                            <% if (data[i].has_attachment) { %>
+                            <span class="glyphicon glyphicon-paperclip"> </span>
+                            <% } %>
                           </span>
-                      </a>
+                        </a>
 
-                      <% } %>
-                      <% } %>
+                        <% } %>
+                        <% } %>
 
-                  </div>
-                </div>
+                      </div>
+                    </div>
 
-                <div class="tab-pane fade in" id="profile">
-                  <div class="list-group">
-                    <div class="list-group-item">
-                      <span class="text-center">This tab is empty.</span>
+                    <div class="tab-pane fade in" id="profile">
+                      <div class="list-group">
+                        <div class="list-group-item">
+                          <span class="text-center">This tab is empty.</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="tab-pane fade in" id="messages">
+                      ...</div>
+
+                      <div class="tab-pane fade in" id="settings">
+                        This tab is empty.</div>
+
+                      </div>
+
                     </div>
                   </div>
-                </div>
-
-                <div class="tab-pane fade in" id="messages">
-                  ...</div>
-
-                <div class="tab-pane fade in" id="settings">
-                  This tab is empty.</div>
 
                 </div>
-
-                </div>
+                <!-- /.container-fluid -->
               </div>
-
-            </div>
-            <!-- /.container-fluid -->
-          </div>
-    </main>
-
-  </div>
-
-  <div class="modal fade" id="messageViewModal" tabindex="-1" role="dialog">
-      <div class="modal-dialog">
-        <div class="modal-content">
-
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 id="messageTitle" class="modal-title">Message
-              </h4>
-            </div>
-
-            <div class="modal-body">
-
-            <h5 id="messageSubject"></h5>
-
-            <div id="messageBody">
-            </div>
-          
-            </div>
-
-          <div class="modal-footer">
+            </main>
 
           </div>
 
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal --> 
+          <div class="modal fade" id="messageViewModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
 
-  <footer>
-    <% include ../../partials/footer %>
-    <script src="/js/messages.js"></script>
-  </footer>
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 id="messageTitle" class="modal-title">Message
+                  </h4>
+                </div>
 
-</body>
-</html>
+                <div class="modal-body">
+
+                  <h5 id="messageSubject"></h5>
+
+                  <div id="messageBody">
+                  </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                </div>
+
+              </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+          </div><!-- /.modal --> 
+
+          <footer>
+            <% include ../../partials/footer %>
+            <script src="/js/messages.js"></script>
+          </footer>
+
+        </body>
+        </html>
 

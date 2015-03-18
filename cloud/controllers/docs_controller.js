@@ -27,7 +27,7 @@ exports.main = function(req, res) {
 			versionsQuery.find().then(function(versions) {
                 console.log(active);
 				res.render('pages/documents/main',{ 
-					currentUser: Parse.User.current().getUsername(),
+					currentUser: Parse.User.current(),
 					title: "Documents | inturn",
 					page: "documents",
 					documents: results,
@@ -41,7 +41,7 @@ exports.main = function(req, res) {
 			});
 		} else {
 			res.render('pages/documents/main',{ 
-				currentUser: Parse.User.current().getUsername(),
+				currentUser: Parse.User.current(),
 				documents: [],
 				versions: [],
 				active: null,
@@ -62,6 +62,7 @@ exports.upload = function(req, res) {
 	var file = req.files.file;
 
 	if(file.name !== "") {
+		console.log(file.buffer);
 		var buffer = new Buffer(file.buffer, 'base64');
 		var parseFile = new Parse.File(file.originalname, {base64: buffer.toString("base64")});
 		parseFile.save().then(function() {

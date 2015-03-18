@@ -1,3 +1,30 @@
+function onDownload(data) {
+    document.location = 'data:Application/octet-stream,' +
+                         encodeURIComponent(data);
+}
+
+function prepEditContact(contact) {
+
+    var name = document.forms["contactEditForm"]["name"];
+    var title = document.forms["contactEditForm"]["title"];
+    var app = document.forms["contactEditForm"]["appselect"];
+    var company = document.forms["contactEditForm"]["company"];
+    var notes = document.forms["contactEditForm"]["notes"];
+    var email = document.forms["contactEditForm"]["email"];
+    var phone = document.forms["contactEditForm"]["phone"];
+    var id = document.forms["contactEditForm"]["contactId"];
+
+    name.value = contact.name;
+    title.value = contact.title;
+    notes.value = (contact.notes) ? (contact.notes) : ""
+    company.value = (contact.company) ? (contact.company) : ""
+    email.value = (contact.email) ? (contact.email) : ""
+    phone.value = (contact.phone) ? (contact.phone) : "";
+    id.value = contact.objectId;
+    app.value = (contact.appId.objectId) ? (contact.appId.objectId) : 0;
+
+}
+
 function validateURL(textval) {
   var urlregex = new RegExp(
         "^(http|https|ftp)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&amp;%\$#\=~_\-]+))*$");
@@ -56,14 +83,20 @@ function validate_profile() {
     return (validate == 0);
 }
 
-function validate_add_contact() {
+function validate_add_contact(switch_add_edit) {
+
+    if (switch_add_edit) {
+        var div_name = "contactAddForm";
+    } else {
+        var div_name = "contactEditForm"
+    }
 
     var validate = 0;
 
-    var name = document.forms["contactAddForm"]["contact_name"];
-    var title = document.forms["contactAddForm"]["contact_title"];
-    var app = document.forms["contactAddForm"]["appselect"];
-    var company = document.forms["contactAddForm"]["company"];
+    var name = document.forms[div_name]["name"];
+    var title = document.forms[div_name]["title"];
+    var app = document.forms[div_name]["appselect"];
+    var company = document.forms[div_name]["company"];
 
     if (name.value == null || name.value == "") {
         name.parentNode.className += " " + "has-error";
@@ -107,7 +140,79 @@ function appSelectListener() {
     }
 }
 
-$(function() {
+function returnNewsItemDiv(article) {
+    var html = ""
+    html += "<div class=\"media\">";
+    html += "<div class=\"media-body\">";
+    html += "<h4 class=\"media-heading\">" + article.title + "</h4>";
+    html += article.summary;
+    html += "</div>";
+    html += "</div>";
+
+    return html;
+}
+
+function returnAllNewsDivs(articles) {
+    var html = ""
+    for (var i = 0; i < articles.length; i++) {
+        html += returnNewsItemDiv(articles[i]);
+    }
+    return html;
+}
+
+
+function populateNewsFeed() {
+    // var total_jobs = 0;
+    // var total_articles = 0;
+    /* Get jobs list from db */
+    $.get("/jobs/get", function(response) {
+        var total = 0;
+        var total_jobs = response.data.length;
+        var count = 0;
+        var results = []
+        // var newHTML = "";
+        var data = response.data;
+        for(var i=0; i<data.length; i++) {  
+            var company = data[i];
+            // newHTML += "<p>" + data[i] + "</p>";
+            // console.log(data[i]);
+            var api_call = "http://api.feedzilla.com/v1/articles/search.json?q=" + encodeURIComponent(company.trim());
+            
+            $.get(api_call, function(response) {
+                // total += articles.length;
+                var articles = response.articles;
+                total += articles.length;
+                for (var j = 0; j < articles.length; j++) {
+                    if(j >= 5) break;
+                    var article = articles[j];
+                    var articleObj = new Object;
+                    // console.log(article);
+                    articleObj.date = new Date(article.publish_date);                     
+                    articleObj.title = article.title;
+                    articleObj.summary = article.summary;
+                    articleObj.url = article.url;
+                    articleObj.source = article.source;
+                    results.push(articleObj);
+                    // if(i == data.length - 1 && j == articles.length - 1) {
+                    console.log(results);
+                    results.sort(function(a, b) {
+                        if (a.date < b.date) return 1;
+                        if (a.date > b.date) return -1;
+                        return 0;
+                    });
+
+                    $('#newsfeed').html(returnAllNewsDivs(results));
+                    // }
+                };
+                // company = encodeURIComponent(company.trim())
+            });
+        }
+    });
+}
+
+$(function() { /* on document ready */
+
+    // populateNewsFeed();
 
     $('tr.document-entry').click(function() {
         $('tr.selected').removeClass('selected');
