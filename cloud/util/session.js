@@ -58,7 +58,7 @@ var refreshToken = function(req, res, next) {
 					},function(error) {
 							console.log('=================> Something went wrong', error);
 							// res.redirect("/logout");
-							return refreshToken(req, res, function() {return next();});
+							return refreshToken(req, res, next);
 					});
 				} 
 			}
