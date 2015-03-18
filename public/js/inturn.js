@@ -31,6 +31,50 @@ function validateURL(textval) {
   return urlregex.test(textval);
 }
 
+function validate_quick_add() {
+    var summary = document.forms["quickAddForm"]["summary"];
+    console.log(summary);
+    if (summary.value == null || summary.value == "") {
+        summary.parentNode.className += " " + "has-error";
+        return false;
+    } else {
+        summary.parentNode.className  = "form-group";
+        return true;
+    }
+}
+
+function validate_add_event() {
+
+    var validate = 0;
+
+    var summary = document.forms["newEventForm"]["summary"];
+    var start = document.forms["newEventForm"]["start"];
+    var end = document.forms["newEventForm"]["end"];
+
+    if (summary.value == null || summary.value == "") {
+        summary.parentNode.className += " " + "has-error";
+        validate++;
+    } else {
+        summary.parentNode.className = "form-group";
+    }
+
+    if (start.value == null || start.value == "") {
+        start.parentNode.className += " " + "has-error";
+        validate++;
+    } else {
+        start.parentNode.className = "form-group";
+    }
+
+    if (end.value == null || end.value == "") {
+        end.parentNode.className += " " + "has-error";
+        validate++;
+    } else {
+        end.parentNode.className = "form-group";
+    }
+
+    return (validate == 0);
+}
+
 function validate_add_job() {
 
     var validate = 0;

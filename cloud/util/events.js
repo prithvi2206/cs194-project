@@ -11,7 +11,7 @@ var getInturnCalId = function() {
  * 		appId: string, basically the ID of the application
  * 				SENTINEL: empty string, if no application is selected.
  */
-exports.quickAddEvent = function(input_string, appId) {
+exports.quickAddEvent = function(input_string, appId, res) {
 	var token = Parse.User.current().get("google_token");
 	var google_calendar = require('google-calendar');
 	var gcal = new google_calendar.GoogleCalendar(token);
@@ -30,6 +30,7 @@ exports.quickAddEvent = function(input_string, appId) {
 					} else {
 						addEventToParse(data, null);
 					}
+					res.redirect("/events");
 				},
 				error: function(error) {
 					console.log(error.message);
@@ -48,7 +49,7 @@ exports.quickAddEvent = function(input_string, appId) {
  * 		location: string
  * 		appId: string 
  */
-exports.addEvent = function(summary, start, end, location, appId) {
+exports.addEvent = function(summary, start, end, location, appId, res) {
 	
 	var token = Parse.User.current().get("google_token");
 	var google_calendar = require('google-calendar');
@@ -73,6 +74,7 @@ exports.addEvent = function(summary, start, end, location, appId) {
 			query.find({
 				success: function(results) {
 					addEventToParse(data, results[0]);
+					res.redirect("/events");
 				},
 				error: function(error) {
 					console.log(error.message);
