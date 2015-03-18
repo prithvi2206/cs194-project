@@ -136,8 +136,4 @@ class ContactsTableViewController: UITableViewController, ABPeoplePickerNavigati
             break
         }
     }
-    
-    @IBAction func unwindToContactsTableViewController(segue: UIStoryboardSegue) {
-        
-    }
 }

@@ -28,14 +28,14 @@ class EventsTableViewController: UITableViewController {
             } else {
                 self.title = "Events: All"
             }
-            PFQuery(className: "Event").whereKey("userId", equalTo: PFUser.currentUser()).whereKey("applicationId", equalTo: jobId!).includeKey("applicationId").orderByAscending("datetime").findObjectsInBackgroundWithBlock { (result, error) -> Void in
+            PFQuery(className: "Event").whereKey("userId", equalTo: PFUser.currentUser()).whereKey("appId", equalTo: jobId!).includeKey("appId").orderByAscending("datetime").findObjectsInBackgroundWithBlock { (result, error) -> Void in
                 if let events = result as? [PFObject] {
                     self.events = events
                 }
             }
         } else {
             super.title = "Events: All"
-            PFQuery(className: "Event").whereKey("userId", equalTo: PFUser.currentUser()).includeKey("applicationId").orderByAscending("datetime").findObjectsInBackgroundWithBlock { (result, error) -> Void in
+            PFQuery(className: "Event").whereKey("userId", equalTo: PFUser.currentUser()).includeKey("appId").orderByAscending("datetime").findObjectsInBackgroundWithBlock { (result, error) -> Void in
                 if let events = result as? [PFObject] {
                     self.events = events
                 }
@@ -44,10 +44,17 @@ class EventsTableViewController: UITableViewController {
         
     }
     
+    func segueToNewEventForm() {
+        performSegueWithIdentifier("New Event Segue", sender: self)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         super.title = "Events"
         tableView.backgroundColor = UIColor.whiteColor()
+        
+        var importContactButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "segueToNewEventForm")
+        self.navigationItem.rightBarButtonItem = importContactButton
 
         fetchEvents()
     }
@@ -91,6 +98,28 @@ class EventsTableViewController: UITableViewController {
             if let eventDetailViewController = segue.destinationViewController as? EventDetailTableViewController {
                 if let eventCellIndexPath = tableView.indexPathForCell(sender as EventTableViewCell) {
                     eventDetailViewController.event = events![eventCellIndexPath.row]
+                }
+            }
+        default:
+            break
+        }
+    }
+    
+    private struct Identifiers {
+        static let ContactDetailSegue = "Contact Detail Segue"
+    }
+    
+    // MARK: - Navigation
+    
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        switch segue.identifier! {
+        case Identifiers.ContactDetailSegue:
+            if let contactDetailViewController = segue.destinationViewController as? ContactDetailTableViewController {
+                if let contactCell = sender as? UITableViewCell {
+                    if let indexPath = tableView.indexPathForCell(contactCell) {
+                        contactDetailViewController.data = contacts?[indexPath.row]
+                    }
                 }
             }
         default:

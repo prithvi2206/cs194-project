@@ -30,7 +30,7 @@ class EventTableViewCell: UITableViewCell {
         dateLabel?.text = nil
         
         if event != nil {
-            if let applicationObj = event!.objectForKey("applicationId") as? PFObject {
+            if let applicationObj = event!.objectForKey("appId") as? PFObject {
                 if let company_name = applicationObj.objectForKey("company") as? String {
                     companyLabel?.text = company_name
                 }
@@ -44,13 +44,13 @@ class EventTableViewCell: UITableViewCell {
                 descriptionLabel?.text = description
             }
             
-            if let date = event!.objectForKey("datetime") as? NSDate {
+            if let date = event!.objectForKey("start") as? NSDate {
                 let dateFormatter = NSDateFormatter()
                 let timeFormatter = NSDateFormatter()
                 dateFormatter.dateFormat = "MMM dd, y"
                 timeFormatter.dateFormat = "h:mm a"
                 
-                dateLabel?.text = timeFormatter.stringFromDate(date)
+                dateLabel?.text = dateFormatter.stringFromDate(date)
                 
                 /*
                 var calendar = NSCalendar.currentCalendar()

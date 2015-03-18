@@ -19,34 +19,44 @@ class EventDetailTableViewController: UITableViewController {
     }
     
     @IBOutlet weak var companyLabel: UILabel!
-    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var startLabel: UILabel!
+    @IBOutlet weak var endLabel: UILabel!
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
     
     
     private func updateUI() {
         if(event != nil) {
-//            if let company = event!.objectForKey("appId").objectForKey("company") as? String {
-//                companyLabel?.text = company
-//            }
+            if let company = event!.objectForKey("appId").objectForKey("company") as? String {
+                companyLabel?.text = company
+            }
             
-            if let date = event!.objectForKey("datetime") as? NSDate {
-                let dateFormatter = NSDateFormatter()
-                let timeFormatter = NSDateFormatter()
-                dateFormatter.dateFormat = "MMM dd, y"
-                timeFormatter.dateFormat = "h:mm a"
-                
-                var calendar = NSCalendar.currentCalendar()
-                var components1 = calendar.components(.CalendarUnitDay, fromDate: date)
-                let today = NSDate()
-                var components2 = calendar.components(.CalendarUnitDay, fromDate: today)
+            let dateFormatter = NSDateFormatter()
+            let timeFormatter = NSDateFormatter()
+            dateFormatter.dateFormat = "MMM dd, y"
+            timeFormatter.dateFormat = "h:mm a"
+            
+            let calendar = NSCalendar.currentCalendar()
+            let today = NSDate()
+            let components2 = calendar.components(.CalendarUnitDay, fromDate: today)
+            
+            if let start = event!.objectForKey("start") as? NSDate {
+                let components1 = calendar.components(.CalendarUnitDay, fromDate: start)
                 
                 if((components1.day - components2.day) == 0) {
-                    dateLabel?.text = "Today at " + timeFormatter.stringFromDate(date)
-                } else if ((components1.day - components2.day) > 0) {
-                    dateLabel?.text = dateFormatter.stringFromDate(date) + " at " + timeFormatter.stringFromDate(date)
+                    startLabel?.text = "Today " + timeFormatter.stringFromDate(start)
                 } else {
-                    dateLabel?.text = "Was on " + dateFormatter.stringFromDate(date) + " at " + timeFormatter.stringFromDate(date)
+                    startLabel?.text = dateFormatter.stringFromDate(start) + " at " + timeFormatter.stringFromDate(start)
+                }
+            }
+            
+            if let end = event!.objectForKey("end") as? NSDate {
+                let components1 = calendar.components(.CalendarUnitDay, fromDate: end)
+                
+                if((components1.day - components2.day) == 0) {
+                    endLabel?.text = "Today " + timeFormatter.stringFromDate(end)
+                } else {
+                    endLabel?.text = dateFormatter.stringFromDate(end) + " at " + timeFormatter.stringFromDate(end)
                 }
             }
             
@@ -74,9 +84,12 @@ class EventDetailTableViewController: UITableViewController {
                         }
                     }
                     
-                    if let date = self.event!.objectForKey("datetime") as? NSDate {
-                        ek_event.startDate = date
-                        ek_event.endDate = date
+                    if let start = self.event!.objectForKey("start") as? NSDate {
+                        ek_event.startDate = start
+                    }
+                    
+                    if let end = self.event!.objectForKey("end") as? NSDate {
+                        ek_event.endDate = end
                     }
                     
                     if let location = self.event!.objectForKey("location") as? String {
@@ -132,7 +145,8 @@ class EventDetailTableViewController: UITableViewController {
         companyLabel?.text = nil
         locationLabel?.text = nil
         descriptionLabel?.text = nil
-        dateLabel?.text = nil
+        startLabel?.text = nil
+        endLabel?.text = nil
         
         updateUI()
     }
