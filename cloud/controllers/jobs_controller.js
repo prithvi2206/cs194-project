@@ -102,6 +102,37 @@ var get_app_docs = function(data, res) {
 	});
 }
 
+var array_contains = function(arr, val) {
+	for (var i = 0; i < arr.length; i++) {
+		if(arr[i] == val) {
+			return true;
+		}
+	}
+	return false;
+}
+
+var removed_duplicates = function(results) {
+	// console.log("removing duplicates from: " + results.length);
+	var emails = [];
+	var ret = [];
+	for (var i = 0; i < results.length; i++) {
+		// console.log(emails);
+		var curr_email = results[i].get("email");
+		if(curr_email == null || curr_email == "") {
+			// console.log("simple email");
+			ret.push(results[i]);
+		} else {
+			if(array_contains(emails, curr_email)) {
+				// console.log("dup found");
+			} else {
+				ret.push(results[i]);
+				emails.push(curr_email);
+			}
+		}
+	};
+	return ret;
+}
+
 /* get contacts */
 var get_app_contacts = function(data, res) {
 
@@ -110,6 +141,7 @@ var get_app_contacts = function(data, res) {
 	query_contact.equalTo("appId", data["app"]);
 	query_contact.find({
 		success: function(results) {
+			results = removed_duplicates(results);
 			data["contacts"] = results;
 			get_app_docs(data, res);
 		},
