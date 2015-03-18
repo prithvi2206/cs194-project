@@ -526,7 +526,7 @@ var getAllMessages = function(gmail) {
 			var num_applications = results.length
 			console.log("searching for emails from " + num_applications + " applications");
 			for(var i = 0; i < results.length; i++) {
-				// getAllFromApplication(gmail, results[i]);
+				getAllFromApplication(gmail, results[i]);
 			}
 		},
 		error: function(error) {
