@@ -260,6 +260,7 @@ $(function() { /* on document ready */
 
     $('.datepicker').datetimepicker();
 
+    /* populate news feed on dashboard */
     if((window.location.href).indexOf("dashboard") > -1) {
         populateNewsFeed();
     }
