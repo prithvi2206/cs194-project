@@ -42,45 +42,45 @@
             <!-- PAGINATION BUTTONS -->
             <div class="col-sm-9 col-md-10">
               <button type="button" class="btn btn-default" data-toggle="tooltip" title="Refresh">
-              <span class="glyphicon glyphicon-refresh"></span></button>
-              <div class="btn-group">
-                <form onsubmit="getMessages();return false;" name="filterMessage" class="form-inline">
-                  <label>Filter by Application </label>
-                  <select class="form-control" id="app" name="app">
-                    <option value="0" >None</option>
-                    <% for(var i=0; i<apps.length; i++) {%>
-                    <option value=<%= apps[i].id %> ><%= apps[i].get("title") %> at <%= apps[i].get("company") %></option>
-                    <% } %>
-                  </select>
-                  <button type="submit" class="btn btn-default">Go</button>
-                </form>
-              </div>
+                <span class="glyphicon glyphicon-refresh"></span></button>
+                <div class="btn-group">
+                  <form onsubmit="getMessages();return false;" name="filterMessage" class="form-inline">
+                    <label>Filter by Application </label>
+                    <select class="form-control" id="app" name="app">
+                      <option value="0" >None</option>
+                      <% for(var i=0; i<apps.length; i++) {%>
+                      <option value=<%= apps[i].id %> ><%= apps[i].get("title") %> at <%= apps[i].get("company") %></option>
+                      <% } %>
+                    </select>
+                    <button type="submit" class="btn btn-default">Go</button>
+                  </form>
+                </div>
 
-              <div class="pull-right">
-                <span class="text-muted"><b>1</b>–<b><%= data.length %></b> of <b><%= data.length %></b></span>
-                <div class="btn-group btn-group-sm">
-                  <button type="button" class="btn btn-default">
-                    <span class="glyphicon glyphicon-chevron-left"></span>
-                  </button>
-                  <button type="button" class="btn btn-default">
-                    <span class="glyphicon glyphicon-chevron-right"></span>
-                  </button>
+                <div class="pull-right">
+                  <span class="text-muted"><b>1</b>–<b><%= data.length %></b> of <b><%= data.length %></b></span>
+                  <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-default">
+                      <span class="glyphicon glyphicon-chevron-left"></span>
+                    </button>
+                    <button type="button" class="btn btn-default">
+                      <span class="glyphicon glyphicon-chevron-right"></span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <hr>
+            <hr>
 
-          <div class="row">
+            <div class="row">
 
-            <!-- FOLDER BUTTONS -->
-            <div class="col-sm-3 col-md-2">
-              <a href="#" class="btn btn-danger btn-sm btn-block" role="button"><i class="glyphicon glyphicon-edit"></i> Compose</a>
-              <hr>
-              <ul class="nav nav-pills nav-stacked">
-                <li class="active"><a href="#"><span class="badge pull-right"><%= 0 /*data.length*/ %></span> Inbox </a>
-                </li>
+              <!-- FOLDER BUTTONS -->
+              <div class="col-sm-3 col-md-2">
+                <a href="#" class="btn btn-danger btn-sm btn-block" role="button"><i class="glyphicon glyphicon-edit"></i> Compose</a>
+                <hr>
+                <ul class="nav nav-pills nav-stacked">
+                  <li class="active"><a href="#"><span class="badge pull-right"><%= 0 /*data.length*/ %></span> Inbox </a>
+                  </li>
 <!--                 <li><a href="#">Starred</a></li>
                 <li><a href="#">Important</a></li>
                 <li><a href="#">Sent Mail</a></li>
@@ -182,6 +182,14 @@
 
                 <div class="modal-body">
 
+                  <div>
+                    <h5>Attachments</h5>
+                    <div id="messageAttach">
+                    </div>
+                  </div>
+                  <p>
+                    <hr>
+                  </p>
                   <h5 id="messageSubject"></h5>
 
                   <div id="messageBody">
@@ -199,6 +207,8 @@
 
           <footer>
             <% include ../../partials/footer %>
+            <script src="/js/base64.js"></script>
+            <script src="/js/pdf.js"></script>
             <script src="/js/messages.js"></script>
           </footer>
 
