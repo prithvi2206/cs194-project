@@ -246,29 +246,6 @@ var addMessageFromContact = function(message, contact) {
 		body_text = base64ToUtf(message.payload.body.data);
 		body_html = base64ToUtf(message.payload.body.data);
 	}
-	// // console.log(body_html)
-	// if(subject == "CS106B Section") {
-	// 	console.log("this one");
-	// 	if(parts) {
-	// 		if(parts[0].mimeType.substring(0, 9) == "multipart") {
-	// 			console.log("is multipart");
-	// 			var first_parts = parts[0].parts
-	// 			body_text = base64ToUtf(first_parts[0].body.data)
-	// 			body_html = base64ToUtf(first_parts[1].body.data)
-	// 			for (var i = 1; i < parts.length; i++) {
-	// 				has_attachment = true;
-	// 				addAttachment(parts[i].body.attachmentId, parts[i].filename, gmail_id)
-	// 			};
-	// 		} else {
-	// 			console.log("is not multipart");
-	// 			body_text = base64ToUtf(parts[0].body.data)
-	// 			body_html = base64ToUtf(parts[1].body.data)			
-	// 		}
-	// 	} else {
-	// 		console.log("no parts");
-	// 		console.log(base64ToUtf(message.payload.body.data));
-	// 	}
-	// }
 	addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact, has_attachment)
 
 /*	console.log("==================== MESSAGE DATA ====================")
@@ -302,6 +279,7 @@ var addMessageFromContact = function(message, contact) {
 
 var addMessageFromApp = function(message, app) {
 	var gmail_id = message.id;
+	if(!(message.payload)) return;
 	var email_type = message.payload.mimeType;
 	var headers = message.payload.headers;
 	var body = message.payload.body;
@@ -335,50 +313,63 @@ var addMessageFromApp = function(message, app) {
 	var parts = message.payload.parts;
 	var body_text = ""
 	var body_html = ""
+	var has_attachment = false;
 	if(parts) {
 		if(parts[0].mimeType.substring(0, 9) == "multipart") {
+			// console.log("is multipart");
 			var first_parts = parts[0].parts
 			body_text = base64ToUtf(first_parts[0].body.data)
 			body_html = base64ToUtf(first_parts[1].body.data)
+			for (var i = 1; i < parts.length; i++) {
+				has_attachment = true;
+				addAttachment(parts[i].body.attachmentId, parts[i].filename, gmail_id)
+			};
 		} else {
+			// console.log("is not multipart");
 			body_text = base64ToUtf(parts[0].body.data)
 			body_html = base64ToUtf(parts[1].body.data)			
 		}
+	} else {
+		body_text = base64ToUtf(message.payload.body.data);
+		body_html = base64ToUtf(message.payload.body.data);
 	}
 
-	// var ContactObj = Parse.Object.extend("Contact");
-	// var query = new Parse.Query(ContactObj);
-	// query.equalTo("email", from_email);
-	// query.find({
-	// 	success: function(results) {
-	// 		if(results.length == 0)  {
-	// 			console.log("the contact for " + from_name + " isn't there")
-	// 			var ContactObj = Parse.Object.extend("Contact");
-	// 			var contact_entry = new ContactObj;		
-	// 			contact_entry.set("appId", app);
-	// 			contact_entry.set("company", app.get("company"));
-	// 			contact_entry.set("email", from_email);
-	// 			contact_entry.set("name", from_name);
-	// 			contact_entry.set("notes", "Automatically generated from Messages");
-	// 			contact_entry.set("title", "");
-	// 			contact_entry.set("userId", Parse.User.current());
-	// 			contact_entry.save().then(function() { 
-	// 				addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact_entry)
-	// 			}, function(error) {
-	// 				console.log(error);
-	// 			});
-	// 		} else {
-	// 			addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, results[0])
-	// 		}
-	// 	},
-	// 	error: function(error) {
-	// 		console.log(error.message);
-	// 	}
-	// });	
+	var ContactObj = Parse.Object.extend("Contact");
+	var query = new Parse.Query(ContactObj);
+	query.equalTo("email", from_email);
+	console.log("constructed contact query")
+	query.find({
+		success: function(results) {
+			if(results.length == 0)  {
+				console.log("the contact for " + from_name + " isn't there")
+				var ContactObj = Parse.Object.extend("Contact");
+				var contact_entry = new ContactObj;		
+				contact_entry.set("appId", app);
+				contact_entry.set("company", app.get("company"));
+				contact_entry.set("email", from_email);
+				contact_entry.set("name", from_name);
+				contact_entry.set("notes", "Automatically generated from Messages");
+				contact_entry.set("title", "");
+				contact_entry.set("userId", Parse.User.current());
+				contact_entry.save().then(function() { 
+					console.log("new contact saved from message");
+					addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact_entry)
+				}, function(error) {
+					console.log(error);
+				});
+			} else {
+				addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, results[0])
+			}
+		},
+		error: function(error) {
+			console.log(error.message);
+		}
+	});	
 
 
+	// addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact, has_attachment)
 
-	// addIfRelevant(gmail_id, subject, from, date_time, body_text, body_html, snippet, flags, contact)
+	// addIfRelevant(gmail_id, subject, from, date_time, body_text, body_html, snippet, flags, contact, has_attachment)
 }
 
 var getTime = function(message) {
@@ -466,7 +457,7 @@ var getAllMessages = function(gmail) {
 			var num_applications = results.length
 			console.log("searching for emails from " + num_applications + " applications");
 			for(var i = 0; i < results.length; i++) {
-				getAllFromApplication(gmail, results[i]);
+				// getAllFromApplication(gmail, results[i]);
 			}
 		},
 		error: function(error) {

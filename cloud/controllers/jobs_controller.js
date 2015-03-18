@@ -295,6 +295,8 @@ exports.add = function(req, res) {
 	var description = req.body.desc;
 	var status = req.body.status;
 	var url = getDomain(req.body.url);
+	var deadline_str = req.body.deadline;
+	var deadline = new Date(deadline_str);
 
 	console.log("Going to add " + company + ", " + position);
 
@@ -307,6 +309,7 @@ exports.add = function(req, res) {
 	app_entry.set("status", status);
 	app_entry.set("description", description);
 	app_entry.set("url", url);
+	app_entry.set("deadline", deadline);
 
 	app_entry.save({
 		success: function(results) {
