@@ -2,7 +2,7 @@
 
 var loggingIn = false;
 var TOKEN_REFRESH_FREQUENCY = 10;
-var MAIL_CALENDAR_FREQUENCY = 300;
+var MAIL_CALENDAR_FREQUENCY = 600;
 var mail = require("./mail.js");
 var events = require("./events.js");
 
