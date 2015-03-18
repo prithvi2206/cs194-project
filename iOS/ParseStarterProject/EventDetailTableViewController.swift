@@ -26,11 +26,9 @@ class EventDetailTableViewController: UITableViewController {
     
     private func updateUI() {
         if(event != nil) {
-            if let applicationObj = event!.objectForKey("applicationId") as? PFObject {
-                if let company_name = applicationObj.objectForKey("company") as? String {
-                    companyLabel?.text = company_name
-                }
-            }
+//            if let company = event!.objectForKey("appId").objectForKey("company") as? String {
+//                companyLabel?.text = company
+//            }
             
             if let date = event!.objectForKey("datetime") as? NSDate {
                 let dateFormatter = NSDateFormatter()

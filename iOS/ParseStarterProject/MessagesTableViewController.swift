@@ -66,7 +66,7 @@ class MessagesTableViewController: UITableViewController {
 
     private struct Identifiers {
         static let MessageCellReuseIdentifier = "Message Cell"
-        static let DocumentViewSegue = "Document Preview Segue"
+        static let MessageDetailSegue = "Message Detail Segue"
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -77,5 +77,20 @@ class MessagesTableViewController: UITableViewController {
         }
         
         return cell
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        switch segue.identifier! {
+        case Identifiers.MessageDetailSegue:
+            if let messageDetailViewController = segue.destinationViewController as? MessageDetailTableViewController {
+                if let messageCell = sender as? UITableViewCell {
+                    if let indexPath = tableView.indexPathForCell(messageCell) {
+                        messageDetailViewController.message = messages?[indexPath.row]
+                    }
+                }
+            }
+        default:
+            break
+        }
     }
 }

@@ -56,11 +56,11 @@ class LoginViewController: UIViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.loginPanelView.layer.borderColor = UIColor.lightGrayColor().CGColor
-        self.loginPanelView.layer.borderWidth = 1.0
-        self.loginPanelView.layer.cornerRadius = 2.0
-        
-        self.loginButton.layer.cornerRadius = 2.0
+//        self.loginPanelView.layer.borderColor = UIColor.lightGrayColor().CGColor
+//        self.loginPanelView.layer.borderWidth = 1.0
+//        self.loginPanelView.layer.cornerRadius = 2.0
+//        
+//        self.loginButton.layer.cornerRadius = 2.0
     }
 
     override func didReceiveMemoryWarning() {
