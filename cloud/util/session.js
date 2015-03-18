@@ -1,6 +1,7 @@
 'use strict';
 
 var loggingIn = false;
+var TOKEN_REFRESH_FREQUENCY = 10;
 
 exports.isLoggedIn = function(req, res, next) {
 	// if user is authenticated in the session, carry on
@@ -25,7 +26,7 @@ var refreshToken = function(req, res, next) {
 	var refresh_token = Parse.User.current().get('refresh_token');
 	var lastRefreshed = Parse.User.current().get("lastRefreshed");
 	var currTime = new Date();
-	if(!lastRefreshed || ((currTime.getTime() - lastRefreshed.getTime()) > 1000*10)) {
+	if(!lastRefreshed || ((currTime.getTime() - lastRefreshed.getTime()) > 1000 * TOKEN_REFRESH_FREQUENCY)) {
 		// if(!lastRefreshed) {
 		// 	last
 		// }
@@ -58,7 +59,7 @@ var refreshToken = function(req, res, next) {
 					},function(error) {
 							console.log('=================> Something went wrong', error);
 							// res.redirect("/logout");
-							return refreshToken(req, res, next);
+							refreshToken(req, res, next);
 					});
 				} 
 			}

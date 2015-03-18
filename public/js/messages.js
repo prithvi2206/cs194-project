@@ -26,9 +26,10 @@ function renderMessage(id, name, email, subject, body) {
 function downloadAttachment(id) {
     $.get("/attach/get/"+id, function(response) {
         var data = response.data;
-        var url = "data:application/pdf;base64," + Base64.encode(data);
-        var pdfAsArray = convertDataURIToBinary(url);
-        PDFJS.getDocument(pdfAsArray)
+        var url = "data:application/pdf;base64," + data;
+        window.open(url);
+        // var pdfAsArray = convertDataURIToBinary(url);
+        // PDFJS.getDocument(pdfAsArray)
     });
     
 }
