@@ -5,9 +5,70 @@
  */
 
 var kill_words = ["unsubscribe", "un-subscribe", "un-enroll", "unenroll"]
+var attachmentId = "ANGjdJ8cUlIzDarpke6-RHqb1AvxvFZO3QdyRLz4wjn96_rFu1mk0x9rN_PQiD6BhyP53mkuTx6-pXtj_HQjS8iF1MXNX6kf_YbBYv3KSHOhnD4iiMkYI3QQ8GxHNnG7BXkejGG1RDzGLaiC69OyC9PXN1PUFts4AD3xUCGLhlbugqlrwEHY7ezhUCj22jqDgo8y_X7NKKsSkxgvDY6ByIg2YJnaRwndwfOL1hBSkMxvn0RGItLmmQllP65jKzb2jYARrZYUwgS8Ah4kKC6yOh8dNWAAk3_Xs93oaaV7QA"
+var token;
 
+exports.download_attachment = function(attachmentId) {
+	// get the attachmentId, it bett
+	var AttachmentObj = Parse.Object.extend("Attachment");
+	var query = new Parse.Query(AttachmentObj);
+	query.equalTo("userId", Parse.User.current());
+	query.equalTo("attachmentId", attachmentId);
+	query.find({
+		success: function(results) {
+			if(results.length > 0)  {
+				console.log("found attachment");
+				get_attachment(results[0].get("attachmentId"), results[0].get("messageId"), results[0].get("userEmail"));
+			} else {
+				console.log("no attachment found, or the attachment is not yours")
+			}
+		},
+		error: function(error) {
+			console.log(error.message);
+		}
+	});
+}
 
-/* replace with sexy naive bayes bag of word classification algorithm */
+var attachment_callback = function(filename, mimeType, attachment) {
+	console.log("Here");
+}
+
+var get_attachment = function(attachId, messageId, email) {
+	var google = require('googleapis');
+	var gmail = google.gmail('v1');
+	var configAuth = require('./../../config/auth.js');
+	var CLIENT_ID = '1073490943584-jihl83sesm1qcm10lik7mu86t5ioh5g5.apps.googleusercontent.com';
+    var CLIENT_SECRET = 'MKAnbihZSzT75VOC61bapiPQ';
+    var REDIRECT_URL =  'http://localhost:3000/auth/google/callback';
+    var refreshToken =  Parse.User.current().get("refresh_token");
+	var OAuth2 = google.auth.OAuth2
+	console.log(CLIENT_ID)
+	var oauth2Client = new OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL);
+	// Retrieve tokens via token exchange explained above or set them:
+	oauth2Client.setCredentials({
+	  access_token: token,
+	  refresh_token: refreshToken
+	});
+
+	console.log("gapi initialzed: " + gmail)
+	console.log("id: " + attachId + ", messageId: " + messageId + ", userId: " + email);
+	var request = gmail.users.messages.attachments.get({
+		'id': attachId,
+		'messageId': messageId,
+		'userId': email, 
+		'auth': oauth2Client
+	}, function(err, response) {
+		console.log("got an answer")
+		if(err) {
+			console.log(err);
+		}
+		if(response) {
+			console.log(response);
+		}
+	});	
+}
+
+/* replace with naive bayes or something */
 var emailIsRecruitingRelated = function(from, subject, body_text) {
 	if(body_text.indexOf("unsubscribe") > -1) {
 		return false;
@@ -85,6 +146,22 @@ var base64ToUtf = function(s) {
 	return buffer.toString("utf-8");
 }
 
+var addAttachment = function(attachment_id, attachment_name, message_id) {
+	var AttachmentObj = Parse.Object.extend("Attachment");
+	var attachment_entry = new AttachmentObj;               
+	attachment_entry.set("filename", attachment_name);
+	attachment_entry.set("userId", Parse.User.current());
+	attachment_entry.set("messageId", message_id);
+	attachment_entry.set("attachmentId", attachment_id);
+	attachment_entry.set("userEmail", Parse.User.current().get("username"));
+	console.log(attachment_name + " " + attachment_id + " " + message_id + " " + Parse.User.current().get("username"))
+	attachment_entry.save().then(function() { 
+		// console.log("----------- new attachment saved succesfully");
+	}, function(error) {
+		console.log(error);
+	});
+}
+
 var addMessageFromContact = function(message, contact) {
 	var gmail_id = message.id;
 	var email_type = message.payload.mimeType;
@@ -120,6 +197,9 @@ var addMessageFromContact = function(message, contact) {
 			var first_parts = parts[0].parts
 			body_text = base64ToUtf(first_parts[0].body.data)
 			body_html = base64ToUtf(first_parts[1].body.data)
+			for (var i = 1; i < parts.length; i++) {
+				addAttachment(parts[i].body.attachmentId, parts[i].filename, gmail_id)
+			};
 		} else {
 			body_text = base64ToUtf(parts[0].body.data)
 			body_html = base64ToUtf(parts[1].body.data)			
@@ -155,7 +235,6 @@ var addMessageFromContact = function(message, contact) {
 	console.log("======================================================")*/
 
 }
-
 
 var addMessageFromApp = function(message, app) {
 	var gmail_id = message.id;
@@ -335,8 +414,9 @@ var getAllMessages = function(gmail) {
 
 // retrieves all new messages, and inserts the scaped data into the database
 exports.updateMessagesDB = function(res) {
-	var token = Parse.User.current().get("google_token");
+	token = Parse.User.current().get("google_token");
 	console.log("token is " + token);
 	var gmail = new Gmail(token);
 	getAllMessages(gmail);
+	// this.download_attachment(attachmentId);
 }
