@@ -20,7 +20,7 @@ exports.isLoggedIn = function(req, res, next) {
  * upating of the auth token 
  */
 var refreshToken = function(req, res, next) {
-
+	console.log("refreshing!");
 	var refresh_token = Parse.User.current().get('refresh_token');
 
 	refresh.requestNewAccessToken('google', refresh_token, 
@@ -33,24 +33,22 @@ var refreshToken = function(req, res, next) {
 			}
 
 			var user = Parse.User.current();
-			user.set("google_token", accessToken);
-
-			/* Save changes */
-			user.save()
-			.then(
-				function(user) {
+			if(user) {
+				user.set("google_token", accessToken);
+				/* Save changes */
+				user.save()
+				.then(function(user) {
 					return user.fetch();
-				}).then(
-				function(user) {
+				}).then(function(user) {
 					console.log('auth token refreshed');
 					/* auth token successfully updated, try again */
 					return next();
-				},
-				function(error) {
-					console.log('Something went wrong', error);
-					res.redirect("/logout");
+				},function(error) {
+						console.log('Something went wrong', error);
+						res.redirect("/logout");
 				});
-
+			} 
+			
 		}
 	);
 }
