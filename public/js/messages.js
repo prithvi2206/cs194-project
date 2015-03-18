@@ -1,3 +1,18 @@
+var BASE64_MARKER = ';base64,';
+ 
+function convertDataURIToBinary(dataURI) {
+  var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+  var base64 = dataURI.substring(base64Index);
+  var raw = window.atob(base64);
+  var rawLength = raw.length;
+  var array = new Uint8Array(new ArrayBuffer(rawLength));
+ 
+  for(i = 0; i < rawLength; i++) {
+    array[i] = raw.charCodeAt(i);
+  }
+  return array;
+}
+
 function renderMessage(id, name, email, subject, body) {
     var title = name + ' &lt;' + email + '&gt;';
     $('#messageTitle').html(title);
@@ -11,7 +26,9 @@ function renderMessage(id, name, email, subject, body) {
 function downloadAttachment(id) {
     $.get("/attach/get/"+id, function(response) {
         var data = response.data;
-        document.location = 'data:text/plain;charset=utf-8,' + encodeURIComponent(data);
+        var url = "data:application/pdf;base64," + Base64.encode(data);
+        var pdfAsArray = convertDataURIToBinary(url);
+        PDFJS.getDocument(pdfAsArray)
     });
     
 }
