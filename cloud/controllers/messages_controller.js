@@ -47,7 +47,7 @@ var displayMessages = function(res) {
 					var msgHtml = escapeAll(messages);
 
 					res.render('pages/messages/main', { 
-						currentUser: Parse.User.current().getUsername(),
+						currentUser: Parse.User.current(),
 						title: "Messages | inturn",
 						page: "messages",
 						message: null,

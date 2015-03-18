@@ -28,7 +28,7 @@ exports.main = function(req, res) {
 	events.updateEventsDB(res);
 
 	res.render('pages/events/main', { 
-		currentUser: Parse.User.current().getUsername(),
+		currentUser: Parse.User.current(),
 		title: "Events | inturn",
 		page: "events"
 	});

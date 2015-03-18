@@ -9,7 +9,7 @@ var get_apps_and_render_main_page = function(contacts_list, res) {
 		success: function(results) {
 			
 			res.render('pages/contacts/main', { 
-				currentUser: Parse.User.current().getUsername(),
+				currentUser: Parse.User.current(),
 				title: "Contacts | inturn",
 				contacts: contacts_list,
 				apps: results,
@@ -68,7 +68,7 @@ exports.add = function(req, res) {
 	var name = req.body.name;
 	var title = req.body.title;
 	var company = req.body.company;
-	var email = req.body.email.toLowerCase();
+	var email = (req.body.email) ? (req.body.email).toLowerCase() : (req.body.email);
 	var phone = req.body.phone;
 	var notes = req.body.notes;
 	var app = req.body.appselect;

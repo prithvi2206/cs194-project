@@ -51,6 +51,13 @@ tr.document-entry:hover {
     border-color: #2e6da4;
 }
 
+.datepicker {z-index: 10000 !important ;}
+
+.panel-height {
+    height: 250px; / change according to your requirement/
+    overflow-y: scroll;
+}
+
 /**************/
 /* CSS FOR MESSAGES PANE */
 

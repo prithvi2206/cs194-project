@@ -27,7 +27,7 @@ exports.main = function(req, res) {
 			versionsQuery.find().then(function(versions) {
                 console.log(active);
 				res.render('pages/documents/main',{ 
-					currentUser: Parse.User.current().getUsername(),
+					currentUser: Parse.User.current(),
 					title: "Documents | inturn",
 					page: "documents",
 					documents: results,
@@ -41,7 +41,7 @@ exports.main = function(req, res) {
 			});
 		} else {
 			res.render('pages/documents/main',{ 
-				currentUser: Parse.User.current().getUsername(),
+				currentUser: Parse.User.current(),
 				documents: [],
 				versions: [],
 				active: null,

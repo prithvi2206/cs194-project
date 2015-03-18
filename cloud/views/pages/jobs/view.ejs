@@ -3,8 +3,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <% include ../../partials/head %>
+  <link rel="stylesheet" href="/css/datepicker.css">
 </head>
 
 <body>
@@ -48,7 +48,7 @@
                 <div class="panel-heading">
                   <h3 class="panel-title"><i class="fa fa-tasks fa-fw"></i> Application Overview</h3>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body panel-height">
                   <div class="list-group">
                     <a href="#" class="list-group-item">
                       <div class="list-group-item-heading"><b>Description</b></div>
@@ -95,212 +95,212 @@
                   <div class="panel-heading">
                     <h3 class="panel-title"><i class="fa fa-envelope fa-fw"></i> Messages</h3>
                   </div>
-                  <div class="panel-body">
+                  <div class="panel-body panel-height">
                     <div class="list-group">
                       <% if (data["messages"].length > 0 ) { %>
-                        <% for(var i = 0; i < /*(data["messages"].length*/ 2; i++) { %>
-                          <a onclick="renderMessage(<%= JSON.stringify(data["messages"][i]) %>);" class="list-group-item">
-                            <div class="list-group-item-heading"><b><%= data["messages"][i].get("senderName") %></b></div>
-                            <p class="list-group-item-text">
-                              <%= data["messages"][i].get("subject") %> 
+                      <% for(var i = 0; i < data["messages"].length; i++) { %>
+                      <a onclick="renderMessage(<%= JSON.stringify(data["messages"][i]) %>);" class="list-group-item">
+                        <div class="list-group-item-heading"><b><%= data["messages"][i].get("senderName") %></b></div>
+                        <p class="list-group-item-text">
+                          <%= data["messages"][i].get("subject") %> 
 
-                            </p>
-                            <p class="text-muted" style="font-size: 11px;">
-                              <%= data["messages"][i].get("snippet") %>
-                            </p>
-                          </a>
-                        <% } %>
+                        </p>
+                        <p class="text-muted" style="font-size: 11px;">
+                          <%= data["messages"][i].get("snippet") %>
+                        </p>
+                      </a>
+                      <% } %>
                       <% } %>
 
-                      </div>
-                      <div class="text-right">
-                        <a href="/messages">View All Messages <i class="fa fa-arrow-circle-right"></i></a>
-                      </div>
+                    </div>
+                    <div class="text-right">
+                      <a href="/messages">View All Messages <i class="fa fa-arrow-circle-right"></i></a>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-lg-6">
-                  <div class="panel panel-default">
-                    <div class="panel-heading">
-                      <button type="button" id="addDocumentButton" class="btn btn-default btn-xs pull-right" data-toggle="modal" data-target="#addDocumentModal">
-                        <i class="fa fa-plus"></i> Add
-                      </button>
-                      <h3 class="panel-title"><i class="fa fa-file fa-fw"></i> Documents</h3>
-                    </div>
-                    <div class="panel-body">
-                      <div class="table-responsive">
-                        <table class="table table-hover table-striped">
-                            <thead>
-                                <tr>
-                                    <th>File Name</th>
-                                    <th>Version</th>    
-                                    <th>Last Modified</th>
-                                    <th>Size</th>
-                                    <th>Kind</th> 
-                                </tr>
-                            </thead>
-                            <tbody>
-                               <% for(var i = 0; i < data["documents"].length; i++) { %>
-                                    <tr class="document-entry" id="doc-<%= data["documents"][i].id %>">
-                                      <td><%= data["documents"][i].get("name") %></td>
-                                      <td><%= data["documents"][i].get("version") %></td>
-                                      <td><%= data["documents"][i].createdAt %></td>
-                                      <td><%=data["documents"][i].get("size") %></td>
-                                      <td><%=data["documents"][i].get("extension") %></td>
-                                    </tr>
-                                <% } %>
-                            </tbody>
-                        </table>
-                      </div>
-                      <div class="text-right">
-                        <a href="/documents">View All Documents <i class="fa fa-arrow-circle-right"></i></a>
-                      </div>
-                    </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <button type="button" id="addDocumentButton" class="btn btn-default btn-xs pull-right" data-toggle="modal" data-target="#addDocumentModal">
+                      <i class="fa fa-plus"></i> Add
+                    </button>
+                    <h3 class="panel-title"><i class="fa fa-file fa-fw"></i> Documents</h3>
+                  </div>
+                  <div class="panel-body">
+                    <div class="table-responsive">
+                      <table class="table table-hover table-striped">
+                        <thead>
+                          <tr>
+                            <th>File Name</th>
+                            <th>Version</th>    
+                            <th>Last Modified</th>
+                            <th>Size</th>
+                            <th>Kind</th> 
+                          </tr>
+                        </thead>
+                        <tbody>
+                         <% for(var i = 0; i < data["documents"].length; i++) { %>
+                         <tr class="document-entry" id="doc-<%= data["documents"][i].id %>">
+                          <td><%= data["documents"][i].get("name") %></td>
+                          <td><%= data["documents"][i].get("version") %></td>
+                          <td><%= data["documents"][i].createdAt %></td>
+                          <td><%=data["documents"][i].get("size") %></td>
+                          <td><%=data["documents"][i].get("extension") %></td>
+                        </tr>
+                        <% } %>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="text-right">
+                    <a href="/documents">View All Documents <i class="fa fa-arrow-circle-right"></i></a>
                   </div>
                 </div>
-                <div class="col-lg-6">
-                  <div class="panel panel-default">
-                    <div class="panel-heading">
-                      <button type="button" class="btn btn-default btn-xs pull-right" data-toggle="modal" data-target="#newContactModal">
-                        <i class="fa fa-plus"></i> Add
-                      </button>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <button type="button" class="btn btn-default btn-xs pull-right" data-toggle="modal" data-target="#newContactModal">
+                    <i class="fa fa-plus"></i> Add
+                  </button>
 
-                      <h3 class="panel-title"><i class="fa fa-user fa-fw"></i> Contacts</h3>
-                    </div>
-                    <div class="panel-body">
+                  <h3 class="panel-title"><i class="fa fa-user fa-fw"></i> Contacts</h3>
+                </div>
+                <div class="panel-body">
 
-                      <div class="table-responsive">
-                        <table class="table table-hover">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
 
-                          <thead>
-                            <tr>
-                              <th>Name</th>
-                              <th>Title</th>
-                              <th>Email</th>
-                              <th>Phone</th>
-                            </tr>
-                          </thead>
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Title</th>
+                          <th>Email</th>
+                          <th>Phone</th>
+                        </tr>
+                      </thead>
 
-                          <tbody>
+                      <tbody>
 
-                            <% for(var i=0; i<data["contacts"].length; i++) {%>
-                            <tr>
-                              <td><%= data["contacts"][i].get("name") %></td>
-                              <td><%= data["contacts"][i].get("title") %></td>
-                              <td>
+                        <% for(var i=0; i<data["contacts"].length; i++) {%>
+                        <tr>
+                          <td><%= data["contacts"][i].get("name") %></td>
+                          <td><%= data["contacts"][i].get("title") %></td>
+                          <td>
 
-                                <% if (!data["contacts"][i].get("email")) { %>
-                                --
-                                <% } else { %>
-                                <%= data["contacts"][i].get("email") %>
-                                <% } %>
-
-                              </td>
-                              <td>
-                                <% if (!data["contacts"][i].get("phone")) { %>
-                                --
-                                <% } else { %>
-                                <%= data["contacts"][i].get("phone") %>
-                                <% } %>
-                              </td>
-                            </tr>
+                            <% if (!data["contacts"][i].get("email")) { %>
+                            --
+                            <% } else { %>
+                            <%= data["contacts"][i].get("email") %>
                             <% } %>
 
-                          </tbody>
-                        </table>
-                      </div>
+                          </td>
+                          <td>
+                            <% if (!data["contacts"][i].get("phone")) { %>
+                            --
+                            <% } else { %>
+                            <%= data["contacts"][i].get("phone") %>
+                            <% } %>
+                          </td>
+                        </tr>
+                        <% } %>
 
-                      <div class="text-right">
-                        <a href="/contacts">View All Contacts <i class="fa fa-arrow-circle-right"></i></a>
-                      </div>
-                    </div>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="text-right">
+                    <a href="/contacts">View All Contacts <i class="fa fa-arrow-circle-right"></i></a>
                   </div>
                 </div>
               </div>
-
-
             </div>
-            <!-- /.container-fluid -->
           </div>
+
+
+        </div>
+        <!-- /.container-fluid -->
+      </div>
     </main>
 
-      </div>
+  </div>
 
-      <div class="modal fade" id="newContactModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <form id="contactAddForm" role="form" method="post" action="/jobs/add_contact" enctype="multipart/form-data">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Add Contact</h4>
-              </div>
-              <div class="modal-body">
-                <div class="form-group">
-                  <label>Name</label>
-                  <input name="contact_name" class="form-control">
-                </div>
-                <div class="form-group">
-                  <label>Title</label>
-                  <input name="contact_title" class="form-control">
-                </div>
-                <div class="form-group">
-                  <label>Email</label>
-                  <input name="email" class="form-control">
-                </div>
-                <div class="form-group">
-                  <label>Phone number</label>
-                  <input name="phone" class="form-control">
-                </div>
-                <div class="form-group">
-                        <input type="hidden" name="application_id" value="<%= data['app'].id %>" >
-                  </div>  
-           <div class="form-group">
-                  <input type="hidden" name="company" value="<%=data['app'].get("company") %>" class="form-control">
-                </div>
+  <div class="modal fade" id="newContactModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="contactAddForm" role="form" method="post" action="/jobs/add_contact" enctype="multipart/form-data">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Add Contact</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Name</label>
+              <input name="contact_name" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Title</label>
+              <input name="contact_title" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input name="email" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Phone number</label>
+              <input name="phone" class="form-control">
+            </div>
+            <div class="form-group">
+              <input type="hidden" name="application_id" value="<%= data['app'].id %>" >
+            </div>  
+            <div class="form-group">
+              <input type="hidden" name="company" value="<%=data['app'].get("company") %>" class="form-control">
+            </div>
 
-                <div class="form-group">
-                  <label>Notes</label>
-                  <textarea name="notes" placeholder="Met at engineering career fair, etc." class="form-control" rows="3"></textarea>
-                </div>                    
-              </div>
-              <div class="modal-footer">
-                <input id="contactAddButton" type="submit" class="btn btn-custom">
-              </div>
-            </form>
-          </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-      </div><!-- /.modal -->  
+            <div class="form-group">
+              <label>Notes</label>
+              <textarea name="notes" placeholder="Met at engineering career fair, etc." class="form-control" rows="3"></textarea>
+            </div>                    
+          </div>
+          <div class="modal-footer">
+            <input id="contactAddButton" type="submit" class="btn btn-custom">
+          </div>
+        </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->  
 
   <div id="addDocumentModalContainer" data-job-id="<%=data.app.id%>"></div>
 
   <div class="modal fade" id="uploadDocumentModal" tabindex="-1" role="dialog">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="fileSubmitForm" role="form" method="post" action="/jobs/doc_upload" enctype="multipart/form-data">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Upload New Document</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="inputFileName">File name</label>
-                        <input type="text" class="form-control" id="inputFileName" name="name">
-                    </div>
-                    <div class="form-group">
-                        <label for="docFileToUpload">File input</label>
-                        <input id="docFileToUpload" type="file" class="file-upload" name="file" >
-                    </div>
-                    <div class="form-group">
-                        <input type="hidden" name="application_id" value="<%=data['app'].id%>" >
-                    </div>  
-                </div>
-                <div class="modal-footer">
-                    <input id="documentUploadButton" type="submit" class="btn btn-custom">
-                </div>
-            </form>
-        </div><!-- /.modal-content -->
+      <div class="modal-content">
+        <form id="fileSubmitForm" role="form" method="post" action="/jobs/doc_upload" enctype="multipart/form-data">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Upload New Document</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="inputFileName">File name</label>
+              <input type="text" class="form-control" id="inputFileName" name="name">
+            </div>
+            <div class="form-group">
+              <label for="docFileToUpload">File input</label>
+              <input id="docFileToUpload" type="file" class="file-upload" name="file" >
+            </div>
+            <div class="form-group">
+              <input type="hidden" name="application_id" value="<%=data['app'].id%>" >
+            </div>  
+          </div>
+          <div class="modal-footer">
+            <input id="documentUploadButton" type="submit" class="btn btn-custom">
+          </div>
+        </form>
+      </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->  
 
@@ -308,20 +308,20 @@
     <div class="modal-dialog">
       <div class="modal-content">
 
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 id="messageTitle" class="modal-title">Message
-            </h4>
-          </div>
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 id="messageTitle" class="modal-title">Message
+          </h4>
+        </div>
 
-          <div class="modal-body">
+        <div class="modal-body">
 
           <h5 id="messageSubject"></h5>
 
           <div id="messageBody">
           </div>
-        
-          </div>
+
+        </div>
 
         <div class="modal-footer">
 
@@ -332,12 +332,12 @@
   </div><!-- /.modal --> 
 
   <edit>
-      <% include ../../partials/jobs_edit %>
+    <% include ../../partials/jobs_edit %>
   </edit>
 
   <footer>
     <% include ../../partials/footer %>
-    <script src="/js/messages.js"></script>
+    <script src="/js/bootstrap-datepicker.js"></script>
   </footer>
 
 </body>

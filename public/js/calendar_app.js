@@ -1,5 +1,8 @@
 $.getScript('http://arshaw.com/js/fullcalendar-1.6.4/fullcalendar/fullcalendar.min.js',function(){
+	getEvents();
+});
 
+function getEvents() {
 	/* Get events */
 	$.get("/events/get", function(response) {
 
@@ -30,6 +33,5 @@ $.getScript('http://arshaw.com/js/fullcalendar-1.6.4/fullcalendar/fullcalendar.m
 			events: events
 		});
 
-	});
-
-});
+	});	
+}

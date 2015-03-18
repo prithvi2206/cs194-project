@@ -13,7 +13,7 @@ var get_app_messages = function(data, res) {
 			data["messages"] = results;
 
 			res.render('pages/jobs/view', { 
-				currentUser: Parse.User.current().getUsername(),
+				currentUser: Parse.User.current(),
 				title: "View Job | inturn",
 				page: "jobs",
 				data: data,
@@ -375,7 +375,7 @@ exports.main = function(req, res) {
 	query.find({
 		success: function(results) {
 			res.render('pages/jobs/main', { 
-				currentUser: Parse.User.current().getUsername(),
+				currentUser: Parse.User.current(),
 				title: "Job Applications | inturn",
 				page: "jobs",
 				jobs: results,
