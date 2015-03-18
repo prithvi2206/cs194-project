@@ -52,8 +52,24 @@
 
             <!-- Information for a single application -->
             <div class="col-lg-3 col-md-6">
+
+              <!-- color code panels -->
+              <% if (jobs[i].get("status") == "no_offer") {%>
+              <div class="panel panel-danger">
+              <% } %>
+              <% if (jobs[i].get("status") == "offer") {%>
+              <div class="panel panel-success">
+              <% }  %>
+              <% if (jobs[i].get("status") == "not_applied") {%>
               <div class="panel panel-default">
-                <% if (jobs[i].get("status") == "no_offer") {%>
+              <% }  %>
+              <% if (jobs[i].get("status") == "applied") {%>
+              <div class="panel panel-warning">
+              <% }  %>
+              <% if (jobs[i].get("status") == "interview") {%>
+              <div class="panel panel-info">
+              <% }  %>
+
                 <div class="panel-heading">
                   <div class="row">
                     <div class="col-xs-2">

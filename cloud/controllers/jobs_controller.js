@@ -288,7 +288,7 @@ exports.edit = function(req, res) {
 			app_entry.set("status", status);
 			app_entry.set("description", description);
 			app_entry.set("url", url);
-			app_entry.set("deadline", deadline);
+			if (deadline.getTime() === deadline.getTime()) app_entry.set("deadline", deadline);
 
 			app_entry.save({
 				success: function(results) {
@@ -297,7 +297,7 @@ exports.edit = function(req, res) {
 					res.redirect("/jobs/view/" + appid);
 				},
 				error: function(error) {
-					console.log(error.message);
+					console.log(error);
 					alerts.error("failed to edit application");
 					res.redirect("/jobs/view/" + appid);
 				}
@@ -305,7 +305,7 @@ exports.edit = function(req, res) {
 
 		},
 		error: function(error) {
-			console.log(error.message);
+			console.log(error);
 			alerts.error("failed to edit application");
 		}
 	});
@@ -376,8 +376,9 @@ exports.add = function(req, res) {
 	app_entry.set("company", company);
 	app_entry.set("status", status);
 	app_entry.set("description", description);
-	app_entry.set("url", url);
-	app_entry.set("deadline", deadline);
+	app_entry.set("url", url);	
+	if (deadline.getTime() === deadline.getTime()) app_entry.set("deadline", deadline);
+
 
 	app_entry.save({
 		success: function(results) {
