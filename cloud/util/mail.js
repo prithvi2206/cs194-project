@@ -83,8 +83,17 @@ var get_attachment = function(res, attachId, messageId, email) {
 }
 
 /* replace with naive bayes or something */
-var emailIsRecruitingRelated = function(from, subject, body_text) {
+var emailIsRecruitingRelated = function(from, subject, body_text, body_html) {
+	if(subject == "Due times & new features to make you :)") { 
+		console.log("--------------------> found this!")
+		console.log(body_text);
+		console.log(body_html);
+		console.log("index: " + body_text.indexOf("unsubscribe"));
+	}
 	if(body_text.indexOf("unsubscribe") > -1) {
+		if(subject == "Due times & new features to make you :)") { 
+			console.log("----------------================///// returning false")
+		}
 		return false;
 	}
 	if(body_text.indexOf("un-subscribe") > -1) {
@@ -96,16 +105,30 @@ var emailIsRecruitingRelated = function(from, subject, body_text) {
 	if(body_text.indexOf("unenroll") > -1) {
 		return false;
 	}
-	if(from.contains("no-reply") > -1) {
+
+	if(body_html.indexOf("unsubscribe") > -1) {
 		return false;
 	}
-	if(from.contains("noreply") > -1) {
+	if(body_html.indexOf("un-subscribe") > -1) {
+		return false;
+	}
+	if(body_html.indexOf("un-enroll") > -1) {
+		return false;
+	}
+	if(body_html.indexOf("unenroll") > -1) {
+		return false;
+	}
+
+	if(from.indexOf("no-reply") > -1) {
+		return false;
+	}
+	if(from.indexOf("noreply") > -1) {
 		return false;
 	}
 	return true;
 }
 
-var sendIfNoDuplicate = function(message_entry, gmail_id) {
+var sendIfNoDuplicate = function(message_entry, gmail_id, attachments) {
 	var MessageObj = Parse.Object.extend("Message");
 	var query = new Parse.Query(MessageObj);
 	query.equalTo("gmailId", gmail_id);
@@ -118,6 +141,9 @@ var sendIfNoDuplicate = function(message_entry, gmail_id) {
 				}, function(error) {
 					console.log(error);
 				});
+				for (var i = 0; i < attachments.length; i++) {
+					addAttachment(attachments[i].attachmentId, attachments[i].filename, attachments[i].message_id);
+				};
 			} else {
 				// console.log("the message is already there!")
 			}
@@ -129,7 +155,7 @@ var sendIfNoDuplicate = function(message_entry, gmail_id) {
 
 }
 
-var addMessageWithContact = function(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact, has_attachment) {
+var addMessageWithContact = function(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact, attachments) {
 	var MessageObj = Parse.Object.extend("Message");
 	var message_entry = new MessageObj;		
 	message_entry.set("gmailId", gmail_id);
@@ -138,6 +164,7 @@ var addMessageWithContact = function(gmail_id, subject, date_time, body_text, bo
 	message_entry.set("snippet", snippet);
 	message_entry.set("bodyText", body_text);
 
+	// var has_attachment = (attachments.length == 0);
 	var bodytext = '';
     var m = body_html.match(/<body[^>]*>([^<]*(?:(?!<\/?body)<[^<]*)*)<\/body\s*>/i);
     if (m) bodytext = m[1];
@@ -146,7 +173,7 @@ var addMessageWithContact = function(gmail_id, subject, date_time, body_text, bo
 
 	message_entry.set("bodyHTML", escapeHtml(bodytext));
 
-	message_entry.set("has_attachment", has_attachment);
+	message_entry.set("has_attachment", (attachments.length == 0));
 	message_entry.set("flags", flags);
 	message_entry.set("userId", Parse.User.current());
 	message_entry.set("senderName", contact.get("name"));
@@ -156,7 +183,7 @@ var addMessageWithContact = function(gmail_id, subject, date_time, body_text, bo
 	if (contact.get("appId")) {
 		message_entry.set("appId", contact.get("appId"));
 	}
-	sendIfNoDuplicate(message_entry, gmail_id);
+	sendIfNoDuplicate(message_entry, gmail_id, attachments);
 }
 
 var base64ToUtf = function(s) {
@@ -179,11 +206,13 @@ var addAttachment = function(attachment_id, attachment_name, message_id) {
 	query.equalTo("attachment_id", attachment_id);
 	query.find({
 		success: function(results) {
-			attachment_entry.save().then(function() { 
-				// console.log("----------- new attachment saved succesfully");
-			}, function(error) {
-				console.log(error);
-			});
+			if(results.length == 0) {
+				attachment_entry.save().then(function() { 
+					console.log("----------- new attachment saved succesfully");
+				}, function(error) {
+					console.log(error);
+				});
+			}
 		},
 		error: function(error) {
 			console.log(error.message);
@@ -198,6 +227,9 @@ var addAttachment = function(attachment_id, attachment_name, message_id) {
 
 var addMessageFromContact = function(message, contact) {
 	var gmail_id = message.id;
+	if(!(message.payload)) {
+		return;
+	}
 	var email_type = message.payload.mimeType;
 	var headers = message.payload.headers;
 	var body = message.payload.body;
@@ -218,6 +250,11 @@ var addMessageFromContact = function(message, contact) {
 		}
 	}
 
+	
+	var ind = from.lastIndexOf("<")
+	var from_email = from.substring(ind + 1, from.length - 1)
+	var from_name = from.substring(0, ind - 1)
+
     var msg_str = JSON.stringify(message.payload)
     var body = ""
 
@@ -227,7 +264,8 @@ var addMessageFromContact = function(message, contact) {
 	var body_text = ""
 	var body_html = ""
 	var has_attachment = false;
-	if(parts) {
+	var attachments = [];
+	if(parts && parts[0] && parts[1]) {
 		if(parts[0].mimeType.substring(0, 9) == "multipart") {
 			// console.log("is multipart");
 			var first_parts = parts[0].parts
@@ -235,7 +273,12 @@ var addMessageFromContact = function(message, contact) {
 			body_html = base64ToUtf(first_parts[1].body.data)
 			for (var i = 1; i < parts.length; i++) {
 				has_attachment = true;
-				addAttachment(parts[i].body.attachmentId, parts[i].filename, gmail_id)
+				attachments.push({
+					attachmentId: parts[i].body.attachmentId,
+					filename: parts[i].filename,
+					message_id:gmail_id
+				})
+				// addAttachment(parts[i].body.attachmentId, parts[i].filename, gmail_id)
 			};
 		} else {
 			// console.log("is not multipart");
@@ -246,7 +289,11 @@ var addMessageFromContact = function(message, contact) {
 		body_text = base64ToUtf(message.payload.body.data);
 		body_html = base64ToUtf(message.payload.body.data);
 	}
-	addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact, has_attachment)
+
+	if(!emailIsRecruitingRelated(from_email, subject, body_text, body_html)) {
+		return;
+	}
+	addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact, attachments)
 
 /*	console.log("==================== MESSAGE DATA ====================")
 	console.log("id: " + gmail_id);
@@ -279,7 +326,9 @@ var addMessageFromContact = function(message, contact) {
 
 var addMessageFromApp = function(message, app) {
 	var gmail_id = message.id;
-	if(!(message.payload)) return;
+	if(!(message.payload)) {
+		return;
+	}
 	var email_type = message.payload.mimeType;
 	var headers = message.payload.headers;
 	var body = message.payload.body;
@@ -314,7 +363,8 @@ var addMessageFromApp = function(message, app) {
 	var body_text = ""
 	var body_html = ""
 	var has_attachment = false;
-	if(parts) {
+	var attachments = [];
+	if(parts && parts[0] && parts[1]) {
 		if(parts[0].mimeType.substring(0, 9) == "multipart") {
 			// console.log("is multipart");
 			var first_parts = parts[0].parts
@@ -322,7 +372,12 @@ var addMessageFromApp = function(message, app) {
 			body_html = base64ToUtf(first_parts[1].body.data)
 			for (var i = 1; i < parts.length; i++) {
 				has_attachment = true;
-				addAttachment(parts[i].body.attachmentId, parts[i].filename, gmail_id)
+				attachments.push({
+					attachmentId: parts[i].body.attachmentId,
+					filename: parts[i].filename,
+					message_id:gmail_id
+				})
+				// addAttachment(parts[i].body.attachmentId, parts[i].filename, gmail_id)
 			};
 		} else {
 			// console.log("is not multipart");
@@ -334,10 +389,14 @@ var addMessageFromApp = function(message, app) {
 		body_html = base64ToUtf(message.payload.body.data);
 	}
 
+	if(!emailIsRecruitingRelated(from_email, subject, body_text, body_html)) {
+		return;
+	}
+
 	var ContactObj = Parse.Object.extend("Contact");
 	var query = new Parse.Query(ContactObj);
 	query.equalTo("email", from_email);
-	console.log("constructed contact query")
+	console.log("constructed contact query for " + from_email)
 	query.find({
 		success: function(results) {
 			if(results.length == 0)  {
@@ -353,12 +412,13 @@ var addMessageFromApp = function(message, app) {
 				contact_entry.set("userId", Parse.User.current());
 				contact_entry.save().then(function() { 
 					console.log("new contact saved from message");
-					addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact_entry)
+					addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact_entry, attachments)
 				}, function(error) {
 					console.log(error);
 				});
 			} else {
-				addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, results[0])
+				console.log("already there")
+				addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, results[0], attachments)
 			}
 		},
 		error: function(error) {
@@ -409,6 +469,15 @@ var formLabelContactAppSearchQuery = function(label, contact, domain) {
 		query = query + " from:" + contact.get("email");
 	}
 	if(domain && domain.length > 0) {
+		if(domain.indexOf("https://") == 0) {
+			domain = domain.substring(8);
+		}
+		if(domain.indexOf("http://") == 0) {
+			domain = domain.substring(7);
+		}
+		if(domain.indexOf("www.") == 0) {
+			domain = domain.substring(4);
+		}
 		query = query + " from:" + domain;
 	}
 	console.log("query: " + query);
