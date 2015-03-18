@@ -353,6 +353,7 @@ var addMessageFromApp = function(message, app) {
 	var from_email = from.substring(ind + 1, from.length - 1)
 	var from_name = from.substring(0, ind - 1)
 
+	if(app.get("url") == null || app.get("url") == "" || from_email.indexOf(app.get("url")) == -1) return;
 
     var msg_str = JSON.stringify(message.payload)
     var body = ""
@@ -526,6 +527,7 @@ var getAllMessages = function(gmail) {
 			var num_applications = results.length
 			console.log("searching for emails from " + num_applications + " applications");
 			for(var i = 0; i < results.length; i++) {
+				/// comment out the following line if messages is doing weird shit.
 				// getAllFromApplication(gmail, results[i]);
 			}
 		},

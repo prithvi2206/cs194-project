@@ -142,11 +142,12 @@ function appSelectListener() {
 
 function returnNewsItemDiv(article) {
     var html = ""
-    html += "<div class=\"media\">";
-    html += "<div class=\"media-body\">";
-    html += "<h4 class=\"media-heading\">" + article.title + "</h4>";
+    html += "<div class=\"list-group-item\">";
+    html += "<div class=\"list-group-item-heading\"><b>" + article.title + "</b></div>";
+    html += "<p class=\"list-group-item-text\">"
     html += article.summary;
-    html += "</div>";
+    html += "</p><p class=\"text-muted\" style=\"font-size: 11px;\">";
+    html += "</p>";
     html += "</div>";
 
     return html;
@@ -158,6 +159,7 @@ function returnAllNewsDivs(articles) {
         html += returnNewsItemDiv(articles[i]);
     }
     return html;
+    console.log(html);   
 }
 
 
@@ -211,10 +213,10 @@ function populateNewsFeed() {
 }
 
 $(function() { /* on document ready */
-    
+
     $('.datepicker').datetimepicker();
 
-    // populateNewsFeed();
+    populateNewsFeed();
 
     $('tr.document-entry').click(function() {
         $('tr.selected').removeClass('selected');
