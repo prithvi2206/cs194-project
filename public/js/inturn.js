@@ -260,7 +260,9 @@ $(function() { /* on document ready */
 
     $('.datepicker').datetimepicker();
 
-    populateNewsFeed();
+    if((window.location.href).indexOf("UNREAD") > -1) {
+        populateNewsFeed();
+    }
 
     $('tr.document-entry').click(function() {
         $('tr.selected').removeClass('selected');

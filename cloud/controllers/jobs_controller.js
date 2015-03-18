@@ -50,7 +50,7 @@ var get_app_messages = function(data, res) {
 
 		},
 		error: function(results) {
-			console.log(error.message);
+			console.log(error);
 		}
 	});
 }
@@ -97,7 +97,7 @@ var get_app_docs = function(data, res) {
 			get_app_events(data, res);
 		},
 		error: function(results) {
-			console.log(error.message);
+			console.log(error);
 		}
 	});
 }
@@ -146,7 +146,8 @@ var get_app_contacts = function(data, res) {
 			get_app_docs(data, res);
 		},
 		error: function(error) {
-			console.log(error.message);
+
+			console.log(error);
 		}
 	});
 }
@@ -220,7 +221,7 @@ exports.view = function(req, res) {
 
 			},
 			error: function(error) {
-				console.log(error.message);
+				console.log(error);
 			}
 		});
 
@@ -418,7 +419,7 @@ exports.add = function(req, res) {
 			res.redirect("/jobs");
 		},
 		error: function(error) {
-			console.log(error.message);
+			console.log(error);
 			alerts.error("failed to add job");
 			res.redirect("/jobs");
 		}
@@ -446,7 +447,7 @@ var addAppAndSend = function(res, contact_entry, id) {
 
 		},
 		error: function(error) {
-			console.log(error.message);
+			console.log(error);
 		}
 	});
 }
@@ -491,7 +492,7 @@ exports.get_jobs = function(req, res) {
 			res.send({data: companies});
 		},
 		error: function(error) {
-			console.log(error.message);
+			console.log(error);
 		} 
 	});
 }
@@ -515,8 +516,8 @@ exports.main = function(req, res) {
 
 			alerts.reset();
 		},
-		error: function(error) {}
-			console.log(error.message);
+		error: function(error) {
+			console.log(error);
 		}
 	});
 }
