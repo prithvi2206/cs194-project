@@ -173,7 +173,7 @@ var addMessageWithContact = function(gmail_id, subject, date_time, body_text, bo
 
 	message_entry.set("bodyHTML", escapeHtml(bodytext));
 
-	message_entry.set("has_attachment", (attachments.length == 0));
+	message_entry.set("has_attachment", (attachments.length != 0));
 	message_entry.set("flags", flags);
 	message_entry.set("userId", Parse.User.current());
 	message_entry.set("senderName", contact.get("name"));
@@ -250,7 +250,7 @@ var addMessageFromContact = function(message, contact) {
 		}
 	}
 
-	
+
 	var ind = from.lastIndexOf("<")
 	var from_email = from.substring(ind + 1, from.length - 1)
 	var from_name = from.substring(0, ind - 1)

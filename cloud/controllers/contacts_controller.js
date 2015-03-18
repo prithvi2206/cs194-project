@@ -1,5 +1,17 @@
 'use strict';
 
+var removed_duplicates = function(results) {
+	var emails = new Set();
+	var ret = [];
+	for (var i = 0; i < results.length; i++) {
+		var curr_email = results[i].email;
+		if(curr_email == null || curr_email == "") {
+
+		}
+	};
+	return results;
+}
+
 var get_apps_and_render_main_page = function(contacts_list, res) {
 
 	var AppObj = Parse.Object.extend("Application");
