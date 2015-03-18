@@ -114,7 +114,7 @@ var sendIfNoDuplicate = function(message_entry, gmail_id) {
 
 }
 
-var addMessageWithContact = function(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact) {
+var addMessageWithContact = function(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact, has_attachment) {
 	var MessageObj = Parse.Object.extend("Message");
 	var message_entry = new MessageObj;		
 	message_entry.set("gmailId", gmail_id);
@@ -122,12 +122,13 @@ var addMessageWithContact = function(gmail_id, subject, date_time, body_text, bo
 	message_entry.set("subject", subject);
 	message_entry.set("snippet", snippet);
 	message_entry.set("bodyText", body_text);
+	message_entry.set("bodyHTML", body_html);
+	message_entry.set("has_attachment", has_attachment);
+	// var bodytext = '';
+	// var m = body_html.match(/<body[^>]*>([^<]*(?:(?!<\/?body)<[^<]*)*)<\/body\s*>/i);
+	// if (m) bodytext = m[1];
 
-	var bodytext = '';
-	var m = body_html.match(/<body[^>]*>([^<]*(?:(?!<\/?body)<[^<]*)*)<\/body\s*>/i);
-	if (m) bodytext = m[1];
-
-	message_entry.set("bodyHTML", bodytext);
+	// message_entry.set("bodyHTML", bodytext);
 	message_entry.set("flags", flags);
 	message_entry.set("userId", Parse.User.current());
 	message_entry.set("senderName", contact.get("name"));
@@ -153,12 +154,28 @@ var addAttachment = function(attachment_id, attachment_name, message_id) {
 	attachment_entry.set("messageId", message_id);
 	attachment_entry.set("attachmentId", attachment_id);
 	attachment_entry.set("userEmail", Parse.User.current().get("username"));
-	console.log(attachment_name + " " + attachment_id + " " + message_id + " " + Parse.User.current().get("username"))
-	attachment_entry.save().then(function() { 
-		// console.log("----------- new attachment saved succesfully");
-	}, function(error) {
-		console.log(error);
-	});
+	// console.log(attachment_name + " " + attachment_id + " " + message_id + " " + Parse.User.current().get("username"))
+	
+	var AttachmentObj = Parse.Object.extend("AttachmentObj");
+	var query = new Parse.Query(AttachmentObj);
+	query.equalTo("attachment_id", attachment_id);
+	query.find({
+		success: function(results) {
+			attachment_entry.save().then(function() { 
+				// console.log("----------- new attachment saved succesfully");
+			}, function(error) {
+				console.log(error);
+			});
+		},
+		error: function(error) {
+			console.log(error.message);
+		}
+	});	
+	// attachment_entry.save().then(function() { 
+	// 	// console.log("----------- new attachment saved succesfully");
+	// }, function(error) {
+	// 	console.log(error);
+	// });
 }
 
 var addMessageFromContact = function(message, contact) {
@@ -191,20 +208,50 @@ var addMessageFromContact = function(message, contact) {
 	var parts = message.payload.parts;
 	var body_text = ""
 	var body_html = ""
+	var has_attachment = false;
 	if(parts) {
 		if(parts[0].mimeType.substring(0, 9) == "multipart") {
+			// console.log("is multipart");
 			var first_parts = parts[0].parts
 			body_text = base64ToUtf(first_parts[0].body.data)
 			body_html = base64ToUtf(first_parts[1].body.data)
 			for (var i = 1; i < parts.length; i++) {
+				has_attachment = true;
 				addAttachment(parts[i].body.attachmentId, parts[i].filename, gmail_id)
 			};
 		} else {
+			// console.log("is not multipart");
 			body_text = base64ToUtf(parts[0].body.data)
 			body_html = base64ToUtf(parts[1].body.data)			
 		}
-	}	
-	addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact)
+	} else {
+		body_text = base64ToUtf(message.payload.body.data);
+		body_html = base64ToUtf(message.payload.body.data);
+	}
+	// // console.log(body_html)
+	// if(subject == "CS106B Section") {
+	// 	console.log("this one");
+	// 	if(parts) {
+	// 		if(parts[0].mimeType.substring(0, 9) == "multipart") {
+	// 			console.log("is multipart");
+	// 			var first_parts = parts[0].parts
+	// 			body_text = base64ToUtf(first_parts[0].body.data)
+	// 			body_html = base64ToUtf(first_parts[1].body.data)
+	// 			for (var i = 1; i < parts.length; i++) {
+	// 				has_attachment = true;
+	// 				addAttachment(parts[i].body.attachmentId, parts[i].filename, gmail_id)
+	// 			};
+	// 		} else {
+	// 			console.log("is not multipart");
+	// 			body_text = base64ToUtf(parts[0].body.data)
+	// 			body_html = base64ToUtf(parts[1].body.data)			
+	// 		}
+	// 	} else {
+	// 		console.log("no parts");
+	// 		console.log(base64ToUtf(message.payload.body.data));
+	// 	}
+	// }
+	addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact, has_attachment)
 
 /*	console.log("==================== MESSAGE DATA ====================")
 	console.log("id: " + gmail_id);
