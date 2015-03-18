@@ -271,7 +271,6 @@ $(function() { /* on document ready */
         if($("#addDocumentModalContainer").html() == "") {
             $.get("/documents/all", function(response) {
                 var documents = response.documents;
-                console.log(documents);
                 var html = '<div class="modal fade" id="addDocumentModal" tabindex="-1" role="dialog">';
                 html += '<div class="modal-dialog">';
                 html += '<div class="modal-content">';
@@ -286,7 +285,7 @@ $(function() { /* on document ready */
                 html += '<label>Select From Existing Document</label>';
                 html += '<select name="document_id" class="form-control">';
                 for(var i = 0; i < documents.length; i++) {
-                    html += '<option value="'+documents[i].objectId+'">'+documents[i].name+' (Version: '+documents[i].version+')</option>';
+                    html += '<option value="'+documents[i]["id"] +'">'+documents[i]["name"] +' (Version: '+documents[i]["version"]+')</option>';
                 }
                 html += '</select>';
                 html += '</div>';
