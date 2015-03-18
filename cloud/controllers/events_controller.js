@@ -25,7 +25,6 @@ exports.getEvents = function(req, res) {
 exports.main = function(req, res) {
 
 	Parse.User.current().fetch();
-	events.updateEventsDB(res);
 
 	res.render('pages/events/main', { 
 		currentUser: Parse.User.current(),
