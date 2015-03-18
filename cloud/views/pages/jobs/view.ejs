@@ -48,48 +48,37 @@
                 <div class="panel-heading">
                   <h3 class="panel-title"><i class="fa fa-tasks fa-fw"></i> Application Overview</h3>
                 </div>
-                <div class="panel-body panel-height">
+                <div class="panel-body">
                   <div class="list-group">
-                    <a href="#" class="list-group-item">
-                      <div class="list-group-item-heading"><b>Description</b></div>
-                      <p>
-                        <% if (!data["app"].get("description")) { %>
-                        Not set
-                        <% } else { %>
-                        <%= data["app"].get("description") %>
-                        <% } %></p>
-                      </a>
-                      <a href="#" class="list-group-item">
-                        <span class="badge">
-
-                          <% if (!data["app"].get("status")) { %>
-                          Not set
-                          <% } else { %>
-                          <%= data["app"].get("status") %>
-                          <% } %>
-
-                        </span>
-                        <i class="fa fa-fw fa-pencil"></i> Status
-                      </a>
-                      <a href="#" class="list-group-item">
-                        <span class="badge">
-
-                          <% if (!data["app"].get("deadline")) { %>
-                          Not set
-                          <% } else { %>
-                          <%= data["app"].get("deadline") %>
-                          <% } %>
-                        </span>
-                        <i class="fa fa-fw fa-calendar"></i> Deadline
-                      </a>
-
+                    <div href="#" class="list-group-item">
+                      <span><strong>Description</strong></span></br>
+                      <span><small>
+                          <%= data["app"]["description"] %>
+                      </small></span>
                     </div>
-                    <div class="text-right" data-toggle="modal" data-target="#newJobModal">
-                      <a href="#">Edit Details <i class="fa fa-arrow-circle-right"></i></a>
+                    <div href="#" class="list-group-item">
+                      <span><strong>Status</strong></span></br>
+                      <span><small>
+                        <%= data["app"]["status"] %>
+                      </small></span>
+                    </div>
+                    <div href="#" class="list-group-item">
+                      <span><strong>Deadline</strong></span></br>
+                      <span><small>
+                        <%= data["app"]["deadline"] %>
+                      </small></span>
                     </div>
                   </div>
                 </div>
+                <div class="panel-footer">
+                  <div class="text-right" data-toggle="modal" data-target="#newJobModal">
+                    <a href="#">Edit Details <i class="fa fa-arrow-circle-right"></i></a>
+                  </div>
+                </div>
               </div>
+            </div>
+          </div>
+            <div class="row">
               <div class="col-lg-6">
                 <div class="panel panel-default">
                   <div class="panel-heading">
@@ -157,6 +146,8 @@
                       </tbody>
                     </table>
                   </div>
+                </div>
+                <div class="panel-footer">
                   <div class="text-right">
                     <a href="/documents">View All Documents <i class="fa fa-arrow-circle-right"></i></a>
                   </div>
@@ -214,7 +205,8 @@
                       </tbody>
                     </table>
                   </div>
-
+                </div>
+                <div class="panel-footer">
                   <div class="text-right">
                     <a href="/contacts">View All Contacts <i class="fa fa-arrow-circle-right"></i></a>
                   </div>

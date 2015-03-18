@@ -85,10 +85,47 @@ var get_app_contacts = function(data, res) {
 			data["contacts"] = results;
 			get_app_docs(data, res);
 		},
-		error: function(results) {
+		error: function(error) {
 			console.log(error.message);
 		}
 	});
+}
+
+var parse_app_obj = function(data, res) {
+	if(data["app"].get("description")) {
+		data["app"]["description"] = data["app"].get("description");
+	} else {
+		data["app"]["description"] = "No description set";
+	}
+
+	switch(data["app"].get("status")) {
+		case "not_applied":
+			data["app"]["status"] = "Not Applied";
+			break;
+		case "applied":
+			data["app"]["status"] = "Applied";
+			break;
+		case "interview":
+			data["app"]["status"] = "Interview stage";
+			break;
+		case "offer":
+			data["app"]["status"] = "Offer";
+			break;
+		case "no_offer":
+			data["app"]["status"] = "No Offer";
+			break;
+		default:
+			data["app"]["status"] = "Status not set";
+	}
+
+	if(data["app"].get("deadline")) {
+		var moment = require("moment");
+		data["app"]["deadline"] = moment(data["app"].get("deadline")).format('lll');
+	} else {
+		data["app"]["deadline"] = "No deadline set"
+	}
+	
+	get_app_contacts(data, res);
 }
 
 var render_job_view = function(appObj, res) {
@@ -101,8 +138,7 @@ var render_job_view = function(appObj, res) {
 	data["contacts"] = [];
 	data["documents"] = [];
 
-	get_app_contacts(data, res);
-
+	parse_app_obj(data, res);
 }
 
 exports.view = function(req, res) {
