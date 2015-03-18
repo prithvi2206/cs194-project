@@ -8,5 +8,4 @@ module.exports = function(app) {
 	app.get('/messages/get/:app', session.isLoggedIn, messages.getMessages);
 	app.get('/attach/get/:id', session.isLoggedIn, messages.getAttachment);
 	app.get('/attach/getall/:msg', session.isLoggedIn, messages.getAttachmentIds);
-	app.get('/messages/refresh', messages.refresh);
 };

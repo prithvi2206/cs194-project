@@ -142,13 +142,6 @@ exports.getAttachment = function(req, res) {
 	mail.download_attachment(req, res);
 }
 
-exports.refresh = function(req, res) {
-	if (Parse.User.current()) { 
-		session.updateMailandCalendar(res, true);
-		this.main(req, res);
-	}
-}
-
 exports.main = function(req, res) {
 	displayMessages(res);
 };
