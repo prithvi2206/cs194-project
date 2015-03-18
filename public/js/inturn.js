@@ -216,7 +216,7 @@ $(function() { /* on document ready */
 
     $('.datepicker').datetimepicker();
 
-    // populateNewsFeed();
+    populateNewsFeed();
 
     $('tr.document-entry').click(function() {
         $('tr.selected').removeClass('selected');
