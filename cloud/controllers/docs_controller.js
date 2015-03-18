@@ -1,4 +1,5 @@
 'use strict';
+var docs_util = require("../util/documents.js");
 
 exports.main = function(req, res) {
 	Parse.User.current().fetch()
@@ -10,9 +11,11 @@ exports.main = function(req, res) {
 	query.descending("createdAt");
 	query.find().then(function(results) {
 		if(results.length > 0) {
+      results = docs_util.formatDocuments(results);
             var active;
             if(req.params.id) {
                 for(var i = 0; i < results.length; i++) {
+                        console.log(results[i].id, req.params.id);
                     if(results[i].id == req.params.id) {
                         active = results[i]
                     }
@@ -22,10 +25,9 @@ exports.main = function(req, res) {
             }
 
 			var versionsQuery = new Parse.Query(Document);
-			versionsQuery.equalTo("name", active.get("name"));
+			versionsQuery.equalTo("name", active["name"]);
 			versionsQuery.ascending("version");
 			versionsQuery.find().then(function(versions) {
-                console.log(active);
 				res.render('pages/documents/main',{ 
 					currentUser: Parse.User.current(),
 					title: "Documents | inturn",
@@ -33,7 +35,7 @@ exports.main = function(req, res) {
 					documents: results,
 					versions: versions,
 					active: active,
-					documentPreviewIFrameSRC: active.get("file").url(),
+					documentPreviewIFrameSRC: active["file"].url(),
 				});
 			},
 			function(error) {
@@ -76,8 +78,8 @@ exports.upload = function(req, res) {
 
 			docObject.set("name", file_name);
 			docObject.set("file", parseFile);
-            docObject.set("extension", file.extension);
-            docObject.set("size", file.size/1000 + "KB");
+      docObject.set("extension", file.extension);
+      docObject.set("size", Math.round(file.size/1000) + "KB");
 
 			docObject.set("userId", Parse.User.current());
 
@@ -150,7 +152,7 @@ exports.retrieveDocuments = function(req, res) {
 	query.equalTo("userId", Parse.User.current());
 	query.descending("createdAt");
 	query.find().then(function(results) {
-		res.send({documents: results});
+		res.send({documents: docs_util.formatDocuments(results)});
 	}, function(error) {
 		console.log("The system was unable to retreive your documents.");
 	});
