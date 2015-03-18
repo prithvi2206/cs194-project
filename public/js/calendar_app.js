@@ -23,6 +23,8 @@ function getEvents() {
 			events.push(event_i);
 		}
 
+		$('#calendar').html("");
+
 		$('#calendar').fullCalendar({
 			header: {
 				left: 'prev,next today',

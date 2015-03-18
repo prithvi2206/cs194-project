@@ -212,7 +212,7 @@ function populateNewsFeed() {
 
 $(function() { /* on document ready */
 
-    populateNewsFeed();
+    // populateNewsFeed();
 
     $('tr.document-entry').click(function() {
         $('tr.selected').removeClass('selected');

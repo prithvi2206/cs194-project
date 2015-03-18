@@ -8,9 +8,24 @@ var kill_words = ["unsubscribe", "un-subscribe", "un-enroll", "unenroll"]
 // var attachmentId = "ANGjdJ8cUlIzDarpke6-RHqb1AvxvFZO3QdyRLz4wjn96_rFu1mk0x9rN_PQiD6BhyP53mkuTx6-pXtj_HQjS8iF1MXNX6kf_YbBYv3KSHOhnD4iiMkYI3QQ8GxHNnG7BXkejGG1RDzGLaiC69OyC9PXN1PUFts4AD3xUCGLhlbugqlrwEHY7ezhUCj22jqDgo8y_X7NKKsSkxgvDY6ByIg2YJnaRwndwfOL1hBSkMxvn0RGItLmmQllP65jKzb2jYARrZYUwgS8Ah4kKC6yOh8dNWAAk3_Xs93oaaV7QA"
 var token;
 
+var entityMap = {
+	"&": "&amp;",
+	"<": "&lt;",
+	">": "&gt;",
+	'"': '&quot;',
+	"'": '&#39;',
+	"/": '&#x2F;'
+};
+
+var escapeHtml = function(string) {
+	return String(string).replace(/[&<>"'\/]/g, function (s) {
+	  return entityMap[s];
+	});
+}
+
 exports.download_attachment = function(req, res) {
 	var attachmentId = req.params.id;
-	console.log("RHAAAAPE : " + attachmentId);
+
 	// get the attachmentId, it bett
 	var AttachmentObj = Parse.Object.extend("Attachment");
 	var query = new Parse.Query(AttachmentObj);
@@ -122,13 +137,16 @@ var addMessageWithContact = function(gmail_id, subject, date_time, body_text, bo
 	message_entry.set("subject", subject);
 	message_entry.set("snippet", snippet);
 	message_entry.set("bodyText", body_text);
-	message_entry.set("bodyHTML", body_html);
-	message_entry.set("has_attachment", has_attachment);
-	// var bodytext = '';
-	// var m = body_html.match(/<body[^>]*>([^<]*(?:(?!<\/?body)<[^<]*)*)<\/body\s*>/i);
-	// if (m) bodytext = m[1];
 
-	// message_entry.set("bodyHTML", bodytext);
+	var bodytext = '';
+    var m = body_html.match(/<body[^>]*>([^<]*(?:(?!<\/?body)<[^<]*)*)<\/body\s*>/i);
+    if (m) bodytext = m[1];
+
+    if (bodytext.length == 0) bodytext = body_html;
+
+	message_entry.set("bodyHTML", escapeHtml(bodytext));
+
+	message_entry.set("has_attachment", has_attachment);
 	message_entry.set("flags", flags);
 	message_entry.set("userId", Parse.User.current());
 	message_entry.set("senderName", contact.get("name"));

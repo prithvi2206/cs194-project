@@ -2,6 +2,29 @@
 
 var alerts = require("../util/alerts.js");
 
+var entityMap = {
+	"&": "&amp;",
+	"<": "&lt;",
+	">": "&gt;",
+	'"': '&quot;',
+	"'": '&#39;',
+	"/": '&#x2F;'
+};
+
+var escapeHtml = function(string) {
+	return String(string).replace(/[&<>"'\/]/g, function (s) {
+	  return entityMap[s];
+	});
+}
+
+var escapeAll = function(messages) {
+	var html = [];
+	for (var i = 0; i < messages.length; i++) {
+		html.push(escapeHtml(messages[i].get("bodyHTML")));
+	}
+	return html;
+}
+
 /* get messages */
 var get_app_messages = function(data, res) {
 
@@ -12,11 +35,14 @@ var get_app_messages = function(data, res) {
 		success: function(results) {
 			data["messages"] = results;
 
+			var msgHtml = escapeAll(results);
+
 			res.render('pages/jobs/view', { 
 				currentUser: Parse.User.current(),
 				title: "View Job | inturn",
 				page: "jobs",
 				data: data,
+				msgHtml: msgHtml,
 				alerts: alerts.Alert
 			});
 			
