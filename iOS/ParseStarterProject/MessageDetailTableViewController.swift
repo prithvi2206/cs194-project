@@ -37,6 +37,8 @@ class MessageDetailTableViewController: UITableViewController {
             
             if let body = message!.objectForKey("bodyText") as? String {
                 messageLabel?.text = body
+                messageLabel?.lineBreakMode = .ByWordWrapping
+                messageLabel?.numberOfLines = 0
             }
             
             if let date = message!.objectForKey("dateSent") as? NSDate {
@@ -59,6 +61,7 @@ class MessageDetailTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.backgroundColor = UIColor.whiteColor()
         
         subjectLabel?.text = ""
         senderLabel?.text = ""

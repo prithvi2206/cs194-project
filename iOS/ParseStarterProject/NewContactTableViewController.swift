@@ -124,6 +124,7 @@ class NewContactTableViewController: UITableViewController, ABPeoplePickerNaviga
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.backgroundColor = UIColor.whiteColor()
     }
 
     override func didReceiveMemoryWarning() {

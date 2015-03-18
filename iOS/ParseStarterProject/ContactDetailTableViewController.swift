@@ -148,6 +148,8 @@ class ContactDetailTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.backgroundColor = UIColor.whiteColor()
+        
         nameLabel?.text = ""
         companyPositionLabel?.text = ""
         phoneNumberLabel?.text = ""

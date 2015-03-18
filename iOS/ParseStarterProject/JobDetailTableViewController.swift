@@ -86,6 +86,7 @@ class JobDetailTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.backgroundColor = UIColor.whiteColor()
         
         companyLabel?.text = ""
         titleLabel?.text = ""

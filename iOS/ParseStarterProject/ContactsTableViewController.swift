@@ -75,6 +75,7 @@ class ContactsTableViewController: UITableViewController, ABPeoplePickerNavigati
         super.viewDidLoad()
         //let inset = UIEdgeInsetsMake(20, 0, 0, 0)
         //tableView.contentInset = inset
+        tableView.backgroundColor = UIColor.whiteColor()
     }
 
     override func didReceiveMemoryWarning() {

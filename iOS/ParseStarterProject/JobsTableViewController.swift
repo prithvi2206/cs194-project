@@ -36,6 +36,8 @@ class JobsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         super.title = "Job Applications"
+        tableView.backgroundColor = UIColor.whiteColor()
+
 
         fetchJobs()
     }

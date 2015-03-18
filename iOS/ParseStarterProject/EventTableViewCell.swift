@@ -50,6 +50,9 @@ class EventTableViewCell: UITableViewCell {
                 dateFormatter.dateFormat = "MMM dd, y"
                 timeFormatter.dateFormat = "h:mm a"
                 
+                dateLabel?.text = timeFormatter.stringFromDate(date)
+                
+                /*
                 var calendar = NSCalendar.currentCalendar()
                 var components1 = calendar.components(.CalendarUnitDay, fromDate: date)
                 let today = NSDate()
@@ -62,6 +65,7 @@ class EventTableViewCell: UITableViewCell {
                 } else {
                     dateLabel?.text = "Was on " + dateFormatter.stringFromDate(date) + " at " + timeFormatter.stringFromDate(date)
                 }
+                */
             }
         }
     }

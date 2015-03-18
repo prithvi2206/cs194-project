@@ -47,6 +47,7 @@ class EventsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         super.title = "Events"
+        tableView.backgroundColor = UIColor.whiteColor()
 
         fetchEvents()
     }

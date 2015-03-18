@@ -127,6 +127,7 @@ class EventDetailTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.backgroundColor = UIColor.whiteColor()
 
         companyLabel?.text = nil
         locationLabel?.text = nil
