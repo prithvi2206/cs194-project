@@ -77,7 +77,7 @@ exports.addEvent = function(summary, start, end, location, appId, res) {
 					res.redirect("/events");
 				},
 				error: function(error) {
-					console.log(error.message);
+					console.log(error);
 				}
 			});	
 		}

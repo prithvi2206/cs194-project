@@ -13,6 +13,12 @@ function convertDataURIToBinary(dataURI) {
   return array;
 }
 
+function refreshMessages() {
+    $.get("/messages/refresh/", function(response) {
+        return;
+    });
+}
+
 function renderMessage(id, name, email, subject, body) {
     var title = name + ' &lt;' + email + '&gt;';
     $('#messageTitle').html(title);

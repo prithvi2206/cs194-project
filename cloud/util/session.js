@@ -10,7 +10,7 @@ exports.isLoggedIn = function(req, res, next) {
 	// if user is authenticated in the session, carry on
 	if (Parse.User.current()) {
 		refreshToken(req, res, next);
-		updateMailandCalendar(res);
+		updateMailandCalendar(res, false);
 	} 
 
 	// if they aren't redirect them to the home page
@@ -22,9 +22,15 @@ exports.isLoggedIn = function(req, res, next) {
 	}
 };
 
-var updateMailandCalendar = function(res) {
+var updateMailandCalendar = function(res, override) {
 	var lastRefreshed = Parse.User.current().get("mailLastRefreshed");
 	var currTime = new Date();
+
+	if (override) {
+		mail.updateMessagesDB(res);
+		return;
+	}
+
 	if(!lastRefreshed || ((currTime.getTime() - lastRefreshed.getTime()) > 1000 * MAIL_CALENDAR_FREQUENCY)) {
 		console.log("updating mail and calendar\n");
 		mail.updateMessagesDB(res);
