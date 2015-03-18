@@ -54,6 +54,9 @@ var updateMailandCalendar = function(res) {
  * upating of the auth token 
  */
 var refreshToken = function(req, res, next) {
+	if (!next) 
+		return;
+
 	var refresh_token = Parse.User.current().get('refresh_token');
 	var lastRefreshed = Parse.User.current().get("lastRefreshed");
 	var currTime = new Date();
