@@ -1,15 +1,34 @@
 'use strict';
 
+var array_contains = function(arr, val) {
+	for (var i = 0; i < arr.length; i++) {
+		if(arr[i] == val) {
+			return true;
+		}
+	}
+	return false;
+}
+
 var removed_duplicates = function(results) {
-	var emails = new Set();
+	// console.log("removing duplicates from: " + results.length);
+	var emails = [];
 	var ret = [];
 	for (var i = 0; i < results.length; i++) {
-		var curr_email = results[i].email;
+		// console.log(emails);
+		var curr_email = results[i].get("email");
 		if(curr_email == null || curr_email == "") {
-
+			// console.log("simple email");
+			ret.push(results[i]);
+		} else {
+			if(array_contains(emails, curr_email)) {
+				// console.log("dup found");
+			} else {
+				ret.push(results[i]);
+				emails.push(curr_email);
+			}
 		}
 	};
-	return results;
+	return ret;
 }
 
 var get_apps_and_render_main_page = function(contacts_list, res) {
@@ -19,7 +38,6 @@ var get_apps_and_render_main_page = function(contacts_list, res) {
 	query.equalTo("userId", Parse.User.current());
 	query.find({
 		success: function(results) {
-			
 			res.render('pages/contacts/main', { 
 				currentUser: Parse.User.current(),
 				title: "Contacts | inturn",
@@ -43,6 +61,7 @@ exports.main = function(req, res) {
 	query.equalTo("userId", Parse.User.current());
 	query.find({
 		success: function(results) {
+			results = removed_duplicates(results);
 			get_apps_and_render_main_page(results, res);
 		},
 		error: function(error) {
