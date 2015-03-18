@@ -35,6 +35,8 @@ function downloadAttachment(id) {
 }
 
 function getAttachmentIds(messageId) {
+    $('#messageAttach').html("Loading...");
+
     /* Get filtered messages */
     $.get("/attach/getall/"+messageId, function(response) {
         var data = response.data;
