@@ -24,6 +24,21 @@ class ContactsTableViewController: UITableViewController, ABPeoplePickerNavigati
         }
     }
     
+    private func removed_duplicates(contacts: [PFObject]) -> [PFObject] {
+        var dictionary = [String: PFObject]()
+        var result = [PFObject]()
+        
+        for(var i=0; i<contacts.count; i++) {
+            if let name = contacts[i].objectForKey("name") as? String {
+                if (dictionary[name] == nil) {
+                    dictionary[name] = contacts[i]
+                    result.append(contacts[i])
+                }
+            }
+        }
+        return result
+    }
+    
     private func fetchContacts() {
         if (jobId != nil) {
             if let company = jobId!.objectForKey("company") as? String {
@@ -32,16 +47,20 @@ class ContactsTableViewController: UITableViewController, ABPeoplePickerNavigati
                 self.title = "Contacts"
             }
             
-            PFQuery(className: "Contact").whereKey("userId", equalTo: PFUser.currentUser()).whereKey("appId", equalTo: jobId!).orderByAscending("name").findObjectsInBackgroundWithBlock { (result, error) -> Void in
-                if let contacts = result as? [PFObject] {
+            PFQuery(className: "Contact").whereKey("userId", equalTo: PFUser.currentUser()).whereKey("appId", equalTo: jobId!).orderByAscending("name").findObjectsInBackgroundWithBlock { [unowned self] (result, error) -> Void in
+                if var contacts = result as? [PFObject] {
+                    
+                    contacts = self.removed_duplicates(contacts)
                     self.contacts = contacts
                 }
             }
         } else {
             self.title = "Contacts"
             PFQuery(className: "Contact").whereKey("userId", equalTo: PFUser.currentUser()).orderByAscending("name").findObjectsInBackgroundWithBlock { (result, error) -> Void in
-                if let contacts = result as? [PFObject] {
-                    self.contacts = contacts
+                if var contacts = result as? [PFObject] {
+                    let unique_contacts = self.removed_duplicates(contacts)
+                    println(unique_contacts.count)
+                    self.contacts = unique_contacts
                 }
             }
         }

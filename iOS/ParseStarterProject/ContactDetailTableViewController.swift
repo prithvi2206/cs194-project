@@ -119,6 +119,8 @@ class ContactDetailTableViewController: UITableViewController {
         if data != nil {
             if let name = data!.objectForKey("name") as? String {
                 nameLabel?.text = name
+            } else {
+                nameLabel?.text = "Not available"
             }
             
             if let company = data!.objectForKey("company") as? String {
@@ -127,18 +129,26 @@ class ContactDetailTableViewController: UITableViewController {
                 } else  {
                     companyPositionLabel?.text = company
                 }
+            } else {
+                companyPositionLabel?.text = "Not available"
             }
             
             if let phoneNumber = data!.objectForKey("phone") as? String {
                 phoneNumberLabel?.text = phoneNumber
+            } else {
+                phoneNumberLabel?.text = "Not available"
             }
             
             if let email = data!.objectForKey("email") as? String {
                 emailLabel?.text = email
+            } else {
+                emailLabel?.text = "Not available"
             }
             
             if let note = data!.objectForKey("notes") as? String {
                 noteLabel?.text = note
+            } else {
+                noteLabel?.text = "Not available"
             }
         }
     }

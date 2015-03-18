@@ -28,14 +28,14 @@ class EventsTableViewController: UITableViewController {
             } else {
                 self.title = "Events: All"
             }
-            PFQuery(className: "Event").whereKey("userId", equalTo: PFUser.currentUser()).whereKey("appId", equalTo: jobId!).includeKey("appId").orderByAscending("datetime").findObjectsInBackgroundWithBlock { (result, error) -> Void in
+            PFQuery(className: "Event").whereKey("userId", equalTo: PFUser.currentUser()).whereKey("appId", equalTo: jobId!).includeKey("appId").orderByDescending("start").findObjectsInBackgroundWithBlock { (result, error) -> Void in
                 if let events = result as? [PFObject] {
                     self.events = events
                 }
             }
         } else {
             super.title = "Events: All"
-            PFQuery(className: "Event").whereKey("userId", equalTo: PFUser.currentUser()).includeKey("appId").orderByAscending("datetime").findObjectsInBackgroundWithBlock { (result, error) -> Void in
+            PFQuery(className: "Event").whereKey("userId", equalTo: PFUser.currentUser()).includeKey("appId").orderByDescending("start").findObjectsInBackgroundWithBlock { (result, error) -> Void in
                 if let events = result as? [PFObject] {
                     self.events = events
                 }

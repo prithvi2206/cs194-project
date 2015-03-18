@@ -29,6 +29,8 @@ class EventDetailTableViewController: UITableViewController {
         if(event != nil) {
             if let company = event!.objectForKey("appId").objectForKey("company") as? String {
                 companyLabel?.text = company
+            } else {
+                companyLabel?.text = "Not available"
             }
             
             let dateFormatter = NSDateFormatter()
@@ -48,6 +50,8 @@ class EventDetailTableViewController: UITableViewController {
                 } else {
                     startLabel?.text = dateFormatter.stringFromDate(start) + " at " + timeFormatter.stringFromDate(start)
                 }
+            } else {
+                startLabel?.text = "Not available"
             }
             
             if let end = event!.objectForKey("end") as? NSDate {
@@ -58,14 +62,20 @@ class EventDetailTableViewController: UITableViewController {
                 } else {
                     endLabel?.text = dateFormatter.stringFromDate(end) + " at " + timeFormatter.stringFromDate(end)
                 }
+            } else {
+                endLabel?.text = "Not available"
             }
             
             if let location = event!.objectForKey("location") as? String {
                 locationLabel?.text = location
+            } else {
+                locationLabel?.text = "Not available"
             }
             
             if let description = event!.objectForKey("desc") as? String {
                 descriptionLabel?.text = description
+            } else {
+                descriptionLabel?.text = "Not available"
             }
         }
     }

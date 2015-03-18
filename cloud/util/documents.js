@@ -13,7 +13,7 @@ exports.formatDocuments = function(documents) {
 		var today = new Date();
 		var timeDiff = Math.abs(today.getTime() - last_modified.getTime());
 
-		var date_diff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + " days ago"; 
+		var date_diff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + " day ago"; 
 		var size = documents[doc].get("size");
 		var extension = documents[doc].get("extension");
 		var file = documents[doc].get("file");

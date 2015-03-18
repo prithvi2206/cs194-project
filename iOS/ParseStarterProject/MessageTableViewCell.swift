@@ -36,7 +36,7 @@ class MessageTableViewCell: UITableViewCell {
                 subjectLabel?.text = subject
             }
         
-            if let body = message!.objectForKey("bodyText") as? String {
+            if let body = message!.objectForKey("snippet") as? String {
                 bodyLabel?.text = body
             }
             
