@@ -54,7 +54,7 @@ tr.document-entry:hover {
 .datepicker {z-index: 10000 !important ;}
 
 .panel-height {
-    height: 250px; / change according to your requirement/
+    height: 250px; /* change according to your requirement */
     overflow-y: scroll;
 }
 

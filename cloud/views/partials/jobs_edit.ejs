@@ -21,8 +21,16 @@
             <input name="company" class="form-control" value="<%= data["app"].get("company") %>">
           </div>
           <div class="form-group">
+            <label class="control-label">Company URL</label>
+            <input name="url" class="form-control" value="<%= data["app"].get("url") %>">
+          </div>
+          <div class="form-group">
             <label>Position Title</label>
             <input name="position" class="form-control" value="<%= data["app"].get("title") %>">
+          </div>
+          <div class="form-group">
+            <label class="control-label">Deadline</label>
+            <input name="deadline" class="form-control datepicker" value="<%= data["app"].get("deadline") %>">
           </div>
           <div class="form-group">
             <label>Application Status</label>
