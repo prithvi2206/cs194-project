@@ -499,6 +499,7 @@ exports.get_jobs = function(req, res) {
 exports.main = function(req, res) {
 	Parse.User.current().fetch();
 
+	/* Get job apps */
 	var AppObj = Parse.Object.extend("Application");
 	var query = new Parse.Query(AppObj);
 	query.equalTo("userId", Parse.User.current());
@@ -514,7 +515,7 @@ exports.main = function(req, res) {
 
 			alerts.reset();
 		},
-		error: function(error) {
+		error: function(error) {}
 			console.log(error.message);
 		}
 	});
