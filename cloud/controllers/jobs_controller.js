@@ -86,12 +86,14 @@ var get_app_events = function(data, res) {
 
 /* get documents */
 var get_app_docs = function(data, res) {
+	var docs_util = require("../util/documents.js");
+
 	var DocObj = Parse.Object.extend("Document");
 	var query_doc = new Parse.Query(DocObj);
 	query_doc.containedIn("objectId", data["app"].get("documentsId"));
 	query_doc.find({
 		success: function(results) {
-			data["documents"] = results;
+			data["documents"] = docs_util.formatDocuments(results);
 			get_app_events(data, res);
 		},
 		error: function(results) {

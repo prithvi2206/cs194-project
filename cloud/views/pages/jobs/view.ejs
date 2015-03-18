@@ -145,12 +145,12 @@
                         </thead>
                         <tbody>
                          <% for(var i = 0; i < data["documents"].length; i++) { %>
-                         <tr class="document-entry" id="doc-<%= data["documents"][i].id %>">
-                          <td><%= data["documents"][i].get("name") %></td>
-                          <td><%= data["documents"][i].get("version") %></td>
-                          <td><%= data["documents"][i].createdAt %></td>
-                          <td><%=data["documents"][i].get("size") %></td>
-                          <td><%=data["documents"][i].get("extension") %></td>
+                         <tr class="document-entry" id="doc-<%= data["documents"][i]["id"] %>">
+                          <td><%= data["documents"][i]["name"] %></td>
+                          <td><%= data["documents"][i]["version"] %></td>
+                          <td><%= data["documents"][i]["date_diff"] %></td>
+                          <td><%= data["documents"][i]["size"] %></td>
+                          <td><%= data["documents"][i]["extension"] %></td>
                         </tr>
                         <% } %>
                       </tbody>

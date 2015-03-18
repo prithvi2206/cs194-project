@@ -53,15 +53,15 @@
                             <tbody>
                                <% for(var i = 0; i < documents.length; i++) { %>
                                     <% if(active.id == documents[i].id) { %>
-                                        <tr class="document-entry selected" id="doc-<%= documents[i].id %>">
+                                        <tr class="document-entry selected" id="doc-<%= documents[i]["id"] %>">
                                     <% } else { %> 
-                                        <tr class="document-entry" id="doc-<%= documents[i].id %>">
+                                        <tr class="document-entry" id="doc-<%= documents[i]["id"] %>">
                                     <% } %>
-                                        <td><%= documents[i].get("name") %></td>
-                                        <td><%= documents[i].get("version") %></td>
-                                        <td><%= documents[i].createdAt %></td>
-                                        <td><%=documents[i].get("size") %></td>
-                                        <td><%=documents[i].get("extension") %></td>                                
+                                        <td><%= documents[i]["name"] %></td>
+                                        <td><%= documents[i]["version"] %></td>
+                                        <td><%= documents[i]["date_diff"] %></td>
+                                        <td><%=documents[i]["size"] %></td>
+                                        <td><%=documents[i]["extension"] %></td>                                
                                     </tr>
                                 <% } %>
                             </tbody>
