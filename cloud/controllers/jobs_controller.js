@@ -237,7 +237,9 @@ exports.edit = function(req, res) {
 	var position = req.body.position;
 	var description = req.body.desc;
 	var status = req.body.status;
-
+	var url = getDomain(req.body.url);
+	var deadline_str = req.body.deadline;
+	var deadline = new Date(deadline_str);
 
 	/* retriev app object */
 	var AppObj = Parse.Object.extend("Application");
