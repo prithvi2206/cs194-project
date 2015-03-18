@@ -53,7 +53,7 @@ var get_attachment = function(res, attachId, messageId, email) {
 	var configAuth = require('./../../config/auth.js');
 	var CLIENT_ID = '1073490943584-jihl83sesm1qcm10lik7mu86t5ioh5g5.apps.googleusercontent.com';
     var CLIENT_SECRET = 'MKAnbihZSzT75VOC61bapiPQ';
-    var REDIRECT_URL =  'http://www.inturn.io/auth/google/callback';
+    var REDIRECT_URL =  'http://localhost:3000/auth/google/callback';
     var refreshToken =  Parse.User.current().get("refresh_token");
 	var OAuth2 = google.auth.OAuth2
 	console.log(CLIENT_ID)
@@ -526,7 +526,7 @@ var getAllMessages = function(gmail) {
 			var num_applications = results.length
 			console.log("searching for emails from " + num_applications + " applications");
 			for(var i = 0; i < results.length; i++) {
-				getAllFromApplication(gmail, results[i]);
+				// getAllFromApplication(gmail, results[i]);
 			}
 		},
 		error: function(error) {

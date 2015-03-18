@@ -211,6 +211,8 @@ function populateNewsFeed() {
 }
 
 $(function() { /* on document ready */
+    
+    $('.datepicker').datetimepicker();
 
     // populateNewsFeed();
 
