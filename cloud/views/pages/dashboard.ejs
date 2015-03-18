@@ -59,7 +59,7 @@
                       <i class="fa fa-briefcase fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                      <div class="huge"><%= jobs_count %></div>
+                      <div class="huge"><%= data["jobs"] %></div>
                       <div>Pending Applications</div>
                     </div>
                   </div>
@@ -79,7 +79,7 @@
                       <i class="fa fa-envelope fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                      <div class="huge">0</div>
+                      <div class="huge"><%= data["unread"] %></div>
                       <div>New Messages</div>
                     </div>
                   </div>
@@ -99,8 +99,8 @@
                       <i class="fa fa-calendar fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                      <div class="huge">0</div>
-                      <div>Events This Week</div>
+                      <div class="huge"><%= data["events"] %></div>
+                      <div>Upcoming Events</div>
                     </div>
                   </div>
                 </div>
@@ -122,7 +122,7 @@
                   </div>
                   <div class="panel-body panel-newsfeed">
                     <div class="list-group" id="newsfeed">
-
+                      
                     </div>
                   </div>
                   <div class="panel-footer">

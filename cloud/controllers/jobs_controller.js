@@ -66,7 +66,6 @@ var get_app_events = function(data, res) {
 	query_event.greaterThanOrEqualTo("start", new Date());
 	query_event.find({
 		success: function(results) {
-			console.log(" EVENTSSSS "  + results);
 			var events = [];
 			for(var i=0; i<results.length; i++) {
 				var event_item = {};
