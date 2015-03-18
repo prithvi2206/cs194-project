@@ -35,6 +35,7 @@
 		946E0BC11AB2C72400ABDA2D /* DocumentsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946E0BC01AB2C72400ABDA2D /* DocumentsTableViewController.swift */; };
 		946E0BC41AB2C7DC00ABDA2D /* DocumentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946E0BC31AB2C7DC00ABDA2D /* DocumentTableViewCell.swift */; };
 		9484BD051AB9C9D600E76A72 /* NewEventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9484BD041AB9C9D600E76A72 /* NewEventTableViewController.swift */; };
+		9484BD071AB9CB9C00E76A72 /* JobEventSelectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9484BD061AB9CB9C00E76A72 /* JobEventSelectionTableViewController.swift */; };
 		949DF0F81AB3E95E0010E5BF /* MessageDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949DF0F71AB3E95E0010E5BF /* MessageDetailTableViewController.swift */; };
 		94A80E811A9B479B00EFC9F0 /* ContactsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A80E801A9B479B00EFC9F0 /* ContactsTableViewController.swift */; };
 		94C720B11AB357F3001F9D6E /* EventDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C720B01AB357F3001F9D6E /* EventDetailTableViewController.swift */; };
@@ -75,6 +76,7 @@
 		946E0BC01AB2C72400ABDA2D /* DocumentsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsTableViewController.swift; sourceTree = "<group>"; };
 		946E0BC31AB2C7DC00ABDA2D /* DocumentTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentTableViewCell.swift; sourceTree = "<group>"; };
 		9484BD041AB9C9D600E76A72 /* NewEventTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewEventTableViewController.swift; sourceTree = "<group>"; };
+		9484BD061AB9CB9C00E76A72 /* JobEventSelectionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JobEventSelectionTableViewController.swift; sourceTree = "<group>"; };
 		949DF0F71AB3E95E0010E5BF /* MessageDetailTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageDetailTableViewController.swift; sourceTree = "<group>"; };
 		94A80E801A9B479B00EFC9F0 /* ContactsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsTableViewController.swift; sourceTree = "<group>"; };
 		94C720B01AB357F3001F9D6E /* EventDetailTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDetailTableViewController.swift; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 		945B0B451AB3019B00DCF37D /* Events */ = {
 			isa = PBXGroup;
 			children = (
+				9484BD061AB9CB9C00E76A72 /* JobEventSelectionTableViewController.swift */,
 				9484BD041AB9C9D600E76A72 /* NewEventTableViewController.swift */,
 				94C720B01AB357F3001F9D6E /* EventDetailTableViewController.swift */,
 				945B0B481AB304B400DCF37D /* EventTableViewCell.swift */,
@@ -330,6 +333,7 @@
 				94ED5D7D1AB5FEBE00F80A83 /* JobSelectionTableViewController.swift in Sources */,
 				946E0BC41AB2C7DC00ABDA2D /* DocumentTableViewCell.swift in Sources */,
 				94338CD51AB06FE1000099E3 /* ContactDetailTableViewController.swift in Sources */,
+				9484BD071AB9CB9C00E76A72 /* JobEventSelectionTableViewController.swift in Sources */,
 				946E0BC11AB2C72400ABDA2D /* DocumentsTableViewController.swift in Sources */,
 				94ED5D7B1AB5FEB600F80A83 /* NewContactTableViewController.swift in Sources */,
 				9466BEF71AB2E8A900CD4FE4 /* MessageTableViewCell.swift in Sources */,

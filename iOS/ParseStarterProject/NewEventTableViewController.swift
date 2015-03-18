@@ -7,33 +7,85 @@
 //
 
 import UIKit
+import Parse
 
 class NewEventTableViewController: UITableViewController {
+    
+    var application: PFObject? {
+        didSet {
+            updateUI()
+        }
+    }
+    
+    private func updateUI() {
+        if let company = application?.objectForKey("company") as? String {
+            companyLabel?.text = company
+        } else {
+            companyLabel?.text = "None"
+        }
+    }
 
+    @IBOutlet weak var companyLabel: UILabel!
+    @IBOutlet weak var locationTextField: UITextField!
+    @IBOutlet weak var descriptionTextField: UITextField!
+    
+    @IBAction func saveButton(sender: UIButton) {
+        if locationTextField?.text == "" || descriptionTextField == "" {
+            var alert = UIAlertController(
+                title: "Oops",
+                message: "You missed a field...",
+                preferredStyle: UIAlertControllerStyle.Alert
+            )
+            alert.addAction(UIAlertAction(title: "Continue", style: .Cancel, handler: { (action) -> Void in
+                // do nothing
+            }))
+            self.presentViewController(alert, animated: true, completion: nil)
+
+        } else {
+            var eventObj = PFObject(className:"Event")
+            eventObj["userId"] = PFUser.currentUser()
+            if application != nil {
+                eventObj["appId"] = application
+            }
+            
+            eventObj["location"] = locationTextField?.text
+            eventObj["desc"] = locationTextField?.text
+            eventObj.saveInBackgroundWithBlock({ (success, error) -> Void in
+                if(success) {
+                    var alert = UIAlertController(
+                        title: "Event Saved",
+                        message: "Your event was saved to inturn.io!",
+                        preferredStyle: UIAlertControllerStyle.Alert
+                    )
+                    alert.addAction(UIAlertAction(title: "Woop!", style: UIAlertActionStyle.Default, handler: { [unowned self] (action) -> Void in
+                    }))
+                    
+                    self.presentViewController(alert, animated: true, completion: { [unowned self] () -> Void in
+                        
+                        self.navigationController?.popToRootViewControllerAnimated(true)
+                        return
+                    })
+                } else {
+                    var alert = UIAlertController(
+                        title: "Oops",
+                        message: "Something went wrong. This event could not be saved.",
+                        preferredStyle: UIAlertControllerStyle.Alert
+                    )
+                    alert.addAction(UIAlertAction(title: "Continue", style: .Cancel, handler: { (action) -> Void in
+                        // do nothing
+                    }))
+                    self.presentViewController(alert, animated: true, completion: nil)
+                }
+
+                
+            })
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.backgroundColor = UIColor.whiteColor()
         
-        var importContactButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "segueToNewContactForm")
-        self.navigationItem.rightBarButtonItem = importContactButton
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-    // MARK: - Table view data source
-
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        // #warning Potentially incomplete method implementation.
-        // Return the number of sections.
-        return 0
-    }
-
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete method implementation.
-        // Return the number of rows in the section.
-        return 0
+        updateUI()
     }
 }

@@ -121,6 +121,10 @@ class NewContactTableViewController: UITableViewController, ABPeoplePickerNaviga
         }
     }
 
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        tableView.selectRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0), animated: true, scrollPosition: UITableViewScrollPosition.Bottom)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
