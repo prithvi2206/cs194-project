@@ -120,11 +120,11 @@ var parse_app_obj = function(data, res) {
 
 	if(data["app"].get("deadline")) {
 		var moment = require("moment");
-		data["app"]["deadline"] = moment(data["app"].get("deadline")).format('lll');
+		data["app"]["deadline"] = moment(data["app"].get("deadline")).format('MMM Do YYYY [@] h:mm:ss a');
 	} else {
 		data["app"]["deadline"] = "No deadline set"
 	}
-	
+
 	get_app_contacts(data, res);
 }
 
