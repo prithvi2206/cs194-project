@@ -48,25 +48,35 @@
                 <div class="panel-heading">
                   <h3 class="panel-title"><i class="fa fa-tasks fa-fw"></i> Application Overview</h3>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body panel-height">
                   <div class="list-group">
-                    <div href="#" class="list-group-item">
+                    <div class="list-group-item">
                       <span><strong>Description</strong></span></br>
                       <span><small>
                           <%= data["app"]["description"] %>
                       </small></span>
                     </div>
-                    <div href="#" class="list-group-item">
+                    <div class="list-group-item">
                       <span><strong>Status</strong></span></br>
                       <span><small>
                         <%= data["app"]["status"] %>
                       </small></span>
                     </div>
-                    <div href="#" class="list-group-item">
+                    <div class="list-group-item">
                       <span><strong>Deadline</strong></span></br>
                       <span><small>
                         <%= data["app"]["deadline"] %>
                       </small></span>
+                    </div>
+                    <div class="list-group-item">
+                      <span><strong>Upcoming events</strong></span> <a href="/events"><small>(see all)</small></a></br>
+                      <ul class="upcoming-events">
+                      <% for (var i=0; i<data["events"].length && i < 3; i++) { %>
+                        <li><small>
+                          <%= data["events"][i]["string"] %>
+                        </small></li>
+                      <% } %>
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -77,41 +87,40 @@
                 </div>
               </div>
             </div>
-          </div>
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="panel panel-default">
-                  <div class="panel-heading">
-                    <h3 class="panel-title"><i class="fa fa-envelope fa-fw"></i> Messages</h3>
-                  </div>
-                  <div class="panel-body panel-height">
-                    <div class="list-group">
-                      <% if (data["messages"].length > 0 ) { %>
-                      <% for(var i = 0; i < data["messages"].length; i++) { %>
-                      <a href='javascript:renderMessage("<%= data["messages"][i].get("gmailId") %>", "<%= data["messages"][i].get("senderName") %>", "<%= data["messages"][i].get('senderEmail') %>",
-                            "<%= data["messages"][i].get("subject") %>", "<%= msgHtml[i] %>")' class="list-group-item">
-                        <div class="list-group-item-heading"><b><%= data["messages"][i].get("senderName") %></b></div>
-                        <p class="list-group-item-text">
-                          <%= data["messages"][i].get("subject") %> 
+            <div class="col-lg-6">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title"><i class="fa fa-envelope fa-fw"></i> Messages</h3>
+                </div>
+                <div class="panel-body panel-height">
+                  <% if (data["messages"].length > 0 ) { %>
+                  <div class="list-group">
+                    <% for(var i = 0; i < data["messages"].length; i++) { %>
+                    <a href='javascript:renderMessage("<%= data["messages"][i].get("gmailId") %>", "<%= data["messages"][i].get("senderName") %>", "<%= data["messages"][i].get('senderEmail') %>",
+                          "<%= data["messages"][i].get("subject") %>", "<%= msgHtml[i] %>")' class="list-group-item">
+                      <div class="list-group-item-heading"><b><%= data["messages"][i].get("senderName") %></b></div>
+                      <p class="list-group-item-text">
+                        <%= data["messages"][i].get("subject") %> 
 
-                        </p>
-                        <p class="text-muted" style="font-size: 11px;">
-                          <%= data["messages"][i].get("snippet") %>
-                        </p>
-                      </a>
-                      <% } %>
-                      <% } %>
-
+                      </p>
+                      <p class="text-muted" style="font-size: 11px;">
+                        <%= data["messages"][i].get("snippet") %>
+                      </p>
+                    </a>
+                    <% } %>
                     </div>
-                  </div>
-                  <div class="panel-footer">
-                    <div class="text-right">
-                      <a href="/messages">View All Messages <i class="fa fa-arrow-circle-right"></i></a>
-                    </div>
+                    <% } else { %>
+                      <div class="alert alert-info alert-dismissable">No Messages for this application.</div>
+                    <% } %>
+                </div>
+                <div class="panel-footer">
+                  <div class="text-right">
+                    <a href="/messages">View All Messages <i class="fa fa-arrow-circle-right"></i></a>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
             <div class="row">
               <div class="col-lg-6">
                 <div class="panel panel-default">
@@ -121,7 +130,8 @@
                     </button>
                     <h3 class="panel-title"><i class="fa fa-file fa-fw"></i> Documents</h3>
                   </div>
-                  <div class="panel-body">
+                  <div class="panel-body panel-height">
+                    <% if (data["documents"].length > 0) { %>
                     <div class="table-responsive">
                       <table class="table table-hover table-striped">
                         <thead>
@@ -146,6 +156,9 @@
                       </tbody>
                     </table>
                   </div>
+                  <% } else { %>
+                    <div class="alert alert-info alert-dismissable">No documents linked to this application.</div>
+                  <% } %>
                 </div>
                 <div class="panel-footer">
                   <div class="text-right">
@@ -163,8 +176,8 @@
 
                   <h3 class="panel-title"><i class="fa fa-user fa-fw"></i> Contacts</h3>
                 </div>
-                <div class="panel-body">
-
+                <div class="panel-body panel-height">
+                  <% if (data["contacts"].length > 0) { %>
                   <div class="table-responsive">
                     <table class="table table-hover">
 
@@ -204,6 +217,9 @@
 
                       </tbody>
                     </table>
+                  <% } else { %>
+                    <div class="alert alert-info alert-dismissable">No contacts linked to this application.</div>
+                  <% } %>
                   </div>
                 </div>
                 <div class="panel-footer">

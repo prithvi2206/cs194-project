@@ -53,9 +53,35 @@ var get_app_messages = function(data, res) {
 			console.log(error.message);
 		}
 	});
+}
 
+/* get documents */
+var get_app_events = function(data, res) {
+	var moment = require("moment");
 
-			
+	var EventObj = Parse.Object.extend("Event");
+	var query_event = new Parse.Query(EventObj);
+	query_event.equalTo("appId", data["app"]);
+	query_event.ascending("start");
+	query_event.greaterThanOrEqualTo("start", new Date());
+	query_event.find({
+		success: function(results) {
+			var events = [];
+			for(var i=0; i<results.length; i++) {
+				var event_item = {};
+
+				var date = moment(results[i].get("start")).format('MMM Do YYYY [@] h:mm:ss a')
+				var desc = results[i].get("desc");
+
+				events.push({"string": desc + " on " + date});
+			}
+			data["events"] = events;
+			get_app_messages(data, res);
+		},
+		error: function(results) {
+			console.log(error.message);
+		}
+	});
 }
 
 /* get documents */
@@ -66,7 +92,7 @@ var get_app_docs = function(data, res) {
 	query_doc.find({
 		success: function(results) {
 			data["documents"] = results;
-			get_app_messages(data, res);
+			get_app_events(data, res);
 		},
 		error: function(results) {
 			console.log(error.message);
