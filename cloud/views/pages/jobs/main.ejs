@@ -29,6 +29,21 @@
                 <li class="active">
                   <i class="fa fa-briefcase"></i> Jobs
                 </li>
+                <li class="pull-right progress-bar-default" role="progressbar" aria-valuenow="20" style="width: 10%;">
+                    <span>Not Applied</span>
+                </li>
+                <li class="pull-right progress-bar-warning" role="progressbar" aria-valuenow="20" style="width: 10%;">
+                    <span>Applied</span>
+                </li>
+                <li class="pull-right progress-bar-info" role="progressbar" aria-valuenow="20" style="width: 10%;">
+                    <span>Interviewing</span>
+                </li>
+                <li class="pull-right progress-bar-success" role="progressbar" aria-valuenow="20" style="width: 10%;">
+                    <span>Offer</span>
+                </li>
+                <li class="pull-right progress-bar-danger" role="progressbar" aria-valuenow="20" style="width: 10%;">
+                    <span>No Offer</span>
+                </li>
               </ol>
             </div>
           </div>
@@ -56,61 +71,61 @@
               <!-- color code panels -->
               <% if (jobs[i].get("status") == "no_offer") {%>
               <div class="panel panel-danger">
-              <% } %>
-              <% if (jobs[i].get("status") == "offer") {%>
-              <div class="panel panel-success">
-              <% }  %>
-              <% if (jobs[i].get("status") == "not_applied") {%>
-              <div class="panel panel-default">
-              <% }  %>
-              <% if (jobs[i].get("status") == "applied") {%>
-              <div class="panel panel-warning">
-              <% }  %>
-              <% if (jobs[i].get("status") == "interview") {%>
-              <div class="panel panel-info">
-              <% }  %>
+                <% } %>
+                <% if (jobs[i].get("status") == "offer") {%>
+                <div class="panel panel-success">
+                  <% }  %>
+                  <% if (jobs[i].get("status") == "not_applied") {%>
+                  <div class="panel panel-default">
+                    <% }  %>
+                    <% if (jobs[i].get("status") == "applied") {%>
+                    <div class="panel panel-warning">
+                      <% }  %>
+                      <% if (jobs[i].get("status") == "interview") {%>
+                      <div class="panel panel-info">
+                        <% }  %>
 
-                <div class="panel-heading">
-                  <div class="row">
-                    <div class="col-xs-2">
-                      <i class="fa fa-briefcase fa-2x"></i>
+                        <div class="panel-heading">
+                          <div class="row">
+                            <div class="col-xs-2">
+                              <i class="fa fa-briefcase fa-2x"></i>
+                            </div>
+                            <div class="col-xs-10 text-right">
+                              <div class="item-header"><%= jobs[i].get("company") %></div>
+                              <div><%= jobs[i].get("title") %></div>
+                            </div>
+                          </div>
+                        </div>
+                        <a href="/jobs/view/<%= jobs[i].id %>">
+                          <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                          </div>
+                        </a>
+                      </div>
                     </div>
-                    <div class="col-xs-10 text-right">
-                      <div class="item-header"><%= jobs[i].get("company") %></div>
-                      <div><%= jobs[i].get("title") %></div>
-                    </div>
+                    <!-- End of single app -->
+
+                    <% } %>
                   </div>
+
                 </div>
-                <a href="/jobs/view/<%= jobs[i].id %>">
-                  <div class="panel-footer">
-                    <span class="pull-left">View Details</span>
-                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                    <div class="clearfix"></div>
-                  </div>
-                </a>
+                <!-- /.container-fluid -->
               </div>
-            </div>
-            <!-- End of single app -->
+            </main>
 
-            <% } %>
           </div>
 
-        </div>
-        <!-- /.container-fluid -->
-      </div>
-    </main>
 
-  </div>
+          <add>
+            <% include ../../partials/jobs_add %>
+          </add>
 
+          <footer>
+            <% include ../../partials/footer %>
+          </footer>
 
-  <add>
-    <% include ../../partials/jobs_add %>
-  </add>
-
-  <footer>
-    <% include ../../partials/footer %>
-  </footer>
-
-</body>
-</html>
+        </body>
+        </html>
 
