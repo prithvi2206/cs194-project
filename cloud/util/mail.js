@@ -5,16 +5,16 @@
  */
 
 var kill_words = ["unsubscribe", "un-subscribe", "un-enroll", "unenroll"]
-var attachmentId = "ANGjdJ8cUlIzDarpke6-RHqb1AvxvFZO3QdyRLz4wjn96_rFu1mk0x9rN_PQiD6BhyP53mkuTx6-pXtj_HQjS8iF1MXNX6kf_YbBYv3KSHOhnD4iiMkYI3QQ8GxHNnG7BXkejGG1RDzGLaiC69OyC9PXN1PUFts4AD3xUCGLhlbugqlrwEHY7ezhUCj22jqDgo8y_X7NKKsSkxgvDY6ByIg2YJnaRwndwfOL1hBSkMxvn0RGItLmmQllP65jKzb2jYARrZYUwgS8Ah4kKC6yOh8dNWAAk3_Xs93oaaV7QA"
+// var attachmentId = "ANGjdJ8cUlIzDarpke6-RHqb1AvxvFZO3QdyRLz4wjn96_rFu1mk0x9rN_PQiD6BhyP53mkuTx6-pXtj_HQjS8iF1MXNX6kf_YbBYv3KSHOhnD4iiMkYI3QQ8GxHNnG7BXkejGG1RDzGLaiC69OyC9PXN1PUFts4AD3xUCGLhlbugqlrwEHY7ezhUCj22jqDgo8y_X7NKKsSkxgvDY6ByIg2YJnaRwndwfOL1hBSkMxvn0RGItLmmQllP65jKzb2jYARrZYUwgS8Ah4kKC6yOh8dNWAAk3_Xs93oaaV7QA"
 var token;
 
 exports.download_attachment = function(req, res) {
-	// var attachmentId = req.params.id;
+	var attachmentId = req.params.id;
 	console.log("RHAAAAPE : " + attachmentId);
 	// get the attachmentId, it bett
 	var AttachmentObj = Parse.Object.extend("Attachment");
 	var query = new Parse.Query(AttachmentObj);
-	query.equalTo("userId", Parse.User.current());
+	// query.equalTo("userId", Parse.User.current());
 	query.equalTo("attachmentId", attachmentId);
 	query.find({
 		success: function(results) {
