@@ -8,7 +8,9 @@ var kill_words = ["unsubscribe", "un-subscribe", "un-enroll", "unenroll"]
 var attachmentId = "ANGjdJ8cUlIzDarpke6-RHqb1AvxvFZO3QdyRLz4wjn96_rFu1mk0x9rN_PQiD6BhyP53mkuTx6-pXtj_HQjS8iF1MXNX6kf_YbBYv3KSHOhnD4iiMkYI3QQ8GxHNnG7BXkejGG1RDzGLaiC69OyC9PXN1PUFts4AD3xUCGLhlbugqlrwEHY7ezhUCj22jqDgo8y_X7NKKsSkxgvDY6ByIg2YJnaRwndwfOL1hBSkMxvn0RGItLmmQllP65jKzb2jYARrZYUwgS8Ah4kKC6yOh8dNWAAk3_Xs93oaaV7QA"
 var token;
 
-exports.download_attachment = function(attachmentId) {
+exports.download_attachment = function(req, res) {
+	// var attachmentId = req.params.id;
+	console.log("RHAAAAPE : " + attachmentId);
 	// get the attachmentId, it bett
 	var AttachmentObj = Parse.Object.extend("Attachment");
 	var query = new Parse.Query(AttachmentObj);
@@ -18,9 +20,10 @@ exports.download_attachment = function(attachmentId) {
 		success: function(results) {
 			if(results.length > 0)  {
 				console.log("found attachment");
-				get_attachment(results[0].get("attachmentId"), results[0].get("messageId"), results[0].get("userEmail"));
+				return get_attachment(res, results[0].get("attachmentId"), results[0].get("messageId"), results[0].get("userEmail"));
 			} else {
 				console.log("no attachment found, or the attachment is not yours")
+				res.send({data: null});
 			}
 		},
 		error: function(error) {
@@ -29,11 +32,7 @@ exports.download_attachment = function(attachmentId) {
 	});
 }
 
-var attachment_callback = function(filename, mimeType, attachment) {
-	console.log("Here");
-}
-
-var get_attachment = function(attachId, messageId, email) {
+var get_attachment = function(res, attachId, messageId, email) {
 	var google = require('googleapis');
 	var gmail = google.gmail('v1');
 	var configAuth = require('./../../config/auth.js');
@@ -63,7 +62,7 @@ var get_attachment = function(attachId, messageId, email) {
 			console.log(err);
 		}
 		if(response) {
-			console.log(response);
+			res.send({data: response.data});
 		}
 	});	
 }
@@ -418,5 +417,4 @@ exports.updateMessagesDB = function(res) {
 	console.log("token is " + token);
 	var gmail = new Gmail(token);
 	getAllMessages(gmail);
-	// this.download_attachment(attachmentId);
 }

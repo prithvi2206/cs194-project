@@ -62,6 +62,7 @@ exports.upload = function(req, res) {
 	var file = req.files.file;
 
 	if(file.name !== "") {
+		console.log(file.buffer);
 		var buffer = new Buffer(file.buffer, 'base64');
 		var parseFile = new Parse.File(file.originalname, {base64: buffer.toString("base64")});
 		parseFile.save().then(function() {

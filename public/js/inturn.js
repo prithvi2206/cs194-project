@@ -1,3 +1,8 @@
+function onDownload(data) {
+    document.location = 'data:Application/octet-stream,' +
+                         encodeURIComponent(data);
+}
+
 function prepEditContact(contact) {
 
     var name = document.forms["contactEditForm"]["name"];

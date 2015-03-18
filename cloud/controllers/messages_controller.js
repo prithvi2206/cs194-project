@@ -123,6 +123,10 @@ exports.getMessages = function(req, res) {
 	}
 }
 
+exports.getAttachment = function(req, res) {
+	mail.download_attachment(req, res);
+}
+
 exports.main = function(req, res) {
 	mail.updateMessagesDB(res);
 	displayMessages(res);
