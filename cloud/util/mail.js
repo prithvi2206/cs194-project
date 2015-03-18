@@ -284,6 +284,7 @@ var addMessageFromContact = function(message, contact) {
 
 var addMessageFromApp = function(message, app) {
 	var gmail_id = message.id;
+	if(!(message.payload)) return;
 	var email_type = message.payload.mimeType;
 	var headers = message.payload.headers;
 	var body = message.payload.body;
