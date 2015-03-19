@@ -3,6 +3,9 @@ function onDownload(data) {
                          encodeURIComponent(data);
 }
 
+/* Sets value of edit contact modal
+ * based on contact selected for editing *
+ */
 function prepEditContact(contact) {
 
     var name = document.forms["contactEditForm"]["name"];
@@ -25,12 +28,18 @@ function prepEditContact(contact) {
 
 }
 
+/* Validates URL 
+ * used by job application add in /jobs
+ */
 function validateURL(textval) {
   var urlregex = new RegExp(
         "^(http|https|ftp)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&amp;%\$#\=~_\-]+))*$");
   return urlregex.test(textval);
 }
 
+/* Validates input of quick add events 
+ * in view /events
+ */
 function validate_quick_add() {
     var summary = document.forms["quickAddForm"]["summary"];
     console.log(summary);
@@ -43,6 +52,9 @@ function validate_quick_add() {
     }
 }
 
+/* Validates input of full featured add events
+ * in view /events
+ */
 function validate_add_event() {
 
     var validate = 0;
@@ -75,6 +87,9 @@ function validate_add_event() {
     return (validate == 0);
 }
 
+/* Validates input for adding a new job in
+ * in view /jobs
+ */
 function validate_add_job() {
 
     var validate = 0;
@@ -107,6 +122,9 @@ function validate_add_job() {
     return (validate == 0);
 }
 
+/* Validates profile editing 
+ * in view /profile
+ */
 function validate_profile() {
 
     var validate = 0;
@@ -127,6 +145,9 @@ function validate_profile() {
     return (validate == 0);
 }
 
+/* Validates contact adding 
+ * in view /contacts
+ */
 function validate_add_contact(switch_add_edit) {
 
     if (switch_add_edit) {
@@ -184,6 +205,10 @@ function appSelectListener() {
     }
 }
 
+/* Creates list group item
+ * given news article returned
+ * by feedzilla *
+ */
 function returnNewsItemDiv(article) {
     var html = ""
     html += "<div class=\"list-group-item\">";
@@ -206,7 +231,9 @@ function returnAllNewsDivs(articles) {
     console.log(html);   
 }
 
-
+/* Populates newsfeed in dashboad
+ * using feedzilla
+ */
 function populateNewsFeed() {
     // var total_jobs = 0;
     // var total_articles = 0;

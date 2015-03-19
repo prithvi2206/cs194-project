@@ -21,6 +21,15 @@ $ node server.js
 ```
 from the project home directory.
 
+### Features
+To enhance the utility of our product, we had several features spread out between our web app and our iOS app. Among them, we have 
+  - A centralized dashboard that shows aggregate information about jobs, messages, and events.
+  - A jobs page that shows a list of jobs that the user has applied to, color coded by the status of the job (applied, offer, interview, etc)
+  - A detailed jobs page, which shows more information about a single application, such as messages sent by contacts associated with that application, upcoming events, the deadline of the application, contacts associated with that application, and documents (such as a resume or a cover letter) associated with that application. From this page, a user can also add a document, view a message, and view a contact.
+  - Integration with GMail. GMail integration allows users to manage their recruiting related emails directly from inturn.io. Messages that are recruiting related are filtered into inturn's Parse database. This happens from two filters. One filters all emails from contacts associated with an application. The other filters from all emails whose sender's email's domain is associated with an application. Once emails are loaded into Parse's database, user's can view emails, view attachments, and filter emails by job. 
+  - Integration with Google Calendar, in our Events feature. With the integration to Google Calendar, events that mention the name of a company applied to, or include the url of a company, get filtered into the Parse database. The calender in the events page then lets users view events either in a Month view, a Week view, and a Day view, for different levels of granularity. From the Events page, the user can also add events, which gets saved to both the inturn.io calendar, and the Google Calendar, under a special Calendar specifically meant for inturn.io created messages.
+  - A documents viewer, that supports different versions. Users can add documents, such as resumes and cover letters, associate them with applications, and create different versions of a document (by adding the document with the same name). 
+  
 ### Dependencies
 The backend of our project is hosted on [Parse] 
 
