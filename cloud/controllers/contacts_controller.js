@@ -1,5 +1,8 @@
 'use strict';
 
+/* 
+ * Returns true if array contains value
+ */
 var array_contains = function(arr, val) {
 	for (var i = 0; i < arr.length; i++) {
 		if(arr[i] == val) {
@@ -9,8 +12,11 @@ var array_contains = function(arr, val) {
 	return false;
 }
 
+/* 
+ * Removes duplicate contacts from an array of contacts
+ */
+
 var removed_duplicates = function(results) {
-	// console.log("removing duplicates from: " + results.length);
 	var emails = [];
 	var ret = [];
 	for (var i = 0; i < results.length; i++) {
@@ -31,6 +37,9 @@ var removed_duplicates = function(results) {
 	return ret;
 }
 
+/*
+ * Gets applications for a contact and renders contact view
+ */
 var get_apps_and_render_main_page = function(contacts_list, res) {
 
 	var AppObj = Parse.Object.extend("Application");
@@ -53,6 +62,9 @@ var get_apps_and_render_main_page = function(contacts_list, res) {
 
 }
 
+/* 
+ * Controller for route /contacts
+ */
 exports.main = function(req, res) {
 	Parse.User.current().fetch();
 
@@ -70,6 +82,12 @@ exports.main = function(req, res) {
 	});
 }
 
+
+/* 
+ * Obtains the app object requested and 
+ * includes it in the contact entry
+ * Saves contact entry to Parse
+ */
 var addAppAndSend = function(res, contact_entry, id) {
 	var AppObj = Parse.Object.extend("Application");
 	var query = new Parse.Query(AppObj);
@@ -92,6 +110,9 @@ var addAppAndSend = function(res, contact_entry, id) {
 	});
 }
 
+/* Adds contact to Parse db
+ * controller for POST /contact/add
+ */
 exports.add = function(req, res) {
 
 	Parse.User.current().fetch();
@@ -123,6 +144,9 @@ exports.add = function(req, res) {
 	
 }
 
+/* Edits contact to Parse db
+ * controller for POST /contact/add
+ */
 exports.edit = function(req, res)  {
 
 	/* Retriev params from req */

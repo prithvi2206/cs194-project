@@ -1,6 +1,9 @@
 'use strict';
 var docs_util = require("../util/documents.js");
 
+/* 
+ * Renders document view
+ */
 exports.main = function(req, res) {
 	Parse.User.current().fetch()
 
@@ -58,6 +61,9 @@ exports.main = function(req, res) {
 	});
 };
 
+/* 
+ * Uploads new document
+ */
 exports.upload = function(req, res) {
 	Parse.User.current().fetch();
 
@@ -78,8 +84,8 @@ exports.upload = function(req, res) {
 
 			docObject.set("name", file_name);
 			docObject.set("file", parseFile);
-      docObject.set("extension", file.extension);
-      docObject.set("size", Math.round(file.size/1000) + "KB");
+	      	docObject.set("extension", file.extension);
+	      	docObject.set("size", Math.round(file.size/1000) + "KB");
 
 			docObject.set("userId", Parse.User.current());
 
@@ -107,6 +113,12 @@ exports.upload = function(req, res) {
 	}
 };
 
+/* 
+ * This route is called by 
+ * client-side javascript to
+ * return a requested document
+ * for preview
+ */
 exports.preview = function(req, res) {
 	var data = req.body;
 
@@ -123,6 +135,10 @@ exports.preview = function(req, res) {
 	});
 };
 
+/* 
+ * Deletes a document version 
+ * from database
+ */
 exports.delete = function(req, res) {
 	Parse.User.current().fetch();
 
@@ -141,6 +157,11 @@ exports.delete = function(req, res) {
     });
 };
 
+/* 
+ * Retrieves a list of documents and sends
+ * as an HTTP response -- to be used by 
+ * client side javascript
+ */
 exports.retrieveDocuments = function(req, res) {
 	console.log("retrieving all documents");
 

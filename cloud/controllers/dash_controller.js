@@ -4,6 +4,11 @@ var alerts = require("../util/alerts.js");
 var session = require("../util/session.js");
 var events = require("../util/events.js");
 
+/* 
+ * Gets number of unread messages 
+ * and appends this info to data object
+ * and renders dashboard
+ */
 var main_get_unread = function(req, res, data) {
 	var MessageObj = Parse.Object.extend("Message");
 	var query = new Parse.Query(MessageObj);
@@ -35,6 +40,10 @@ var main_get_unread = function(req, res, data) {
 	});
 }
 
+/* 
+ * Gets number of upcoming events
+ * and appends this info to data object
+ */
 var main_get_events = function(req, res, data) {
 
 	var EventObj = Parse.Object.extend("Event");
@@ -53,6 +62,10 @@ var main_get_events = function(req, res, data) {
 	});
 }
 
+/* 
+ * Renders dashboard
+ * controller for view /dashboard
+ */
 exports.main = function(req, res) {
 
 	Parse.User.current().fetch()
@@ -76,6 +89,9 @@ exports.main = function(req, res) {
 
 };
 
+/* 
+ * POST request for updating a user profile
+ */
 exports.update_profile = function(req, res) {
 	var user = Parse.User.current();
 	var set_status = user.get("password_set")
@@ -119,6 +135,10 @@ exports.update_profile = function(req, res) {
 		});
 
 };
+
+/* 
+ * GET request for viewing profile /profile
+ */
 
 exports.profile = function(req, res) {
 	if (!Parse.User.current().get("password_set")) {
