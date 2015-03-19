@@ -157,7 +157,83 @@ userId      : (User*) User this attachment belongs to.
 filename    : (String) Name of the file, to be displayed before being downloaded
 ```
 ### Codebase Structure and Navigation
+##### Backend
+`Hosting and Node Modules` - Parse.com provides hosting of Parse projects, although the service imposes limitations on the node modules that can be used. Specifically, Parse does not allow one to install arbitrary node modules and push to its cloud hosting service; one is limited to a small set of modules referred to as [Cloud Modules]. 
 
+This limitation was unreasonable because our inturn relies on data from GMail and Google Calendar, as well as helper modules that make it easier to connect to and work with the Google API. Therefore, we decided to use [parse-develop] to deploy locally.
+
+we adapted this script to for hosting on Heroku, `server.js`, although it is highly derivative of the code found in the above respository, so we are citing it as a reference. The script `server.js` points to imports in `lib/`
+
+##### Directory Structure
+The overall directory structure was created by following Parse's [Hosting Guide], and began by invoking `parse new inturn` and `parse generate express` to create the directory structure inside the `cloud` folder.
+
+We used Parse Cloud Code and Express to build a multi-page dynamic web app. With the Express framework, we had access to request routing, cookie handling, and template rendering. With Cloud Code, we were able to access functionality such as interacting with Parse data and sending HTTP requests.
+
+The top-level entry point for the app is `cloud/app.js`, where the app is initialized, and the request paths are hooked up to corresponding logic through the Express routing API.
+
+We now discuss the purposes of the various folders within /cloud. We have attempted to decompose by functionalities/competencies (such as jobs, messages, events, etc) as far as possible, and also keeping in mind ease of debugging to pinpoint exactly what point of the MVC stack is problematic. 
+
+`cloud/routes` - This folder contains modules exporting routes/request handling. We have decomposed this into separate modules handling routes for authentication, dashboard, and the high level data models jobs, messages, events, documents, and contacts. 
+
+The canonical format for our routing modules is:
+
+```
+var {var} = require("../controllers/{var}_controller.js");
+var session = require("../util/session.js");`
+
+module.exports = function(app) {
+    app.get('/{route}', session.isLoggedIn, {var}.route_action);
+    ...
+}
+```
+
+Therefore, every routing module invokes `{var}.route_action` after checking session state, through the local session module it owns. 
+
+`cloud/controllers/` - This folder contains controller modules, exporting public functions used by the routing modules. Most of these controller files are tailored to the high level function they are performing, but all of them require `var alerts = require("../util/alerts.js");` -- this is our own messaging system we use for in app alerts/notifications. 
+
+`cloud/util/` - 
+
+1. `alerts.js` -- This is our simple messaging/notification service that keeps track of messages of the following types: ["info", "warning", "success", "error"]. These represent bootstrap classes for the appearance of an alert modal. The alerts.js module keeps track of the message to be rendered for a particular sentiment, for a controller. The templates use the alert object passed by the controller to determine the type of message to display. We use alerts.reset() to clear the messages when done rendering a template.
+
+2. `documents.js, events.js, mail.js` - modules that export helper functions for document processing, event-mail retrieval and parsing from Google API that we didn't feel belonged in the controller because they didn't represent the high level functionality that the controller takes care of.
+
+3. `session.js` - this is an essential module whose primary function `exports.isLoggedIn = function(req, res, next)` is called before rendering any route. Ensures that the session object contains an authenticated user and returns the function next upon success (specified by the route/controller), and redirects to the start splash screen upon failure to let the user sign up or log in. This module also refreshes the Google API token based on a constant refresh time, and also pulls emails and events from Google based on a constant refresh time.
+
+`cloud/views` - 
+````
+-cloud/
+  -views/
+    -contacts/
+    -documents/
+    ...
+  -partials/
+    ..
+````
+This folder contains all the views and partial templates for the entirety of the web app. It has been organized into main pages and partial pages (ejs reused as components of multiple pages).
+
+The template [Bootstrap SB Admin] served as a starting point for the partial templates (header, footer, etc). This template is based on Twitter Bootstrap.
+
+The components, buttons, panels, form fields, and fonts are imported from Twitter Bootstrap. Other miscellaneous components, such as the datepicker and calendar, are publicly available templates cited below:
+
+1. [Bootstrap 3 Datepicker], used for input fields requiring DateTime input
+2. [FullCalendar], used for calendar display on the Events page
+
+`config/` - Contains essential app constants for Parse and Google API, as well as Google API authentication strategy using `passport.js`
+
+1. `auth.js` - module exports Google API app constants such as clientID, secret, callback, scope
+2. `global.json` - Parse.com app credentials including appId, masterKey and javascriptKey
+3. `passport.js`- This is an important module that uses the Google API credentials in `auth.js` to authenticate a new user and store credentials in the Parse.com db. 
+
+
+`node_modules/` - Contains all the node modules; this folder is included in the .gitignore since we don't want to push dependencies to the repo. Once again, these can be installed locally be invoking [sudo npm install]. 
+
+`public/` - This folder contains all the CSS, JavaScript, and fonts to be used on the client side. Most of these files are self explanatory imports from Bootstrap and other templates previously discussed.Some noteworthy files are described below:
+
+1. `public/js/inturn.js` -
+This file contains the main document on ready function that document retrieval, processing, and previewing for the Document viewer. Apart from that inturn.js also includes various form validation functions and the functionality for populating the news feed on the Dashboard page.
+
+2. `public/js/messages.js` -
+This file contains client-side JavaScript for message handing on the Messages page. Functions include the ability to filter messages by application, render the message body in a pop up modal and downloading attachments.  
 
 ### iOS
 Native iOS application coded in swift to complement inturn's web application.
@@ -219,3 +295,9 @@ Contacts
 [google-calendar]:https://github.com/wanasit/google-calendar
 [node-gmail-api]:https://github.com/SpiderStrategies/node-gmail-api
 [Parse]:https://parse.com/
+[Cloud Modules]:https://parse.com/docs/cloud_modules_guide
+[parse-develop]:https://github.com/flovilmart/parse-develop
+[Hosting Guide]:https://parse.com/docs/hosting_guide
+[Bootstrap SB Admin]:http://startbootstrap.com/template-overviews/sb-admin/
+[Bootstrap 3 Datepicker]:http://eonasdan.github.io/bootstrap-datetimepicker/
+[FullCalendar]:http://fullcalendar.io/
