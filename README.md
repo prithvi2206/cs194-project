@@ -297,7 +297,8 @@ We have attempted to address all significant issues to give users the experience
   - In the Messages view, as well as the Messages modal within `jobs/view/:id`, we are at this time unable to provide a download of attachments within a message. 
   - Due to a jQuery issue, FullCalendar is unable to open details for an event listed in the Events view, although event details can be seen in the view for the job application the event is associated with
   - Session issues sometimes cause the server to crash. Simply terminate the instance with `ctrl+c` and restart with
-  ``` sh
+
+  ```
   $ node server.js
   ```
 
