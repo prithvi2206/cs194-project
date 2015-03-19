@@ -2,7 +2,7 @@
 
 **Authors: Prithvi Ramakrishnan, Aditya Dev Gupta, Ricky Tran**
 
-*Made for the CS194 Senior Project at Stanford in Winter 2015*
+*CS194 Senior Project Submission at Stanford University, Winter 2015*
 
 *inturn.io* is a web and mobile solution for college students to manage the various facets of their internship or job recruitment process through a centralized cloud-hosted platform. Centered around an efficient, easy-to-use dashboard, the product allows students to streamline the recruiting process for all their positions, providing tools for managing resumes, cover letters, contacts from networking events, job-related events, and interviews. Furthering its utility, the solution features integrations into various popular tools commonly used to help manage the job recruitment platform, such as Gmail and Google Calendar. 
 
@@ -31,13 +31,11 @@ Include some shit about those struggz we faced with using Parse for the backened
 The program uses on the following APIs:
   - Google API (Calendar and Mail)
   - Feedzilla API for Dashboard News Feed
-  - keep going
 
 A list of the most heavily leveraged Node.js modules used by inturn.io is given below. A complete list can be found in `package.json`.
   - [passport], for google authentication with OAuth2.0.
   - [google-calendar], a minimal wrapper around Google's Calendar API, to form requests more easily.
   - [node-gmail-api], a wrapper around Google's Mail API, to handle batch requests more easily. 
-  - keep going
 
 ### Data Model Structure and Backend Design
 
@@ -156,9 +154,10 @@ attachmentId: (String) unique identifier allocated by GMail for the attachment.
 userId      : (User*) User this attachment belongs to.
 filename    : (String) Name of the file, to be displayed before being downloaded
 ```
-### Codebase Structure and Navigation
+### Codebase Structure
 ##### Backend
-`Hosting and Node Modules` - Parse.com provides hosting of Parse projects, although the service imposes limitations on the node modules that can be used. Specifically, Parse does not allow one to install arbitrary node modules and push to its cloud hosting service; one is limited to a small set of modules referred to as [Cloud Modules]. 
+###### Hosting and Node Modules
+Parse.com provides hosting of Parse projects, although the service imposes limitations on the node modules that can be used. Specifically, Parse does not allow one to install arbitrary node modules and push to its cloud hosting service; one is limited to a small set of modules referred to as [Cloud Modules]. 
 
 This limitation was unreasonable because our inturn relies on data from GMail and Google Calendar, as well as helper modules that make it easier to connect to and work with the Google API. Therefore, we decided to use [parse-develop] to deploy locally.
 
@@ -283,12 +282,20 @@ Contacts
   - `ContactsTableViewController` - table that displays all contacts
   - `ContactDetailTableViewController` - zoomed in view of the details of a contact. also given the option to save the current contact to your iOS device
 
-### Known bugs
+### Known Bugs
+We have attempted to address all significant issues to give users the experience we envisaged in our project proposal. That being said, a few known issues still remain. We address these issues and suggest workarounds to prevent these from being a hindrance to the user experience.
+
+  - In the Messages view, as well as the Messages modal within `jobs/view/:id`, we are at this time unable to provide a download of attachments within a message. 
+  - Due to a jQuery issue, FullCalendar is unable to open details for an event listed in the Events view, although event details can be seen in the view for the job application the event is associated with
+  - Session issues sometimes cause the server to crash. Simply terminate the instance with `ctrl+c` and restart with
+  ``` sh
+  $ node server.js
+  ```
 
 ### Future work
+We enjoyed working on this project and were happy to receive considerable positive feedback. Based on our conversations with students and our personal experiences, we believe this tool is valuable in allowing people to project manage and centralize their job recruitment process. 
 
-
-
+We hope to continue development on inturn.io, beginning with code refactoring and user testing.
 
 
 [passport]:https://github.com/jaredhanson/passport-google-oauth
