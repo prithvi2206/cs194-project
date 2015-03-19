@@ -158,6 +158,52 @@ filename    : (String) Name of the file, to be displayed before being downloaded
 ```
 ### Codebase structure and Navigation
 
+
+
+
+iOS
+Native iOS application coded in swift to complement inturn's web application.
+Features include:
+  -viewing of job applications, messages, events, documents, and contacts
+  -filter elements based on specified job application
+  -creation of new events as well as exporting events from inturn to iOS calendar
+  -creation of new contacts and the importing and exporting of contact to and from the iOS address book
+  -documents previewer to preview uploaded documents on the go
+
+File Structure:
+-LoginViewController - controls basic login flow
+-NavigationController - controls the navigation throughout the application
+-Jobs
+  -JobDetailTableViewController - zoomed in view of the details of a pending job application.
+  enables navigation to to other items filtered by selected job application (events, contacts, documents, etc.)
+  -JobsTableViewController - controls the selection of job application
+  -JobTableViewCell - custom cell to display job 
+-Events
+  -JobEventSelectionTableViewController - controls the selection of application to link
+  a new event with
+  -NewEventTableViewController - form that handles the creation of a new event item
+  -EventDetailTableViewController - zoomed in view of the details of an event. Also 
+  provides the capability to save the event to your iOS calendar
+  -EventTableViewCell - custom table cell to display event
+  -EventsTableViewController - table that displays all events
+-Messages
+  -MessageDetailTableViewController - zoomed in view of the details of a message
+  -MessagesTableViewController - table that displays all messages
+  -MessageTableViewCell - custom table cell to display message on table
+-Documents
+  -DocumentViewController - UIWebview used to preview documents
+  -DocumentsTableViewController - table that displays all documents
+  -DocumentTableViewCell - custom table cell to display document item on table
+-Contacts
+  -JobSelectionTableViewController - controls the selection of an application to link
+  to a specific contact
+  -NewContactTableViewController - form that handles the creation of a new contact
+  including importing from the iOS device
+  -ContactsTableViewController - table that displays all contacts
+  -ContactDetailTableViewController - zoomed in view of the details of a contact. also 
+  given the option to save the current contact to your iOS device
+
+
 ### Known bugs
 
 ### Future work
