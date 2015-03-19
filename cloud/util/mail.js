@@ -1,13 +1,26 @@
 'use strict';
 
-/** TODOS:
- *  - Change read status, in addition to fetching new mails
+/* Mail.js
+ * The functions implemented in this file handle the logic required to 
+ * update the mail database and retrieve relevant messages.
+ * 
+ * Messages can be retrieved from two sources
+ * METHOD 1: From contacts that have already been added (with a gmail query on that contact)
+ * 				ex. If I have prithvir@stanford.edu added as a contact, I'll search all messages
+ * 				sent from prithvir@stanford.edu
+ * METHOD 2: From senders whose email addresses are from a domain that is associated with an 
+ * 		  		application that the user has added.
+ * 				ex. If I have an application to Google, and I've specified the url google.com,
+ * 				I'll search for all emails from a @google.com email address.
  */
 
+
+// If an email is found via METHOD 2, we avoid messages containing these words, 
+// as a simple rule based filtering algorithm.
 var kill_words = ["unsubscribe", "un-subscribe", "un-enroll", "unenroll"]
-// var attachmentId = "ANGjdJ8cUlIzDarpke6-RHqb1AvxvFZO3QdyRLz4wjn96_rFu1mk0x9rN_PQiD6BhyP53mkuTx6-pXtj_HQjS8iF1MXNX6kf_YbBYv3KSHOhnD4iiMkYI3QQ8GxHNnG7BXkejGG1RDzGLaiC69OyC9PXN1PUFts4AD3xUCGLhlbugqlrwEHY7ezhUCj22jqDgo8y_X7NKKsSkxgvDY6ByIg2YJnaRwndwfOL1hBSkMxvn0RGItLmmQllP65jKzb2jYARrZYUwgS8Ah4kKC6yOh8dNWAAk3_Xs93oaaV7QA"
 var token;
 
+// for escaping HTML
 var entityMap = {
 	"&": "&amp;",
 	"<": "&lt;",
@@ -17,19 +30,26 @@ var entityMap = {
 	"/": '&#x2F;'
 };
 
+// Function to allow HTML to be sent, to be displayed in the view Messages window.
 var escapeHtml = function(string) {
 	return String(string).replace(/[&<>"'\/]/g, function (s) {
 	  return entityMap[s];
 	});
 }
 
+/* Function download_attachment
+ * -----------------------------
+ * Called when the user cicks on an attachment, requesting to download it.
+ * This function is given the attachmentId of the attachment (provided by 
+ * google), and requests the attachment from GMail, and then passes it back
+ * via a res.send in Base64 format.
+ */
 exports.download_attachment = function(req, res) {
 	var attachmentId = req.params.id;
 
-	// get the attachmentId, it bett
+	// get the attachmentId
 	var AttachmentObj = Parse.Object.extend("Attachment");
 	var query = new Parse.Query(AttachmentObj);
-	// query.equalTo("userId", Parse.User.current());
 	query.equalTo("attachmentId", attachmentId);
 	query.find({
 		success: function(results) {
@@ -47,25 +67,39 @@ exports.download_attachment = function(req, res) {
 	});
 }
 
+/* Function get_attachment
+ * -----------------------
+ * Called by download_attachment. This function, given the attachId, messageId, and 
+ * the email of the owner user (the three parameters the Google API needs to make 
+ * the request), returns the attachment to the user.
+ * 
+ * Because the node-gmail-api wrapper we used does not support downloading attachments, 
+ * we used the bare GMail API to do this. 
+ * Unfortunately, this meant we had to re-do the authentication on the backent
+ * (this does not change anything from the perspective of the client, except for 
+ * a slight lag), but it means that we have to re-establish a separate oauth client
+ * for the request
+ */
 var get_attachment = function(res, attachId, messageId, email) {
+	// initialize google's api
 	var google = require('googleapis');
 	var gmail = google.gmail('v1');
 	var configAuth = require('./../../config/auth.js');
+	// google auth data for the application
 	var CLIENT_ID = '1073490943584-jihl83sesm1qcm10lik7mu86t5ioh5g5.apps.googleusercontent.com';
     var CLIENT_SECRET = 'MKAnbihZSzT75VOC61bapiPQ';
     var REDIRECT_URL =  'http://localhost:3000/auth/google/callback';
+    // the token and the refresh token are stored on Parse, so we just get them
     var refreshToken =  Parse.User.current().get("refresh_token");
 	var OAuth2 = google.auth.OAuth2
-	console.log(CLIENT_ID)
 	var oauth2Client = new OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL);
 	// Retrieve tokens via token exchange explained above or set them:
 	oauth2Client.setCredentials({
 	  access_token: token,
 	  refresh_token: refreshToken
 	});
-
-	console.log("gapi initialzed: " + gmail)
-	console.log("id: " + attachId + ", messageId: " + messageId + ", userId: " + email);
+	// now we create the request, and pass in the authentication, so that 
+	// google knows that the request is authenticated.
 	var request = gmail.users.messages.attachments.get({
 		'id': attachId,
 		'messageId': messageId,
@@ -82,18 +116,14 @@ var get_attachment = function(res, attachId, messageId, email) {
 	});	
 }
 
-/* replace with naive bayes or something */
+/* Very simple function to check if an email is not a generic spam message
+ * Designed to have very high recall, but variable precision, since the penalty
+ * for trashing a recruiting-related email is much higher than the penalty
+ * of including an occasional spam email. 
+ * This is only used in retrievals triggered by METHOD 2. 
+ */
 var emailIsRecruitingRelated = function(from, subject, body_text, body_html) {
-	if(subject == "Due times & new features to make you :)") { 
-		console.log("--------------------> found this!")
-		console.log(body_text);
-		console.log(body_html);
-		console.log("index: " + body_text.indexOf("unsubscribe"));
-	}
 	if(body_text.indexOf("unsubscribe") > -1) {
-		if(subject == "Due times & new features to make you :)") { 
-			console.log("----------------================///// returning false")
-		}
 		return false;
 	}
 	if(body_text.indexOf("un-subscribe") > -1) {
@@ -128,6 +158,10 @@ var emailIsRecruitingRelated = function(from, subject, body_text, body_html) {
 	return true;
 }
 
+/* Checks if the message is already in the Parse database (with a query on the gmail id),
+ * and if it's not, then insert it into the database. Also adds all attachments 
+ * associated with the message.
+ */ 
 var sendIfNoDuplicate = function(message_entry, gmail_id, attachments) {
 	var MessageObj = Parse.Object.extend("Message");
 	var query = new Parse.Query(MessageObj);
@@ -135,12 +169,13 @@ var sendIfNoDuplicate = function(message_entry, gmail_id, attachments) {
 	query.find({
 		success: function(results) {
 			if(results.length == 0)  {
-				// console.log("no duplicate")
+				// results.length == 0, so this message is not there. 
 				message_entry.save().then(function() { 
 					console.log("----------- new message saved succesfully");
 				}, function(error) {
 					console.log(error);
 				});
+				// add all attachments
 				for (var i = 0; i < attachments.length; i++) {
 					addAttachment(attachments[i].attachmentId, attachments[i].filename, attachments[i].message_id);
 				};
@@ -155,6 +190,15 @@ var sendIfNoDuplicate = function(message_entry, gmail_id, attachments) {
 
 }
 
+/* Adds a message when there's a contact.
+ * This function ends up being called in both Method 1 and Method 2, because 
+ * Method 2 will first create a contact for the sender of the message, and then
+ * passin a pointer to that contact into this function. 
+ * This was done just to make the code more easily understandable, even though it
+ * leads to one additional Parse query.
+ * The main work of the funciton is to populate a Message object, and then it passes
+ * the message along to sendIfNoDuplicate, to avoid storing duplicate messages.
+ */
 var addMessageWithContact = function(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact, attachments) {
 	var MessageObj = Parse.Object.extend("Message");
 	var message_entry = new MessageObj;		
@@ -164,7 +208,6 @@ var addMessageWithContact = function(gmail_id, subject, date_time, body_text, bo
 	message_entry.set("snippet", snippet);
 	message_entry.set("bodyText", body_text);
 
-	// var has_attachment = (attachments.length == 0);
 	var bodytext = '';
     var m = body_html.match(/<body[^>]*>([^<]*(?:(?!<\/?body)<[^<]*)*)<\/body\s*>/i);
     if (m) bodytext = m[1];
@@ -186,11 +229,16 @@ var addMessageWithContact = function(gmail_id, subject, date_time, body_text, bo
 	sendIfNoDuplicate(message_entry, gmail_id, attachments);
 }
 
+// simple utility function to convert MIME message data from Base64 data to utf-8
 var base64ToUtf = function(s) {
 	var buffer = new Buffer(s + '', 'base64');
 	return buffer.toString("utf-8");
 }
 
+/* Populates and sends an attachment object. Remember the attachment database
+ * doesn't actually store the file itself (the file is retrieved on demand)
+ * from google so that the Parse server doesn't have to do massive file storage.
+ */
 var addAttachment = function(attachment_id, attachment_name, message_id) {
 	var AttachmentObj = Parse.Object.extend("Attachment");
 	var attachment_entry = new AttachmentObj;               
@@ -199,7 +247,6 @@ var addAttachment = function(attachment_id, attachment_name, message_id) {
 	attachment_entry.set("messageId", message_id);
 	attachment_entry.set("attachmentId", attachment_id);
 	attachment_entry.set("userEmail", Parse.User.current().get("username"));
-	// console.log(attachment_name + " " + attachment_id + " " + message_id + " " + Parse.User.current().get("username"))
 	
 	var AttachmentObj = Parse.Object.extend("AttachmentObj");
 	var query = new Parse.Query(AttachmentObj);
@@ -218,13 +265,14 @@ var addAttachment = function(attachment_id, attachment_name, message_id) {
 			console.log(error.message);
 		}
 	});	
-	// attachment_entry.save().then(function() { 
-	// 	// console.log("----------- new attachment saved succesfully");
-	// }, function(error) {
-	// 	console.log(error);
-	// });
 }
 
+/*  Adds a message from a contact.
+ * This is the starting point of the divergence from Method 2 and Method 1.
+ * This, and the following function both take in a message, and use it to
+ * parse data and send the relevant parts to addMessageWithContact, which
+ * populates a Parse Message object stores it in the database.
+ */
 var addMessageFromContact = function(message, contact) {
 	var gmail_id = message.id;
 	if(!(message.payload)) {
@@ -265,6 +313,21 @@ var addMessageFromContact = function(message, contact) {
 	var body_html = ""
 	var has_attachment = false;
 	var attachments = [];
+
+	/* The following code is to extract the actual body from the MIME message.
+	 * Google sends the body as both text and as HTML. MIME messages have 
+	 * part structures, which stores data, either text, attachments, or other parts
+	 * 
+	 * GMail uses this part structure in a specific way, which falls into three cases:
+	 * If the message is plaintext, then there aren't parts, and the message is stored
+	 * 		in the body of the main part. 
+	 * If the message is not just plaintext, and there are no attachments, then the 
+	 * 		message is stored as two parts. parts[0] stores the text version of the body
+	 * 		and parts[2] stores the HTML version.
+	 * If the message is not just plaintext, and there are attachments, then the 
+	 * 		text and the HTML are stored as two parts within parts[0], and parts[1]
+	 * 		and parts following are all attachments.
+	 */
 	if(parts && parts[0] && parts[1]) {
 		if(parts[0].mimeType.substring(0, 9) == "multipart") {
 			// console.log("is multipart");
@@ -294,36 +357,13 @@ var addMessageFromContact = function(message, contact) {
 		return;
 	}
 	addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact, attachments)
-
-/*	console.log("==================== MESSAGE DATA ====================")
-	console.log("id: " + gmail_id);
-	console.log("payload mime type: " + email_type);
-	console.log("headers");
-
-	
-	console.log("\tsubject: " + subject);
-	console.log("\tfrom: " + from);
-	console.log("\tdate and time: " + date_time);
-	console.log("------------");
-
-	if(body) {
-		console.log("Body attachmentId: " + body.attachmentId);
-		console.log("Body size: " + body.size);
-		console.log("Body data: " + body.data);
-	}
-	var parts = message.payload.parts;
-	if(parts) {
-		for (var i = 0; i < parts.length; i++) {
-			var part = parts[i];
-			console.log("------ Part: ");
-			console.log(part.data)
-		};
-		// console.log("Number of parts: " + parts.length);
-	}
-	console.log("======================================================")*/
-
 }
 
+/* Adds a message from a application.
+ * this is basically the same as the above function, except directed at 
+ * Method 2 instead of Method 1. The main difference is that it 
+ * creates a new Contact object for the sender of the message.
+ */
 var addMessageFromApp = function(message, app) {
 	var gmail_id = message.id;
 	if(!(message.payload)) {
@@ -365,6 +405,20 @@ var addMessageFromApp = function(message, app) {
 	var body_html = ""
 	var has_attachment = false;
 	var attachments = [];
+	/* The following code is to extract the actual body from the MIME message.
+	 * Google sends the body as both text and as HTML. MIME messages have 
+	 * part structures, which stores data, either text, attachments, or other parts
+	 * 
+	 * GMail uses this part structure in a specific way, which falls into three cases:
+	 * If the message is plaintext, then there aren't parts, and the message is stored
+	 * 		in the body of the main part. 
+	 * If the message is not just plaintext, and there are no attachments, then the 
+	 * 		message is stored as two parts. parts[0] stores the text version of the body
+	 * 		and parts[2] stores the HTML version.
+	 * If the message is not just plaintext, and there are attachments, then the 
+	 * 		text and the HTML are stored as two parts within parts[0], and parts[1]
+	 * 		and parts following are all attachments.
+	 */
 	if(parts && parts[0] && parts[1]) {
 		if(parts[0].mimeType.substring(0, 9) == "multipart") {
 			// console.log("is multipart");
@@ -426,41 +480,12 @@ var addMessageFromApp = function(message, app) {
 			console.log(error.message);
 		}
 	});	
-
-
-	// addMessageWithContact(gmail_id, subject, date_time, body_text, body_html, snippet, flags, contact, has_attachment)
-
-	// addIfRelevant(gmail_id, subject, from, date_time, body_text, body_html, snippet, flags, contact, has_attachment)
 }
 
-var getTime = function(message) {
-	return null
-}
-
-/* should take care of server time, time zones, and all that bullshit 
-this should be more than date specific. the granularity of the ranges should have time 
-too, as it's quite possible for someone to receive more emails than the max in one day*/
-var formLabelRangeSearchQuery = function(label, from, to, sender) {
-	var query = ""
-	if(label) {
-		query = query + "label:" + label;
-	}
-	if(from) {
-		query = query + " after:" + from;
-	}
-	if(to) {
-		query = query + " before:" + to;
-	}
-	if(sender) {
-		query = query + " from:" + sender;
-	}
-	for (var i = 0; i < kill_words.length; i++) {
-		query = query + " -" + kill_words[i];
-	};
-	console.log("query: " + query);
-	return query;
-}
-
+/* Forms a query for the google api, for either contacts or domain name
+ * Either "contact" or "domain" should be null. 
+ * Handles domain parsing to get rid of www and http/https.
+ */ 
 var formLabelContactAppSearchQuery = function(label, contact, domain) {
 	var query = ""
 	if(label) {
@@ -485,7 +510,8 @@ var formLabelContactAppSearchQuery = function(label, contact, domain) {
 	return query;
 }
 
-
+/* Starting point for Method 1
+ */
 var getAllFromContact = function(gmail, contact) {
 	var query = formLabelContactAppSearchQuery("inbox", contact, null)
 	var s = gmail.messages(query, {max : 100})
@@ -494,6 +520,8 @@ var getAllFromContact = function(gmail, contact) {
 	})
 }
 
+/* Starting point for Method 2 
+ */
 var getAllFromApplication = function(gmail, app) {
 	var query = formLabelContactAppSearchQuery("inbox", null, app.get("url"))
 	var s = gmail.messages(query, {max : 100})
@@ -503,6 +531,8 @@ var getAllFromApplication = function(gmail, app) {
 	})
 }
 
+/* Starting point for the message fetching.
+ */ 
 var getAllMessages = function(gmail) {
 	var ContactObj = Parse.Object.extend("Contact");
 	var query = new Parse.Query(ContactObj);

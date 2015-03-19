@@ -1,15 +1,29 @@
 'use strict';
 
+/* Events.js 
+ * This file contains utility functions to manage events.
+ * Most significantly, it contains all the code to update the Events database
+ * from google. 
+ * 
+ * As mentioned in the readme, there are two ways in which events are added:
+ * 		If the event mentions the name of a company the user has applied to
+ * 		If the event somewhere includes the url of a company the user has 
+ * 			applied to. 
+ */
+
 var getInturnCalId = function() {
 	return Parse.User.current().get("cal_id");
 }
 
 /* Function: quickAddEvent
- * -------------------
+ * -----------------------
  * Parameters
  * 		input_string: string, something like "Coffee chat at Coupa Cafe with Prithvi tomorrow at 5pm"
  * 		appId: string, basically the ID of the application
  * 				SENTINEL: empty string, if no application is selected.
+ * Uses Google's quick-add functionality to add an event given just a 
+ * string. We also make the user specify an application to associate the event with, in order to
+ * to enhance the power of our data model.
  */
 exports.quickAddEvent = function(input_string, appId, res) {
 	var token = Parse.User.current().get("google_token");
@@ -84,8 +98,11 @@ exports.addEvent = function(summary, start, end, location, appId, res) {
 	});
 }
 
+/* Called when the user signs in, which creates the "inturn" callender
+ * in Google Calendar, so that all events created by inturn can be viewed
+ * under that specific calendar.
+ */
 exports.createInturnCal = function(gcal, res) {
-	// var cal = ;
 	gcal.calendars.insert({
 		'summary': 'inturn',
 		'timeZone': 'America/Los_Angeles'
@@ -115,6 +132,7 @@ var createUrlQuery = function(app) {
 	return app.get("url");
 }
 
+// Adds an event, if it's not already there (to try to mitigate async issues)
 var addEventToParse = function(google_event_data, app) {
 	var EventObj = Parse.Object.extend("Event");
 	var query = new Parse.Query(EventObj);
@@ -144,6 +162,9 @@ var addEventToParse = function(google_event_data, app) {
 	});	
 }
 
+/* Creates a query for google calendar, retrieves all the events that 
+ * match the query from google, and adds the events to Parse.
+ */
 var addEventsFromQuery = function(gcal, query, app) {
 	gcal.events.list('primary', {
 		"q":query
@@ -152,7 +173,6 @@ var addEventsFromQuery = function(gcal, query, app) {
 			console.log(err);
 		}
 		if(data) {
-			console.log(" 					-> 					" + query)
 			var num_items = data.items.length
 			for (var i = 0; i < num_items; i++) {
 				addEventToParse(data.items[i], app)
@@ -161,6 +181,9 @@ var addEventsFromQuery = function(gcal, query, app) {
 	})
 }
 
+/* Creates the two queries and pass them to addEventsFromQuery
+ * to fetch emails from those queries. 
+ */
 var addEventsFromApplication = function(gcal, app) {
 	// create company name query
 	var nameQuery = createNameQuery(app);
@@ -173,6 +196,7 @@ var addEventsFromApplication = function(gcal, app) {
 	addEventsFromQuery(gcal, urlQuery, app);
 }
 
+/* Adds events for each application, through a Parse query */
 var addEventsFromApps = function(gcal) {
   var ApplicationObj = Parse.Object.extend("Application");
 	var query = new Parse.Query(ApplicationObj);
@@ -200,22 +224,5 @@ exports.updateEventsDB = function(res) {
 	var gcal = require('google-calendar');
 	var google_calendar = new gcal.GoogleCalendar(token);
 
-	/* find all the events in the calendar that are 
- 	 * 		scheduled by the company (has the url)
- 	 *		include the company's name
- 	 * 		(optional: search all contacts associated with company)
- 	 */
-
-
- 	/* do a parse query for all job applications
- 	 * for each job application:
- 	 * 		do a search by company name in events
- 	 * 		do a search by company url in events
- 	 */
-
- 	 addEventsFromApps(google_calendar)
- 	 // this.quickAddEvent("Coffee chat at Coupa Cafe with Prithvi tomorrow at 5pm", "qERicYvmA1")
- 	 // this.addEvent("random event", "2015-03-13T10:00:00.000-07:0", "2015-03-13T11:00:00.000-07:00", "somewhere", "7HhVvHWvCo");
-
-
+ 	addEventsFromApps(google_calendar)
 }

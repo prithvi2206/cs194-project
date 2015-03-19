@@ -1,5 +1,14 @@
 'use strict';
 
+/* Function: signup
+ * -------------------
+ * Parameters
+ * 		summary: string
+ * 		start: string... should look like '2011-06-03T10:00:00.000-07:00'
+ * 		end: string
+ * 		location: string
+ * 		appId: string 
+ */
 var signup = function(username, password, res) {
 	Parse.User.signUp(username, password, { ACL: new Parse.ACL(), email:username }, {
 		success: function(user) {
