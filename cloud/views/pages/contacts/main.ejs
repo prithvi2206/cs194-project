@@ -1,0 +1,204 @@
+<!-- views/pages/main.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <% include ../../partials/head %>
+</head>
+
+<body>
+  <div id="wrapper">
+
+    <header>
+      <% include ../../partials/header %>
+    </header>
+
+    <main>
+      <div id="page-wrapper">
+
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="row">
+            <div class="col-lg-12">
+              <h1 class="page-header">
+                Contacts <small>Networking Contacts</small>
+              </h1>
+              <ol class="breadcrumb">
+                <li class="active">
+                  <i class="fa fa-user"></i> Contacts
+                </li>
+              </ol>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="file-option-container padding-5">
+                <button type="button" id="addContactButton" class="btn btn-primary" data-toggle="modal" data-target="#newContactModal">Add New Contact</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">&nbsp;</div>
+          <div class="row">
+            <% for(var i=0; i<contacts.length; i++) {%>
+
+            <!-- Information for a single contact -->
+            <div class="col-lg-3 col-md-6">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <div class="row">
+                    <div class="col-xs-3">
+                      <i class="fa fa-user fa-3x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                      <div class="item-header"><%= contacts[i].get("name") %></div>
+                      <div><%= contacts[i].get("company") %></div>
+                      <div><%= contacts[i].get("title") %></div>
+                    </div>
+                  </div>
+                </div>
+                <div data-toggle="modal" onclick="prepEditContact(<%= JSON.stringify(contacts[i]) %>)" data-target="#editContactModal">
+                  <a href="#">
+                    <div class="panel-footer">
+                      <span class="pull-left">View / Edit</span>
+                      <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                      <div class="clearfix"></div>
+                    </div>
+                  </a>
+                </div>
+                
+              </div>
+            </div>
+            <!-- End of single contact -->
+
+            <% } %>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ADD CONTACT -->
+  <div class="modal fade" id="newContactModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form name="contactAddForm" onsubmit="return validate_add_contact(1)" role="form" method="post" action="/contacts/add" enctype="multipart/form-data">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Add Contact</h4>
+          </div>
+          <div class="modal-body">
+
+            <div class="form-group">
+              <label class="control-label">Name *</label>
+              <input type="text" name="name" class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Title *</label>
+              <input type="text" name="title" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" name="email" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Phone number</label>
+              <input type="tel" name="phone" class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="appselect">Application*</label>
+              <select class="form-control" id="appselect" name="appselect" onchange="appSelectListener()">
+                <option value="" >None</option>
+                <% for(var i=0; i<apps.length; i++) {%>
+                <option value=<%= apps[i].id %> ><%= apps[i].get("title") %> at <%= apps[i].get("company") %></option>
+                <% } %>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">Company Name *</label>
+              <input name="company" class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label>Notes</label>
+              <textarea name="notes" placeholder="Met at engineering career fair, etc." class="form-control" rows="3"></textarea>
+            </div>                    
+          </div>
+          <div class="modal-footer">
+            <input id="contactAddButton" type="submit" class="btn btn-custom">
+          </div>
+        </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->  
+
+  <!-- VIEW / EDIT CONTACT -->
+  <div class="modal fade" id="editContactModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="contactEditForm" role="form" onsubmit="return validate_add_contact(0)" method="post" action="/contacts/edit" enctype="multipart/form-data">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">View / Edit Details</h4>
+          </div>
+          <div class="modal-body">
+            <!-- hidden form field with application id -->
+            <div class="form-group">
+              <input type="hidden" name="contactId" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Name*</label>
+              <input type="text" name="name" class="form-control" >
+            </div>
+            <div class="form-group">
+              <label>Title*</label>
+              <input type="text" name="title" class="form-control" >
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" name="email" class="form-control" >
+            </div>
+            <div class="form-group">
+              <label>Phone number</label>
+              <input type="tel" name="phone" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Company Name</label>
+              <input name="company" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="appselect">Application*</label>
+              <select class="form-control" id="appselect" name="appselect">
+                <option value="0" >None</option>
+                <% for(var i=0; i<apps.length; i++) {%>
+                <option value=<%= apps[i].id %> ><%= apps[i].get("title") %> at <%= apps[i].get("company") %></option>
+                <% } %>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Notes</label>
+              <textarea name="notes" placeholder="Met at engineering career fair, etc." class="form-control" rows="3"></textarea>
+            </div>                    
+          </div>
+          <div class="modal-footer">
+            <input id="contactEditButton" type="submit" class="btn btn-custom">
+          </div>
+        </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->  
+
+  <footer>
+    <% include ../../partials/footer %>
+  </footer>
+
+</body>
+</html>
+

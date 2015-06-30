@@ -1,0 +1,45 @@
+<!-- views/partials/alerts.ejs -->
+
+<!-- INFO ALERT -->
+<% if(alerts["info"]) {%>
+<div class="row">
+  <div class="col-lg-6">
+    <div class="alert alert-info alert-dismissable">
+      <%=alerts["info"]%>
+    </div>
+  </div>
+</div>
+<% }%>
+
+<!-- WARNING ALERT -->
+<% if(alerts["warning"]) {%>
+<div class="row">
+  <div class="col-lg-6">
+    <div class="alert alert-warning alert-dismissable">
+      <%=alerts["warning"]%>
+    </div>
+  </div>
+</div>
+<% }%>
+
+<!-- SUCCESS ALERT -->
+<% if(alerts["success"]) {%>
+<div class="row">
+  <div class="col-lg-6">
+    <div class="alert alert-success alert-dismissable">
+      <%=alerts["success"]%>
+    </div>
+  </div>
+</div>
+<% }%>
+
+<!-- ERROR ALERT -->
+<% if(alerts["error"]) {%>
+<div class="row">
+  <div class="col-lg-6">
+    <div class="alert alert-error alert-dismissable">
+      <%=alerts["error"]%>
+    </div>
+  </div>
+</div>
+<% }%>

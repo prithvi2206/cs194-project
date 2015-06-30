@@ -12,7 +12,7 @@
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/cover.css" rel="stylesheet">
 
-  <title>asdfadf</title>
+  <title>inturn</title>
 
 </head>
 
@@ -26,7 +26,7 @@
 
         <div class="masthead clearfix">
           <div class="inner">
-            <h3 class="masthead-brand">asdfadf</h3>
+            <h3 class="masthead-brand">inturn.io</h3>
             <nav>
               <ul class="nav masthead-nav">
                 <li class="active"><a href="#">Home</a></li>
@@ -40,39 +40,46 @@
           <h1 class="cover-heading">Turn up your career.</h1>
           <p class="lead"><b>inturn</b> centralizes your internship or job recruitment process
             to allow you to spend more time preparing and less time organizing</p>
-          <p class="lead">
-            <form class="navbar-form" role="search" method="post" action="/login_post">
-              <p>
-                <div class="form-group">
-                  <input type="text" class="form-control" name="username" placeholder="Username">
-                </div>
-              </p>
-              <div class="form-group">
-                <input type="password" class="form-control" name="password" placeholder="Password">
-              </div>
-            </p>
-            <p class="lead">
-              <button type="submit" name="sb" value="login" class="btn btn-success">Log In</button>
-              <button type="submit" name="sb" value="signup" class="btn btn-primary">Sign Up</button>
-            </p>
-            </form>
-            <% if(message) {%>
-            <div class="alert alert-danger role="alert"><%=message %></div>
-            <%}%>
-          </div>
 
-          <div class="mastfoot">
-            <div class="inner">
-              <% include ../partials/footer %>
+            <p class="lead">
+              <p>Sign up with 
+
+                <a href="/auth/google" class="btn btn-danger"><span class="fa fa-google-plus"></span> Google</a>
+              </p>
+              <p>
+
+                <p class="lead">
+                  <form class="navbar-form" role="search" method="post" action="/login_post">
+                    <p>
+                      <div class="form-group">
+                        <input type="email" class="form-control" name="username" placeholder="Email">
+                      </div>
+                    </p>
+                    <div class="form-group">
+                      <input type="password" class="form-control" name="password" placeholder="Password">
+                    </div>
+                  </p>
+                  <p class="lead">
+                    <button type="submit" name="sb" value="login" class="btn btn-success">Log In</button>
+                  </p>
+                </form>
+                <% if(message) {%>
+                <div class="alert alert-danger role="alert"><%=message %></div>
+                <%}%>
+              </div>
+
+              <div class="mastfoot">
+                <div class="inner">
+                  <% include ../partials/footer %>
+                </div>
+              </div>
+
             </div>
+
           </div>
 
         </div>
 
-      </div>
 
-    </div>
-
-
-  </body>
-  </html>
+      </body>
+      </html>

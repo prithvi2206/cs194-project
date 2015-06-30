@@ -11,12 +11,12 @@
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="/">inturn</a>
+    <a class="navbar-brand" href="/">inturn.io</a>
   </div>
 
   <!-- Top Menu Items -->
   <ul class="nav navbar-right top-nav">
-    <li class="dropdown">
+    <!-- <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <b class="caret"></b></a>
 
       <ul class="dropdown-menu message-dropdown">
@@ -69,19 +69,25 @@
           <a href="#">View All</a>
         </li>
       </ul>
-    </li>
+    </li> -->
     <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <%=currentUser%> <b class="caret"></b></a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>
+        <% if (!currentUser.get("firstName")) { %> 
+        <%= currentUser.getUsername() %>
+        <% } else { %>
+        <%= currentUser.get("firstName") + " " + currentUser.get("lastName") %>
+        <% } %>
+        <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li>
-          <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
+          <a href="/profile"><i class="fa fa-fw fa-user"></i> Profile</a>
         </li>
         <li>
-          <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
+          <a href="/messages"><i class="fa fa-fw fa-envelope"></i> Messages</a>
         </li>
-        <li>
-          <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
-        </li>
+        <!--<li>
+          <a href="/settings"><i class="fa fa-fw fa-gear"></i> Settings</a>
+        </li>-->
         <li class="divider"></li>
         <li id="logout">
           <a href="/logout"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
@@ -92,35 +98,41 @@
 
   <!-- Sidebar Menu Items -->
   <div class="collapse navbar-collapse navbar-ex1-collapse">
-    <ul class="nav navbar-nav side-nav">
+    <ul id="navbar-side" class="nav navbar-nav side-nav">
 
       <!-- Dashboard -->
-      <li class="active">
+      <% if (page == "dashboard") { %><li class="active"><% } else { %>
+      <li><% } %>
         <a href="/"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
       </li>
 
       <!-- Job applications overview -->
-      <li>
-        <a href="/jobs"><i class="fa fa-fw fa-edit"></i> Job Applications</a>
+      <% if (page == "jobs") { %><li class="active"><% } else { %>
+      <li><% } %>
+        <a href="/jobs"><i class="fa fa-fw fa-briefcase"></i> Job Applications</a>
       </li>
 
       <!-- Events calendar -->
-      <li>
-        <a href="/events"><i class="fa fa-fw fa-table"></i> Events</a>
+      <% if (page == "events") { %><li class="active"><% } else { %>
+      <li><% } %>
+        <a href="/events"><i class="fa fa-fw fa-calendar"></i> Events</a>
       </li>
 
       <!-- Messages from recruiters / contacts -->
-      <li>
+      <% if (page == "messages") { %><li class="active"><% } else { %>
+      <li><% } %>
         <a href="/messages"><i class="fa fa-fw fa-envelope"></i> Messages</a>
       </li>
 
       <!-- Application materials and docs (resume / cover letter) -->
-      <li>
+      <% if (page == "documents") { %><li class="active"><% } else { %>
+      <li><% } %>
         <a href="/documents"><i class="fa fa-fw fa-file"></i> Documents</a>
       </li>
 
       <!-- Networking Contacts -->
-      <li>
+      <% if (page == "contacts") { %><li class="active"><% } else { %>
+      <li><% } %>
         <a href="/contacts"><i class="fa fa-fw fa-user"></i> Contacts</a>
       </li>
 

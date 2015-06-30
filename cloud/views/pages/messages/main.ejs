@@ -1,0 +1,220 @@
+<!-- views/pages/messages.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <% include ../../partials/head %>
+</head>
+
+<body>
+  <div id="wrapper">
+
+    <header>
+      <% include ../../partials/header %>
+    </header>
+
+    <main>
+      <div id="page-wrapper">
+
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="row">
+            <div class="col-lg-12">
+              <h1 class="page-header">
+                Messages <small> Overview</small>
+              </h1>
+<!--               <ol class="breadcrumb">
+                <li class="active">
+                  <i class="fa fa-envelope"></i> Messages
+                </li>
+              </ol> -->
+            </div>
+          </div>
+
+          <!-- INBOX -->
+          <div class="row">
+            <div class="col-sm-3 col-md-2">
+              <div class="btn-group">
+                <button onclick="getMessages();" type="button" class="btn btn-default" data-toggle="tooltip" title="Refresh">
+                <span class="glyphicon glyphicon-refresh"></span></button>
+              </div>
+            </div>
+
+            <!-- PAGINATION BUTTONS -->
+            <div class="col-sm-9 col-md-10">
+                <div class="btn-group">
+                  <form onsubmit="getMessages();return false;" name="filterMessage" class="form-inline">
+                    <label>Filter by Application </label>
+                    <select class="form-control" id="app" name="app">
+                      <option value="0" >None</option>
+                      <% for(var i=0; i<apps.length; i++) {%>
+                      <option value=<%= apps[i].id %> ><%= apps[i].get("title") %> at <%= apps[i].get("company") %></option>
+                      <% } %>
+                    </select>
+                    <button type="submit" class="btn btn-default">Go</button>
+                  </form>
+                </div>
+
+<!--                 <div class="pull-right">
+                  <span class="text-muted"><b>1</b>–<b><%= data.length %></b> of <b><%= data.length %></b></span>
+                  <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-default">
+                      <span class="glyphicon glyphicon-chevron-left"></span>
+                    </button>
+                    <button type="button" class="btn btn-default">
+                      <span class="glyphicon glyphicon-chevron-right"></span>
+                    </button>
+                  </div>
+                </div> -->
+              </div>
+            </div>
+
+            <hr>
+
+            <div class="row">
+
+              <!-- FOLDER BUTTONS -->
+<!--               <div class="col-sm-3 col-md-2">
+                <a href="#" class="btn btn-danger btn-sm btn-block" role="button"><i class="glyphicon glyphicon-edit"></i> Compose</a>
+                <hr>
+                <ul class="nav nav-pills nav-stacked">
+                  <li class="active"><a href="#"><span class="badge pull-right"><%= 0 /*data.length*/ %></span> Inbox </a>
+                  </li> -->
+<!--                 <li><a href="#">Starred</a></li>
+                <li><a href="#">Important</a></li>
+                <li><a href="#">Sent Mail</a></li>
+                <li><a href="#">Drafts</a></li> -->
+    <!--           </ul>
+            </div> -->
+
+            <div class="col-sm-9 col-md-10">
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs">
+                <li class="active"><a href="#home" data-toggle="tab"><span class="glyphicon glyphicon-inbox">
+                </span>Inbox</a></li>
+                <!-- <li><a href="#profile" data-toggle="tab"><span class="glyphicon glyphicon-user"></span>
+                  Social</a></li>
+                  <li><a href="#messages" data-toggle="tab"><span class="glyphicon glyphicon-tags"></span>
+                    Promotions</a></li>
+                    <li><a href="#settings" data-toggle="tab"><span class="glyphicon glyphicon-plus no-margin">
+                    </span></a></li> -->
+                  </ul>
+                  <!-- Tab panes -->
+                  <div class="tab-content">
+                    <div class="tab-pane fade in active" id="home">
+                      <div id="messagesList" class="list-group">
+
+                        <!-- important params:
+                            list-group-item read [or] list-group-item
+                            glyphicon glyphicon-star or glyphicon-star-empty
+                          -->
+
+                          <!-- iterate email items -->
+
+                          <% if (data.length != 0) { %>  
+                          <% for(var i=0; i<data.length; i++) { %>   
+
+                          <a href='javascript:renderMessage("<%= data[i].get("gmailId") %>", "<%= data[i].get("senderName") %>", "<%= data[i].get('senderEmail') %>",
+                            "<%= data[i].get("subject") %>", "<%= msgHtml[i] %>")' 
+                            id="<%= "msg_" + i %>" class="list-group-item">
+      <!--                       <div class="checkbox">
+                              <label>
+                                <input type="checkbox">
+                              </label>
+                            </div> -->
+                            <!-- <span class="glyphicon glyphicon-star-empty"></span> --><span class="name" style="min-width: 120px;
+                            display: inline-block;"><%= data[i].get("senderName") %></span> 
+
+                            <span class=""><%= data[i].get("subject") %></span>
+
+                            <!-- <span class="text-muted" style="font-size: 11px;"><%= data[i].get("snippet") %></span>  -->
+
+                            <span class="badge"><%= (new Date(data[i].get("dateSent"))).toDateString() %></span> <span class="pull-right">
+
+                            <% if (data[i].has_attachment) { %>
+                            <span class="glyphicon glyphicon-paperclip"> </span>
+                            <% } %>
+                          </span>
+                        </a>
+
+                        <% } %>
+                        <% } else { %>
+                          <br>
+                          <div class="alert alert-info alert-dismissable">No Messages received yet</div>
+                        <% } %>
+
+                      </div>
+                    </div>
+
+                    <div class="tab-pane fade in" id="profile">
+                      <div class="list-group">
+                        <div class="list-group-item">
+                          <span class="text-center">This tab is empty.</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="tab-pane fade in" id="messages">
+                      ...</div>
+
+                      <div class="tab-pane fade in" id="settings">
+                        This tab is empty.</div>
+
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+                <!-- /.container-fluid -->
+              </div>
+            </main>
+
+          </div>
+
+          <div class="modal fade" id="messageViewModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 id="messageTitle" class="modal-title">Message
+                  </h4>
+                </div>
+
+                <div class="modal-body">
+
+                  <div>
+                    <h5>Attachments</h5>
+                    <div id="messageAttach">
+                    </div>
+                  </div>
+                  <p>
+                    <hr>
+                  </p>
+                  <h5 id="messageSubject"></h5>
+
+                  <div id="messageBody">
+                  </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                </div>
+
+              </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+          </div><!-- /.modal --> 
+
+          <footer>
+            <% include ../../partials/footer %>
+            <script src="/js/base64.js"></script>
+            <script src="/js/pdf.js"></script>
+            <script src="/js/messages.js"></script>
+          </footer>
+
+        </body>
+        </html>
+
